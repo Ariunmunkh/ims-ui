@@ -1,0 +1,11 @@
+version: '3.7'
+
+services:
+  budget:
+    image: budget:latest
+    container_name: budget
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '80:80'
