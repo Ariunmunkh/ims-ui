@@ -1,9 +1,9 @@
 version: '3.7'
 
 services:
-  budget:
-    image: budget:latest
-    container_name: budget
+  ul:
+    image: ul:latest
+    container_name: ul
     build:
       context: .
       dockerfile: Dockerfile
