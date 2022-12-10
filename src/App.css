@@ -75,22 +75,6 @@ h2 {
     font-weight: 300
 }
 
-form {
-    display: inline-block;
-    background: #f3f3f3;
-    border: 1px solid #ddd;
-    border-radius: 2px;
-    padding: 2rem;
-    margin: 2rem 0 1rem 0
-}
-
-form label {
-    float: left;
-    font-size: .9rem;
-    margin: 0;
-    padding: 0
-}
-
 .right-label {
     float: right;
     cursor: pointer
@@ -127,10 +111,6 @@ footer p {
 /***    Register Page     ***/
 #checkbox {
     width: 1rem
-}
-
-form span {
-    font-size: .8rem
 }
 
 #reset_pass_lbl {

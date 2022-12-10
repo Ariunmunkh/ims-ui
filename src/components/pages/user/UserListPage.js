@@ -26,7 +26,7 @@ export default function UserListPage() {
         return {
             onClick: (event) => {
 
-                navigate(`/userpage/${record.userid}`);
+                navigate(`/home/userpage/${record.userid}`);
 
             },
         };
