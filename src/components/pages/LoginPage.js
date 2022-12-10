@@ -1,25 +1,22 @@
 ﻿import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { message } from "antd";
 import { api } from '../../api/api'
 import '../../App.css'
 
 export default function SignInPage() {
 
-    const [loading, setLoading] = useState(false);
-    const [warning, setWarning] = useState();
+    const navigate = useNavigate();
+    const [errormsg, setErrorMgs] = useState();
     const [username, setUserName] = useState();
     const [password, setPassword] = useState();
 
     const onLogin = async (values) => {
-       
-        try {
 
-            //values.preventDefault();
-            
+        try {
+            values.preventDefault();
+
             if (username && password) {
-                setLoading(true);
-                setWarning();
 
                 let tExists = [];
                 let rbody = { password: password, username: username };
@@ -29,30 +26,24 @@ export default function SignInPage() {
                     if (response?.status === 200 && response?.data?.retdata?.access_token?.length > 0) {
                         tExists = response?.data?.retdata?.access_token;
                     }
-                }).catch(() => {
-                    setLoading(false);
                 });
 
                 if (tExists?.length > 0) {
                     localStorage.setItem("userInfo", JSON.stringify({ token: tExists }));
-                    return true;
+                    message.success('success');
+                    navigate("/home");
                 } else {
-                    setWarning("Нэвтрэх нэр эсвэл нууц үг буруу байна!.");
-                    return false;
+                    message.error("Нэвтрэх нэр эсвэл нууц үг буруу байна!");
                 }
-
-                setLoading(false);
             } else {
-                setWarning("Нэвтрэх нэр болон нууц үг оруулна уу!");
-                return false;
+                message.error("Нэвтрэх нэр болон нууц үг оруулна уу!");
             }
 
         } catch (error) {
-            setLoading(false);
-            message.error("Амжилтгүй " + error?.message);
-            return false;
+            debugger;
+            setErrorMgs("Нэвтрэх нэр эсвэл нууц үг буруу байна!");
+            message.error("Амжилтгүй");
         }
-        return true;
     }
 
     return (
@@ -72,9 +63,12 @@ export default function SignInPage() {
                 <p>
                     <button id="sub_btn" type="submit">Login</button>
                 </p>
+                <p>
+                    <label style={{ color: 'red' }} >{errormsg}</label>
+                </p>
             </form>
             <footer>
-                <p>First time? <Link to="/register">Create an account</Link>.</p>
+
                 <p><Link to="/">Back to Homepage</Link>.</p>
             </footer>
         </div>

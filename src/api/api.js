@@ -29,13 +29,20 @@ api.interceptors.response.use(function (response) {
         message.error(errorMessage + response.message);
     }
 
-    if (!response?.config?.ignoreRetType && response.data.rettype !== undefined && response?.data?.rettype !==0) {
+    if (!response?.config?.ignoreRetType && response.data.rettype !== undefined && response?.data?.rettype !== 0) {
         message.error(errorMessage + response?.data?.retmsg);
     }
 
     return response;
 }, async function (error) {
-    message.error(errorMessage + error.message);
+    if (error.response.status === 401) {
+        if (!error.request.responseURL.endsWith("/login")) {
+            message.error(errorMessage + error.response.message);
+        }
+    }
+    else {
+        message.error(errorMessage + error.message);
+    }
     return Promise.reject(error);
 });
 
