@@ -69,8 +69,8 @@ or
 
 Reach out to me at one of the following places!
 
-- Website at <a href="https://izemspot.netlify.com" target="_blank">`izemspot.netlify.com`</a>
-- Gmail <a href="mailto:zmr.ilyas@gmail.com" target="_blank">`zmr.ilyas@gmail.com`</a>
+- Website at <a href="http://ontslog.com" target="_blank">`ontslog.com`</a>
+- Gmail <a href="mailto:ontslog.news@gmail.com" target="_blank">`ontslog.news@gmail.com`</a>
 
 
 
@@ -81,4 +81,4 @@ If you like the app, please give it a star. It will mean a lot for me :)
 ## License
 
 - **[MIT license](http://opensource.org/licenses/mit-license.php)**
-- Copyright 2019 © <a href="https://izemspot.netlify.com" target="_blank">IZEMSPOT</a>.
+- Copyright 2019 © <a href="http://ontslog.com" target="_blank">ontslog.com</a>.
