@@ -5,7 +5,7 @@ COPY package.json ./
 COPY package-lock.json ./
 COPY . ./
 RUN npm ci --silent
-RUN npm install react-scripts@5.0.0 -g --silent
+RUN npm install react-scripts@5.0.1 -g --silent
 RUN npm run build
 FROM nginx:stable-alpine
 COPY --from=build /app/build /usr/share/nginx/html
