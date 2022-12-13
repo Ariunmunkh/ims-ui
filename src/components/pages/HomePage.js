@@ -12,7 +12,6 @@ import {
 import { Layout, Menu, theme } from 'antd';
 
 import UserListPage from './user/UserListPage'
-import UserPage from './user/UserPage'
 import useToken from '../system/useToken';
 
 const { Header, Sider, Content } = Layout;
@@ -93,7 +92,6 @@ export default function HomePage() {
                     <Routes>
 
                         <Route path="/userlistpage" element={<UserListPage />} />
-                        <Route path="/userpage/:userid" element={<UserPage />} />
 
                     </Routes>
                 </Content>

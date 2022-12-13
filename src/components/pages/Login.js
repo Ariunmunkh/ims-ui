@@ -55,7 +55,11 @@ export default function Login({ setToken }) {
                     <Form.Item name="remember" valuePropName="checked" noStyle>
                         <Checkbox>Намайг санаарай</Checkbox>
                     </Form.Item>
-                    <a className="login-form-forgot" onClick={e => setForgetPass(true)} >Нууц үгээ мартсан</a>
+
+                    <Button className="login-form-forgot" onClick={e => setForgetPass(true)} >
+                        Нууц үгээ мартсан
+                    </Button>
+
                 </Form.Item>
 
                 <Form.Item>
