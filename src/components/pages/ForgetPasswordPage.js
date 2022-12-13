@@ -1,26 +1,35 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+﻿import React from 'react'
+import { Button, Form, Input } from 'antd';
+import PropTypes from 'prop-types';
+import './ForgetPasswordPage.css'
 
-import '../../App.css'
+export default function ForgetPasswordPage({ setForgetPass }) {
+    const onFinish = (values) => {
+        setForgetPass(false);
+    };
 
-export default function ForgetPasswordPage() {
     return (
-        <div className="text-center m-5-auto">
-            <h2>Reset your password</h2>
-            <h5>Enter your email address and we will send you a new password</h5>
-            <form action="/login">
-                <p>
-                    <label id="reset_pass_lbl">Email address</label><br/>
-                    <input type="email" name="email" required />
-                </p>
-                <p>
-                    <button id="sub_btn" type="submit">Send password reset email</button>
-                </p>
-            </form>
-            <footer>
-                <p>First time? <Link to="/register">Create an account</Link>.</p>
-                <p><Link to="/">Back to Homepage</Link>.</p>
-            </footer>
+        <div class="content">
+            <h2>Нууц үгээ шинэчилэх</h2>
+            <h5>Имэйл хаягаа оруулна уу, бид танд шинэ нууц үг илгээх болно</h5>
+            <Form onFinish={onFinish} >
+
+
+                <Form.Item name="email" label="Имэйл хаяг" rules={[{ required: true, type: 'email', message: 'Имэйл хаягаа оруулна уу!' }]}>
+                    <Input />
+                </Form.Item>
+
+                <Form.Item>
+                    <Button type="primary" htmlType="submit">
+                        Нууц үг шинэчлэх имэйл илгээх
+                    </Button>
+                </Form.Item>
+            </Form>
+
         </div>
     )
 }
+
+ForgetPasswordPage.propTypes = {
+    setForgetPass: PropTypes.func.isRequired
+};

@@ -1,6 +1,6 @@
 ﻿import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { api } from '../../../api/api'
+import { api } from '../../system/api'
 import { Table } from 'antd';
 
 export default function UserListPage() {

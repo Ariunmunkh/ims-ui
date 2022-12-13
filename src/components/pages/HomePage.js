@@ -9,17 +9,18 @@ import {
     VideoCameraOutlined,
     LogoutOutlined
 } from '@ant-design/icons';
-import { Layout, Menu, Button, theme } from 'antd';
+import { Layout, Menu, theme } from 'antd';
 
 import UserListPage from './user/UserListPage'
 import UserPage from './user/UserPage'
+import useToken from '../system/useToken';
 
 const { Header, Sider, Content } = Layout;
 
 export default function HomePage() {
 
     const navigate = useNavigate();
-
+    const { setToken } = useToken();
     const [collapsed, setCollapsed] = useState(false);
     const {
         token: { colorBgContainer },
@@ -33,7 +34,9 @@ export default function HomePage() {
     }
 
     const onLogoutClick = async (event) => {
-        navigate('/');
+
+        setToken({ access_token: null });
+        window.location.reload();
     }
 
     return (
@@ -74,12 +77,9 @@ export default function HomePage() {
                         onClick: () => setCollapsed(!collapsed),
                     })}
 
-                    <Button
-                        style={{  position: 'sticky', ri : 0, zIndex: 1 }}
-                        shape="circle"
-                        icon={<LogoutOutlined />}
-                        onClick={onLogoutClick}
-                    />
+
+
+                    <LogoutOutlined onClick={onLogoutClick} />
 
                 </Header>
                 <Content
