@@ -1,6 +1,6 @@
 ﻿import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { api } from '../system/api'
+import { api } from '../../system/api'
 import './Login.css';
 import ForgetPasswordPage from './ForgetPasswordPage'
 
@@ -42,7 +42,7 @@ export default function Login({ setToken }) {
 
     return (
 
-        <div class="content">
+        <div className="content">
 
             <Form name="normal_login" className="login-form" initialValues={{ remember: true }} onFinish={handleSubmit}>
                 <Form.Item name="username" rules={[{ required: true, message: 'Хэрэглэгчийн нэрээ оруулна уу!' }]}>

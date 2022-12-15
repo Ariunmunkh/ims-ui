@@ -1,9 +1,9 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 
-import MasterPage from './components/pages/MasterPage'
-import Login from './components/pages/Login'
-import NotFound from './components/pages/NotFound'
+import MasterPage from './components/pages/shared/MasterPage'
+import Login from './components/pages/shared/Login'
+import NotFound from './components/pages/shared/NotFound'
 import useToken from './components/system/useToken';
 
 import './App.css'

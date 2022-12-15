@@ -1,13 +1,14 @@
 ﻿import React, { useState, useEffect } from 'react'
 import { api } from '../../system/api'
 import { Table, Modal, Form, Button, Input, Select } from 'antd';
-
+import { ExclamationCircleFilled } from '@ant-design/icons';
+const { confirm } = Modal;
 export default function UserListPage() {
 
     const nulldata = { userid: 0, roleid: 1, username: null, email: null, password: null };
     const [griddata, setGridData] = useState();
     const [loading, setLoading] = useState(true);
-    const [form] = Form.useForm();
+    const [formdata, setFromData] = useState(nulldata);
 
     const fetchData = async () => {
         setLoading(true);
@@ -36,19 +37,44 @@ export default function UserListPage() {
 
     const gridcolumns = [
         {
+            title: "Үүрэг",
+            dataIndex: "roleid",
+            render: (text, record, index) => {
+                return (
+                    <Select
+                        value={record?.roleid}
+                        disabled
+                        options={
+                            [
+                                {
+                                    value: 1,
+                                    label: 'Admin',
+                                },
+                                {
+                                    value: 2,
+                                    label: 'Sub-admin',
+                                },
+                                {
+                                    value: 3,
+                                    label: 'Coach',
+                                }
+                            ]}
+                    />
+
+                );
+            }
+        },
+        {
             title: "Нэвтрэх нэр",
             dataIndex: "username",
-            key: "username",
         },
         {
             title: "Имэйл",
             dataIndex: "email",
-            key: "email",
         },
         {
             title: "Огноо",
             dataIndex: "updated",
-            key: "updated",
         }
     ];
 
@@ -58,21 +84,44 @@ export default function UserListPage() {
         setIsModalOpen(true);
     };
 
-    const handleOk = () => {
-        setIsModalOpen(false);
-        fetchData();
-    };
-
     const handleCancel = () => {
         setIsModalOpen(false);
     };
 
-    const onFinish = async (values: any) => {
+    const showDeleteConfirm = () => {
+        confirm({
+            title: 'Устгах уу?',
+            icon: <ExclamationCircleFilled />,
+            //content: 'Some descriptions',
+            okText: 'Тийм',
+            okType: 'danger',
+            cancelText: 'Үгүй',
+            onOk() {
+                onDelete();
+            },
+            onCancel() {
+                //console.log('Cancel');
+            },
+        });
+    };
 
-        await api.post(`/api/systems/User/set_user`, values)
+    const onDelete = async () => {
+        await api.delete(`/api/systems/User/delete_user?userid=${formdata?.userid}`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
-                    handleOk();
+                    setIsModalOpen(false);
+                    fetchData();
+                }
+            });
+    };
+
+    const onFinish = async (values) => {
+
+        await api.post(`/api/systems/User/set_user`, formdata)
+            .then((res) => {
+                if (res?.status === 200 && res?.data?.rettype === 0) {
+                    setIsModalOpen(false);
+                    fetchData();
                 }
             });
     };
@@ -82,15 +131,14 @@ export default function UserListPage() {
         await api.get(`/api/systems/User/get_user?userid=${userid}`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
-                    form.setFieldsValue(nulldata);
-                    form.setFieldsValue(res?.data?.retdata[0]);
+                    setFromData(res?.data?.retdata[0]);
                     showModal();
                 }
             });
     };
 
     const newFormData = async () => {
-        form.setFieldsValue(nulldata);
+        setFromData(nulldata);
         showModal();
     };
 
@@ -102,20 +150,37 @@ export default function UserListPage() {
                 columns={gridcolumns}
                 dataSource={griddata}
                 onRow={tableOnRow}
-                pagination={false}>
+                pagination={false}
+                rowKey={(record) => record.userid}
+            >
 
             </Table>
-            <Modal title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+            <Modal
+                title="Хэрэглэгч"
+                open={isModalOpen}
+                onOk={onFinish}
+                onCancel={handleCancel}
+                footer={[
+                    <Button danger onClick={showDeleteConfirm} hidden={formdata?.userid === 0}>
+                        Устгах
+                    </Button>,
+                    <Button onClick={handleCancel}>
+                        Болих
+                    </Button>,
+                    <Button type="primary" onClick={onFinish}>
+                        Хадгалах
+                    </Button>,
+                ]}
+            >
                 <Form
-                    labelCol={{ span: 4 }}
+
+                    labelCol={{ span: 8 }}
                     wrapperCol={{ span: 14 }}
-                    form={form}
-                    name="nest-messages"
-                    onFinish={onFinish}  >
-                    <Form.Item name="userid" hidden={false} />
-                    <Form.Item name="roleid" label="Role" rules={[{ required: true }]}>
+                     >
+                    <Form.Item hidden={false} />
+                    <Form.Item label="Үүрэг" rules={[{ required: true }]}>
                         <Select
-                            defaultValue='1'
+                            onChange={(e) => { formdata.roleid = e }}
                             style={{ width: 275 }}
                             options={[
                                 {
@@ -133,19 +198,14 @@ export default function UserListPage() {
                             ]}
                         />
                     </Form.Item>
-                    <Form.Item name="username" label="Name" rules={[{ required: true }]}>
-                        <Input />
+                    <Form.Item label="Нэвтрэх нэр" rules={[{ required: true }]} >
+                        <Input onChange={e => { formdata.username = e.target.value }} />
                     </Form.Item>
-                    <Form.Item name="email" label="Email" rules={[{ required: true, type: 'email' }]}>
-                        <Input />
+                    <Form.Item label="Имэйл" rules={[{ required: true, type: 'email' }]}>
+                        <Input onChange={e => { formdata.email = e.target.value }} />
                     </Form.Item>
-                    <Form.Item name="password" label="Password" >
-                        <Input />
-                    </Form.Item>
-                    <Form.Item wrapperCol={{ span: 14, offset: 4 }}>
-                        <Button type="primary" htmlType="submit">
-                            Submit
-                        </Button>
+                    <Form.Item label="Нууц үг" >
+                        <Input onChange={e => { formdata.password = e.target.value }} />
                     </Form.Item>
                 </Form>
             </Modal>
