@@ -1,35 +1,38 @@
 ﻿import React, { useState } from 'react'
 import { Routes, Route, useNavigate } from 'react-router-dom'
-import './HomePage.css';
+import './MasterPage.css';
 import {
     MenuFoldOutlined,
     MenuUnfoldOutlined,
-    UploadOutlined,
+    UsergroupAddOutlined,
+    SolutionOutlined,
+    FileSearchOutlined,
+    AppstoreAddOutlined,
+    CrownOutlined,
     UserOutlined,
-    VideoCameraOutlined,
+    HomeOutlined,
     LogoutOutlined
 } from '@ant-design/icons';
 import { Layout, Menu, theme } from 'antd';
 
 import UserListPage from './user/UserListPage'
 import useToken from '../system/useToken';
+import NotFound from './NotFound';
 
 const { Header, Sider, Content } = Layout;
 
-export default function HomePage() {
+export default function MasterPage() {
 
     const navigate = useNavigate();
     const { setToken } = useToken();
     const [collapsed, setCollapsed] = useState(false);
-    const {
-        token: { colorBgContainer },
-    } = theme.useToken();
+    const { token: { colorBgContainer }, } = theme.useToken();
 
     const onClick = async (item, key, keyPath, domEvent) => {
 
         console.log(item, key, keyPath);
 
-        navigate('/home/userlistpage');
+        navigate('/userlist');
     }
 
     const onLogoutClick = async (event) => {
@@ -43,6 +46,7 @@ export default function HomePage() {
         <Layout>
             <Sider trigger={null} collapsible collapsed={collapsed}>
                 <div className="logo" />
+
                 <Menu
                     style={{ position: 'sticky', top: 0, zIndex: 1, width: '100%' }}
                     theme="dark"
@@ -57,13 +61,33 @@ export default function HomePage() {
                         },
                         {
                             key: '2',
-                            icon: <VideoCameraOutlined />,
-                            label: 'nav 2',
+                            icon: <HomeOutlined />,
+                            label: 'Өрхийн бүртгэл',
                         },
                         {
                             key: '3',
-                            icon: <UploadOutlined />,
-                            label: 'nav 3',
+                            icon: <UsergroupAddOutlined />,
+                            label: 'Бүлгийн бүртгэл',
+                        },
+                        {
+                            key: '4',
+                            icon: <SolutionOutlined />,
+                            label: 'Сургалтын бүртгэл',
+                        },
+                        {
+                            key: '5',
+                            icon: <AppstoreAddOutlined />,
+                            label: 'Хөрөнгийн бүртгэл',
+                        },
+                        {
+                            key: '6',
+                            icon: <FileSearchOutlined />,
+                            label: 'Холбон зуучлалын бүртгэл',
+                        },
+                        {
+                            key: '7',
+                            icon: <CrownOutlined />,
+                            label: 'Үр дүн',
                         },
                     ]}
                 />
@@ -91,8 +115,8 @@ export default function HomePage() {
                 >
                     <Routes>
 
-                        <Route path="/userlistpage" element={<UserListPage />} />
-
+                        <Route path="/userlist" element={<UserListPage />} />
+                        <Route path="*" element={<NotFound />} />
                     </Routes>
                 </Content>
             </Layout>

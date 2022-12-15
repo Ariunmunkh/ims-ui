@@ -3,10 +3,10 @@ import { Link } from 'react-router-dom'
 
 export default function NotFound() {
     return (
-        <div className="text-center">
-            <h1 className="main-title home-page-title">Page Not Found</h1>
-            <h1 className="main-title home-page-title">404 Error</h1>
-            <Link to="/home">
+        <div class="content">
+            <h1 >Page Not Found</h1>
+            <h1 >404 Error</h1>
+            <Link to="/">
                 <button className="primary-button">Home</button>
             </Link>
         </div>
