@@ -19,6 +19,7 @@ import UserListPage from '../user/UserListPage'
 import useToken from '../../system/useToken';
 import useRole from '../../system/useRole';
 import NotFound from './NotFound';
+import AccessDenied from './AccessDenied';
 
 const { Header, Sider, Content } = Layout;
 
@@ -69,11 +70,6 @@ export default function MasterPage() {
             case '2':
                 return [
                     {
-                        key: 'userlist',
-                        icon: <UserOutlined />,
-                        label: 'Хэрэглэгч',
-                    },
-                    {
                         key: '1',
                         icon: <HomeOutlined />,
                         label: 'Өрхийн бүртгэл',
@@ -97,11 +93,6 @@ export default function MasterPage() {
                 ];
             case '3':
                 return [
-                    {
-                        key: 'userlist',
-                        icon: <UserOutlined />,
-                        label: 'Хэрэглэгч',
-                    },
                     {
                         key: '1',
                         icon: <HomeOutlined />,
@@ -174,7 +165,7 @@ export default function MasterPage() {
                 >
                     <Routes>
 
-                        <Route path="/userlist" element={<UserListPage />} />
+                        <Route path="/userlist" element={roleid === '1' ? <UserListPage /> : <AccessDenied />} />
                         <Route path="*" element={<NotFound />} />
                     </Routes>
                 </Content>

@@ -8,7 +8,7 @@ export default function UserListPage() {
     const nulldata = { userid: 0, roleid: 1, username: null, email: null, password: null };
     const [griddata, setGridData] = useState();
     const [loading, setLoading] = useState(true);
-    const [formdata, setFromData] = useState(nulldata);
+    const [formdata] = Form.useForm();
 
     const fetchData = async () => {
         setLoading(true);
@@ -106,7 +106,7 @@ export default function UserListPage() {
     };
 
     const onDelete = async () => {
-        await api.delete(`/api/systems/User/delete_user?userid=${formdata?.userid}`)
+        await api.delete(`/api/systems/User/delete_user?userid=${formdata.getFieldValue("userid")}`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setIsModalOpen(false);
@@ -117,7 +117,7 @@ export default function UserListPage() {
 
     const onFinish = async (values) => {
 
-        await api.post(`/api/systems/User/set_user`, formdata)
+        await api.post(`/api/systems/User/set_user`, formdata.getFieldsValue())
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setIsModalOpen(false);
@@ -131,14 +131,14 @@ export default function UserListPage() {
         await api.get(`/api/systems/User/get_user?userid=${userid}`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
-                    setFromData(res?.data?.retdata[0]);
+                    formdata.setFieldsValue(res?.data?.retdata[0]);
                     showModal();
                 }
             });
     };
 
     const newFormData = async () => {
-        setFromData(nulldata);
+        formdata.setFieldsValue(nulldata);
         showModal();
     };
 
@@ -156,31 +156,33 @@ export default function UserListPage() {
 
             </Table>
             <Modal
+                forceRender
                 title="Хэрэглэгч"
                 open={isModalOpen}
                 onOk={onFinish}
                 onCancel={handleCancel}
                 footer={[
-                    <Button danger onClick={showDeleteConfirm} hidden={formdata?.userid === 0}>
+                    <Button key="delete" danger onClick={showDeleteConfirm} hidden={formdata?.userid === 0}>
                         Устгах
                     </Button>,
-                    <Button onClick={handleCancel}>
+                    <Button key="cancel" onClick={handleCancel}>
                         Болих
                     </Button>,
-                    <Button type="primary" onClick={onFinish}>
+                    <Button key="save" type="primary" onClick={onFinish}>
                         Хадгалах
                     </Button>,
                 ]}
             >
                 <Form
-
+                    form={formdata}
                     labelCol={{ span: 8 }}
                     wrapperCol={{ span: 14 }}
-                     >
-                    <Form.Item hidden={false} />
-                    <Form.Item label="Үүрэг" rules={[{ required: true }]}>
+                >
+                    <Form.Item name="userid" label="Дугаар" hidden={false} >
+                        <Input />
+                    </Form.Item>
+                    <Form.Item name="roleid" label="Үүрэг" rules={[{ required: true }]}>
                         <Select
-                            onChange={(e) => { formdata.roleid = e }}
                             style={{ width: 275 }}
                             options={[
                                 {
@@ -198,14 +200,14 @@ export default function UserListPage() {
                             ]}
                         />
                     </Form.Item>
-                    <Form.Item label="Нэвтрэх нэр" rules={[{ required: true }]} >
-                        <Input onChange={e => { formdata.username = e.target.value }} />
+                    <Form.Item name="username" label="Нэвтрэх нэр" rules={[{ required: true }]} >
+                        <Input />
                     </Form.Item>
-                    <Form.Item label="Имэйл" rules={[{ required: true, type: 'email' }]}>
-                        <Input onChange={e => { formdata.email = e.target.value }} />
+                    <Form.Item name="email" label="Имэйл" rules={[{ required: true, type: 'email' }]}>
+                        <Input />
                     </Form.Item>
-                    <Form.Item label="Нууц үг" >
-                        <Input onChange={e => { formdata.password = e.target.value }} />
+                    <Form.Item name="password" label="Нууц үг" >
+                        <Input />
                     </Form.Item>
                 </Form>
             </Modal>
