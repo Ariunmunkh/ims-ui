@@ -119,7 +119,7 @@ export default function Login({ setToken }) {
                 style={{ objectFit: "cover", objectPosition: "center" }}
               />
               <div
-                className="position-absolute top-0 text-light w-100  m-2 p-0 rounded-pill mx-0 d-flex bg-primary bg-opacity-50"
+                className="position-absolute top-0 text-light w-100  m-2 p-0 rounded-4 mx-0 d-flex bg-primary bg-opacity-50"
               >
                 <div className="p-3  d-flex align-items-center text-white ">
                   <img src={hudlogo} height={50}></img>
