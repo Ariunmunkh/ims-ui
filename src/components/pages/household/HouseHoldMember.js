@@ -1,18 +1,20 @@
-﻿import React, { useState, useEffect } from 'react'
+﻿import React, { useState, useEffect, useCallback } from 'react'
+import { useParams } from "react-router-dom";
 import { api } from '../../system/api'
-import { Table, Modal, Form, Button, Input, Select } from 'antd';
+import { Table, Modal, Form, Button, Input, Switch } from 'antd';
 import { ExclamationCircleFilled } from '@ant-design/icons';
 const { confirm } = Modal;
-export default function UserListPage() {
+export default function HouseHoldMember() {
 
-    const nulldata = { userid: 0, roleid: 1, username: null, email: null, password: null };
+    const { householdid } = useParams();
+    const nulldata = { memberid: 0, householdid: householdid, name: null, relative: null, istogether: true };
     const [griddata, setGridData] = useState();
     const [loading, setLoading] = useState(true);
     const [formdata] = Form.useForm();
 
-    const fetchData = async () => {
+    const fetchData = useCallback(() => {
         setLoading(true);
-        await api.get(`/api/systems/User/get_user_list`)
+        api.get(`/api/households/get_householdmember_list?householdid=${householdid}`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setGridData(res?.data?.retdata);
@@ -21,56 +23,40 @@ export default function UserListPage() {
             .finally(() => {
                 setLoading(false);
             });
-    }
+    }, [householdid])
 
     const tableOnRow = (record, rowIndex) => {
         return {
             onClick: (event) => {
-                getFormData(record.userid);
+                getFormData(record.memberid);
             },
         };
     };
 
     useEffect(() => {
         fetchData();
-    }, []);
+    }, [fetchData]);
 
     const gridcolumns = [
         {
-            title: "Үүрэг",
-            dataIndex: "roleid",
-            render: (text, record, index) => {
-                return (
-                    <Select
-                        value={record?.roleid}
-                        disabled
-                        options={
-                            [
-                                {
-                                    value: 1,
-                                    label: 'Admin',
-                                },
-                                {
-                                    value: 2,
-                                    label: 'Sub-admin',
-                                },
-                                {
-                                    value: 3,
-                                    label: 'Coach',
-                                }
-                            ]}
-                    />
-
-                );
-            }
+            title: "Өрхийн гишүүний нэр",
+            dataIndex: "name",
         },
         {
-            title: "Нэвтрэх нэр",
-            dataIndex: "username",
+            title: "Өрхийн тэргүүнтэй ямар хамааралтай болох",
+            dataIndex: "relative",
         },
         {
-            title: "Имэйл",
-            dataIndex: "email",
+            title: "Төрсөн огноо",
+            dataIndex: "birthdate",
+        },
+        {
+            title: "Хүйс",
+            dataIndex: "gender",
+        },
+        {
+            title: "Одоо тантай хамт амьдарч байгаа юу ?",
+            dataIndex: "istogether",
         },
         {
             title: "Огноо",
@@ -106,7 +92,7 @@ export default function UserListPage() {
     };
 
     const onDelete = async () => {
-        await api.delete(`/api/systems/User/delete_user?userid=${formdata.getFieldValue("userid")}`)
+        await api.delete(`/api/households/delete_householdmember?id=${formdata.getFieldValue("memberid")}`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setIsModalOpen(false);
@@ -117,7 +103,7 @@ export default function UserListPage() {
 
     const onFinish = async (values) => {
 
-        await api.post(`/api/systems/User/set_user`, formdata.getFieldsValue())
+        await api.post(`/api/households/set_householdmember`, formdata.getFieldsValue())
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setIsModalOpen(false);
@@ -126,9 +112,9 @@ export default function UserListPage() {
             });
     };
 
-    const getFormData = async (userid) => {
+    const getFormData = async (memberid) => {
 
-        await api.get(`/api/systems/User/get_user?userid=${userid}`)
+        await api.get(`/api/households/get_householdmember?id=${memberid}`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     formdata.setFieldsValue(res?.data?.retdata[0]);
@@ -144,27 +130,27 @@ export default function UserListPage() {
 
     return (
         <div >
-
-            <Button style={{ marginBottom: 16 }} type="primary" onClick={e => newFormData()}>Шинэ</Button>
-
+            <div style={{ marginBottom: 16 }}>
+                <Button type="primary" onClick={e => newFormData()}>Шинэ</Button>
+            </div>
             <Table
                 loading={loading}
                 columns={gridcolumns}
                 dataSource={griddata}
                 onRow={tableOnRow}
                 pagination={false}
-                rowKey={(record) => record.userid}
+                rowKey={(record) => record.memberid}
             >
 
             </Table>
             <Modal
                 forceRender
-                title="Хэрэглэгч"
+                title="Өрхийн гишүүн"
                 open={isModalOpen}
                 onOk={onFinish}
                 onCancel={handleCancel}
                 footer={[
-                    <Button key="delete" danger onClick={showDeleteConfirm} hidden={formdata.getFieldValue("userid") === 0}>
+                    <Button key="delete" danger onClick={showDeleteConfirm} hidden={formdata.getFieldValue("memberid") === 0}>
                         Устгах
                     </Button>,
                     <Button key="cancel" onClick={handleCancel}>
@@ -180,36 +166,26 @@ export default function UserListPage() {
                     labelCol={{ span: 8 }}
                     wrapperCol={{ span: 14 }}
                 >
-                    <Form.Item name="userid" label="Дугаар" hidden={true} >
+                    <Form.Item name="memberid" label="Дугаар" hidden={true} >
                         <Input />
                     </Form.Item>
-                    <Form.Item name="roleid" label="Үүрэг" rules={[{ required: true }]}>
-                        <Select
-                            style={{ width: 275 }}
-                            options={[
-                                {
-                                    value: 1,
-                                    label: 'Admin',
-                                },
-                                {
-                                    value: 2,
-                                    label: 'Sub-admin',
-                                },
-                                {
-                                    value: 3,
-                                    label: 'Coach',
-                                }
-                            ]}
-                        />
-                    </Form.Item>
-                    <Form.Item name="username" label="Нэвтрэх нэр" rules={[{ required: true }]} >
+                    <Form.Item name="householdid" label="Өрхийн дугаар" hidden={true} >
                         <Input />
                     </Form.Item>
-                    <Form.Item name="email" label="Имэйл" rules={[{ required: true, type: 'email' }]}>
+                    <Form.Item name="name" label="Өрхийн гишүүний нэр"  >
                         <Input />
                     </Form.Item>
-                    <Form.Item name="password" label="Нууц үг" >
+                    <Form.Item name="relative" label="Өрхийн тэргүүнтэй ямар хамааралтай болох" >
                         <Input />
+                    </Form.Item>
+                    <Form.Item name="birthdate" label="Төрсөн огноо"  >
+                        <Input />
+                    </Form.Item>
+                    <Form.Item name="gender" label="Хүйс" >
+                        <Input />
+                    </Form.Item>
+                    <Form.Item name="istogether" label="Одоо тантай хамт амьдарч байгаа юу ?" valuePropName="checked">
+                        <Switch checkedChildren="Тийм" unCheckedChildren="Үгүй" />
                     </Form.Item>
                 </Form>
             </Modal>

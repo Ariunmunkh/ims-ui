@@ -16,6 +16,8 @@ import {
 import { Layout, Menu, theme } from 'antd';
 
 import UserListPage from '../user/UserListPage'
+import HouseHoldListPage from '../household/HouseHoldListPage'
+import HouseHoldPage from '../household/HouseHoldPage'
 import useToken from '../../system/useToken';
 import useRole from '../../system/useRole';
 import NotFound from './NotFound';
@@ -42,7 +44,7 @@ export default function MasterPage() {
                         label: 'Хэрэглэгч',
                     },
                     {
-                        key: '1',
+                        key: 'householdlist',
                         icon: <HomeOutlined />,
                         label: 'Өрхийн бүртгэл',
                     },
@@ -70,7 +72,7 @@ export default function MasterPage() {
             case '2':
                 return [
                     {
-                        key: '1',
+                        key: 'householdlist',
                         icon: <HomeOutlined />,
                         label: 'Өрхийн бүртгэл',
                     },
@@ -94,7 +96,7 @@ export default function MasterPage() {
             case '3':
                 return [
                     {
-                        key: '1',
+                        key: 'householdlist',
                         icon: <HomeOutlined />,
                         label: 'Өрхийн бүртгэл',
                     },
@@ -166,6 +168,8 @@ export default function MasterPage() {
                     <Routes>
 
                         <Route path="/userlist" element={roleid === '1' ? <UserListPage /> : <AccessDenied />} />
+                        <Route path="/householdlist" element={roleid === '1' ? <HouseHoldListPage /> : <AccessDenied />} />
+                        <Route path="/household/:householdid" element={roleid === '1' ? <HouseHoldPage /> : <AccessDenied />} />
                         <Route path="*" element={<NotFound />} />
                     </Routes>
                 </Content>
