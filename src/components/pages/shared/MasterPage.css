@@ -11,7 +11,10 @@
     }
 
 .logo {
-    height: 32px;
-    margin: 16px;
-    background: rgba(255, 255, 255, 0.3);
+    margin-top: 16px;
+    margin-bottom: 16px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 30%;
 }

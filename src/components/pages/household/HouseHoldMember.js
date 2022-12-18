@@ -130,9 +130,9 @@ export default function HouseHoldMember() {
 
     return (
         <div >
-            <div style={{ marginBottom: 16 }}>
-                <Button type="primary" onClick={e => newFormData()}>Шинэ</Button>
-            </div>
+
+            <Button style={{ marginBottom: 16 }} type="primary" onClick={e => newFormData()}>Шинэ</Button>
+
             <Table
                 loading={loading}
                 columns={gridcolumns}

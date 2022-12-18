@@ -14,6 +14,7 @@ import {
     LogoutOutlined
 } from '@ant-design/icons';
 import { Layout, Menu, theme } from 'antd';
+import logo from "../../../assets/images/logo.png";
 
 import UserListPage from '../user/UserListPage'
 import HouseHoldListPage from '../household/HouseHoldListPage'
@@ -134,8 +135,7 @@ export default function MasterPage() {
 
         <Layout>
             <Sider trigger={null} collapsible collapsed={collapsed}>
-                <div className="logo" />
-
+                <img className="logo" src={logo} alt="logo"></img>
                 <Menu
                     style={{ position: 'sticky', top: 0, zIndex: 1 }}
                     theme="dark"
@@ -151,8 +151,6 @@ export default function MasterPage() {
                         className: 'trigger',
                         onClick: () => setCollapsed(!collapsed),
                     })}
-
-
 
                     <LogoutOutlined onClick={onLogoutClick} />
 
