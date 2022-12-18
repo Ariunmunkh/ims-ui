@@ -1,12 +1,16 @@
 ﻿import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { api } from "../../system/api";
-import "./Login.css";
+// import css from "./Login.css";
 import ForgetPasswordPage from "./ForgetPasswordPage";
 
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Checkbox, Form, Input } from "antd";
 import logo from "../../../assets/images/logo.png";
+import hudlogo from "../../../assets/images/hny.png";
+import adblogo from "../../../assets/images/adb.png";
+import bg from "../../../assets/images/bg.jpg";
+import "../../../../node_modules/bootstrap/dist/css/bootstrap.min.css";
 
 async function loginUser(credentials) {
   return api
@@ -38,79 +42,103 @@ export default function Login({ setToken }) {
   if (forgetpass) return <ForgetPasswordPage setForgetPass={setForgetPass} />;
 
   return (
-    <div className="body">
-      <div className="box-form">
-        <div className="left">
-          <div className="overlay">
-            <h1></h1>
+    <section className="vh-100">
+      <div className="container-fluid">
+        <div className="row">
+          <div className="col-sm-4 text-black position-relative">
+            <div className="d-flex align-items-center h-custom-2 px-5 ms-xl-4 mt-5 pt-5 pt-xl-0 mt-xl-n5 position-absolute top-50 start-0 translate-middle-y">
+              <Form
+                name="normal_login"
+                className="login-form"
+                initialValues={{ remember: true }}
+                onFinish={handleSubmit}
+              >
+                <h2 className="text-center display-5">Төгсөлтийн аргачлал төсөл</h2>
+                <hr className="mb-5"/>
+                <h3 className="mb-3 ">Нэвтрэх</h3>
+                <Form.Item
+                  name="username"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Хэрэглэгчийн нэрээ оруулна уу!",
+                    },
+                  ]}
+                >
+                  <Input
+                    prefix={<UserOutlined className="form-control" />}
+                    placeholder="Хэрэглэгчийн нэр"
+                    onChange={(e) => setUserName(e.target.value)}
+                  />
+                </Form.Item>
+                <Form.Item
+                  name="password"
+                  rules={[{ required: true, message: "Нууц үгээ оруулна уу!" }]}
+                >
+                  <Input
+                    prefix={<LockOutlined className="form-control" />}
+                    type="password"
+                    placeholder="Нууц үг"
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                </Form.Item>
+                <Form.Item>
+                  <Form.Item name="remember" valuePropName="checked" noStyle>
+                    <Checkbox>Намайг санаарай</Checkbox>
+                  </Form.Item>
+
+                  <Button
+                    className="link-primary"
+                    onClick={(e) => setForgetPass(true)}
+                  >
+                    Нууц үгээ мартсан
+                  </Button>
+                </Form.Item>
+
+                <Form.Item>
+                  <div class="d-grid gap-2 pb-5">
+                    <Button
+                      type="button"
+                      htmlType="submit"
+                      className="btn btn-primary btn-lg"
+                      style={{ height: 50 }}
+                    >
+                      Нэвтрэх
+                    </Button>
+                  </div>
+                </Form.Item>
+                <Form.Item>{errormsg}</Form.Item>
+              </Form>
+            </div>
+          </div>
+          <div className="col-sm-8 px-0 d-none d-sm-block">
+            <div className="bg-image">
+              <img
+                src={bg}
+                className="w-100 vh-100"
+                style={{ objectFit: "cover", objectPosition: "center" }}
+              />
+              <div
+                className="position-absolute top-0 text-light w-100  m-2 p-0 rounded-pill mx-0 d-flex bg-primary bg-opacity-50"
+              >
+                <div className="p-3  d-flex align-items-center text-white ">
+                  <img src={hudlogo} height={50}></img>
+                  <p className="m-2">Хөдөлмөр, нийгмийн хамгааллын яам</p>
+                </div>
+                <div className="p-2 d-flex align-items-center">
+                  <img src={adblogo} height={50}></img>
+                  <p className="m-2">Азийн хөгжлийн банк</p>
+                </div>
+                <div className="p-2 d-flex align-items-center">
+                  <img src={logo} height={50}></img>
+                  <p className="m-2">Монголын улаан загалмай нийгэмлэг</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-
-        <div className="right">
-            <div>
-            <img src={logo} width={70} />
-            <p>Монголын улаан загалмай нийгэмлэг</p>
-            </div>
-          
-          <br />
-          <h5>Төгсөлтийн аргачлал</h5>
-          <br></br>
-          <Form
-            name="normal_login"
-            className="login-form"
-            initialValues={{ remember: true }}
-            onFinish={handleSubmit}
-          >
-            <Form.Item
-              name="username"
-              rules={[
-                { required: true, message: "Хэрэглэгчийн нэрээ оруулна уу!" },
-              ]}
-            >
-              <Input
-                prefix={<UserOutlined className="site-form-item-icon" />}
-                placeholder="Хэрэглэгчийн нэр"
-                onChange={(e) => setUserName(e.target.value)}
-              />
-            </Form.Item>
-            <Form.Item
-              name="password"
-              rules={[{ required: true, message: "Нууц үгээ оруулна уу!" }]}
-            >
-              <Input
-                prefix={<LockOutlined className="site-form-item-icon" />}
-                type="password"
-                placeholder="Нууц үг"
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </Form.Item>
-            <Form.Item>
-              <Form.Item name="remember" valuePropName="checked" noStyle>
-                <Checkbox>Намайг санаарай</Checkbox>
-              </Form.Item>
-
-              <Button
-                className="login-form-forgot"
-                onClick={(e) => setForgetPass(true)}
-              >
-                Нууц үгээ мартсан
-              </Button>
-            </Form.Item>
-
-            <Form.Item>
-              <Button
-                type="primary"
-                htmlType="submit"
-                className="login-form-button"
-              >
-                Нэвтрэх
-              </Button>
-            </Form.Item>
-            <Form.Item>{errormsg}</Form.Item>
-          </Form>
-        </div>
       </div>
-    </div>
+    </section>
   );
 }
 
