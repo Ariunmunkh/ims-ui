@@ -41,7 +41,6 @@ export default function UserListPage() {
   useEffect(() => {
     fetchData();
   }, []);
-
   const gridcolumns = [
     {
       title: "Үүрэг",
@@ -84,7 +83,6 @@ export default function UserListPage() {
   ];
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -163,7 +161,7 @@ export default function UserListPage() {
       </Button>
 
       <Table
-        title={() => `Бүртгэлтэй хэрэглэгчийн жагсаалт:  ${Object.entries(griddata).length}`}
+        title={() => `Бүртгэлтэй хэрэглэгчийн жагсаалт:`}
         bordered
         loading={loading}
         columns={gridcolumns}
