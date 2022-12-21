@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@fluentui/react": "^8.103.10",
     "antd": "^5.0.5",
     "axios": "^1.2.1",
     "bootstrap": "^5.2.3",
