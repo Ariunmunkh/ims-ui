@@ -10,7 +10,7 @@ export default function HouseHold() {
 
   useEffect(() => {
     api
-      .get(`/api/households/get_household?id=${householdid}`)
+      .get(`/api/record/households/get_household?id=${householdid}`)
       .then((response) => {
         setState(response.data.retdata[0]);
       });

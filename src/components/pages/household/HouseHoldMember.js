@@ -11,9 +11,14 @@ export default function HouseHoldMember() {
     memberid: 0,
     householdid: householdid,
     name: null,
-    relative: null,
-    istogether: true,
+    relationshipid: null,
+    birthdate: null,
+    gender: null,
+    educationlevel: null,
+    employment: null,
+    health: null,
   };
+
   const [griddata, setGridData] = useState();
   const [loading, setLoading] = useState(true);
   const [formdata] = Form.useForm();
@@ -22,7 +27,7 @@ export default function HouseHoldMember() {
     setLoading(true);
     api
       .get(
-        `/api/households/get_householdmember_list?householdid=${householdid}`
+        `/api/record/households/get_householdmember_list?householdid=${householdid}`
       )
       .then((res) => {
         if (res?.status === 200 && res?.data?.rettype === 0) {
@@ -53,7 +58,7 @@ export default function HouseHoldMember() {
     },
     {
       title: "Өрхийн тэргүүнтэй ямар хамааралтай болох",
-      dataIndex: "relative",
+      dataIndex: "relationshipid",
     },
     {
       title: "Төрсөн огноо",
@@ -64,12 +69,16 @@ export default function HouseHoldMember() {
       dataIndex: "gender",
     },
     {
-      title: "Одоо тантай хамт амьдарч байгаа юу ?",
-      dataIndex: "istogether",
+      title: "Боловсролын зэрэг",
+      dataIndex: "educationlevel",
     },
     {
-      title: "Огноо",
-      dataIndex: "updated",
+      title: "Хөдөлмөр эрхлэлтийн байдал",
+      dataIndex: "employment",
+    },
+    {
+      title: "Эрүүл мэндийн байдал",
+      dataIndex: "health",
     },
   ];
 

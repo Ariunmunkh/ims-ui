@@ -10,7 +10,7 @@ export default function HouseHoldListPage() {
 
     const fetchData = async () => {
         setLoading(true);
-        await api.get(`/api/households/get_household_list`)
+        await api.get(`/api/record/households/get_household_list`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setGridData(res?.data?.retdata);
