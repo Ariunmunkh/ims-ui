@@ -1,7 +1,7 @@
 ﻿import React, { useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { api } from "../../system/api";
-import { Table, Modal, Form, Button, Input, Select, Switch } from "antd";
+import { Table, Modal, Form, Button, Input, Select, Switch, Divider } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { PlusOutlined } from "@ant-design/icons";
 const { confirm } = Modal;
@@ -200,6 +200,7 @@ export default function HouseHoldMember() {
                     </Button>,
                 ]}
             >
+                <Divider/>
                 <Form form={formdata} labelCol={{ span: 8 }} wrapperCol={{ span: 14 }} labelAlign="left" labelWrap>
                     <Form.Item name="memberid" label="Дугаар" hidden={true}>
                         <Input />
@@ -241,7 +242,7 @@ export default function HouseHoldMember() {
                         label="Одоо тантай хамт амьдарч байгаа юу ?"
                         valuePropName="checked"
                     >
-                        <Switch checkedChildren="Тийм" unCheckedChildren="Үгүй" />
+                        <Switch checkedChildren="Тийм" unCheckedChildren="Үгүй" style={{width:'100%'}}/>
                     </Form.Item>
 
                     <Form.Item name="educationlevel" label="Боловсролын зэрэг">

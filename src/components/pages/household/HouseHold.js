@@ -1,7 +1,7 @@
 ﻿import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { api } from "../../system/api";
-import { Descriptions } from "antd";
+import { Descriptions, Divider } from "antd";
 import HouseHoldMember from "./HouseHoldMember";
 
 export default function HouseHold() {
@@ -16,7 +16,6 @@ export default function HouseHold() {
       });
   }, [householdid]);
   if (!state) return null;
-
   return (
     <div>
       <Descriptions
@@ -36,6 +35,7 @@ export default function HouseHold() {
         <Descriptions.Item label="Утас">{state.phone}</Descriptions.Item>
         <Descriptions.Item label="Хаяг">{state.address}</Descriptions.Item>
       </Descriptions>
+      <Divider/>
       <Descriptions title={`${state.name}` +  ": ӨРХИЙН ГИШҮҮДИЙН МЭДЭЭЛЭЛ "} bordered>
         <Descriptions.Item >
           <HouseHoldMember />
