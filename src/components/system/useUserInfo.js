@@ -1,25 +1,25 @@
 import { useState } from 'react';
 import jwt_decode from "jwt-decode";
 
-export default function useToken() {
+export default function useUserInfo() {
 
-    const getRole = () => {
+    const getUserInfo = () => {
         const tokenString = localStorage.getItem('token');
         const token = JSON.parse(tokenString);
         if (token) {
             const decoded = jwt_decode(token?.access_token);
-            return decoded?.roleid;
+            return decoded;
         }
         return '-1';
 
     };
 
-    const [roleid, setRoleid] = useState(getRole());
+    const [userinfo, setUserInfo] = useState(getUserInfo());
 
-    const saverole = userRole => {
-        setRoleid(userRole);
+    const saveuserinfo = userinfo => {
+        setUserInfo(userinfo);
     };
 
-    return { setRoleid: saverole, roleid }
+    return { setUserInfo: saveuserinfo, userinfo }
 
 }

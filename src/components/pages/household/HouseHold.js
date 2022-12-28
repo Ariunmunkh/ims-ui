@@ -14,7 +14,7 @@ export default function HouseHold() {
       .then((response) => {
         setState(response.data.retdata[0]);
       });
-  }, []);
+  }, [householdid]);
   if (!state) return null;
 
   return (

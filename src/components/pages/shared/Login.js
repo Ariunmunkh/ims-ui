@@ -96,7 +96,7 @@ export default function Login({ setToken }) {
                 </Form.Item>
 
                 <Form.Item>
-                  <div class="d-grid gap-2 pb-5">
+                  <div className="d-grid gap-2 pb-5">
                     <Button
                       type="button"
                       htmlType="submit"

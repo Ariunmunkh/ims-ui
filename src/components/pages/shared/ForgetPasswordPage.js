@@ -9,7 +9,7 @@ export default function ForgetPasswordPage({ setForgetPass }) {
     };
 
     return (
-        <div class="content">
+        <div className="content">
             <h2>Нууц үгээ шинэчилэх</h2>
             <h5>Имэйл хаягаа оруулна уу, бид танд шинэ нууц үг илгээх болно</h5>
             <Form onFinish={onFinish} >
