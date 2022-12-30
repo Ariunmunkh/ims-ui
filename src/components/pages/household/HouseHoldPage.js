@@ -47,7 +47,7 @@ export default function HouseHoldPage() {
                         Өрхийн тэргүүн нэр: <b>{householddata.name}</b>
                     </Tag>
                     <Tag color="blue" style={{ height: "30px" }}>
-                        Дүүрэг: <b>{householddata.district}</b>
+                        Дүүрэг: <b>{householddata.districtname}</b>
                     </Tag>
                     <Tag color="blue" style={{ height: "30px" }}>
                         Хаяг: <b>{householddata.address}</b>
