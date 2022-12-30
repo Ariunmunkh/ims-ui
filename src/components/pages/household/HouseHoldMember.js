@@ -1,7 +1,7 @@
 ﻿import React, { useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { api } from "../../system/api";
-import { Table, Modal, Form, Button, Input, Select, Switch, Divider } from "antd";
+import { Table, Modal, Drawer, Space, Form, Button, Input, Select, Switch, Divider } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { PlusOutlined } from "@ant-design/icons";
 const { confirm } = Modal;
@@ -17,6 +17,7 @@ export default function HouseHoldMember() {
         educationlevel: null,
         employment: null,
         health: null,
+        istogether: true,
     };
 
     const [griddata, setGridData] = useState();
@@ -174,33 +175,34 @@ export default function HouseHoldMember() {
                 pagination={false}
                 rowKey={(record) => record.memberid}
             ></Table>
-            <Modal
+            <Drawer
                 forceRender
                 title="Өрхийн гишүүн"
                 open={isModalOpen}
-                onOk={onFinish}
-                onCancel={handleCancel}
+                width={720}
+                onClose={handleCancel}
                 centered
-                bodyStyle={{ height: "70vh" }}
-                style={{ float: "right", paddingTop: "24px", paddingRight: "10px" }}
-                footer={[
-                    <Button
-                        key="delete"
-                        danger
-                        onClick={showDeleteConfirm}
-                        hidden={formdata.getFieldValue("memberid") === 0}
-                    >
-                        Устгах
-                    </Button>,
-                    <Button key="cancel" onClick={handleCancel}>
-                        Болих
-                    </Button>,
-                    <Button key="save" type="primary" onClick={onFinish}>
-                        Хадгалах
-                    </Button>,
-                ]}
+                bodyStyle={{ paddingBottom: 80, }}
+                extra={
+                    <Space>
+                        <Button
+                            key="delete"
+                            danger
+                            onClick={showDeleteConfirm}
+                            hidden={formdata.getFieldValue("memberid") === 0}
+                        >
+                            Устгах
+                        </Button>
+                        <Button key="cancel" onClick={handleCancel}>
+                            Болих
+                        </Button>
+                        <Button key="save" type="primary" onClick={onFinish}>
+                            Хадгалах
+                        </Button>
+                    </Space>
+                }
             >
-                <Divider/>
+                <Divider />
                 <Form form={formdata} labelCol={{ span: 8 }} wrapperCol={{ span: 14 }} labelAlign="left" labelWrap>
                     <Form.Item name="memberid" label="Дугаар" hidden={true}>
                         <Input />
@@ -242,7 +244,7 @@ export default function HouseHoldMember() {
                         label="Одоо тантай хамт амьдарч байгаа юу ?"
                         valuePropName="checked"
                     >
-                        <Switch checkedChildren="Тийм" unCheckedChildren="Үгүй" style={{width:'100%'}}/>
+                        <Switch checkedChildren="Тийм" unCheckedChildren="Үгүй" style={{ width: '100%' }} />
                     </Form.Item>
 
                     <Form.Item name="educationlevel" label="Боловсролын зэрэг">
@@ -256,7 +258,7 @@ export default function HouseHoldMember() {
                     </Form.Item>
 
                 </Form>
-            </Modal>
+            </Drawer>
         </div>
     );
 }

@@ -1,6 +1,6 @@
 ﻿import React, { useState, useEffect } from "react";
 import { api } from "../../system/api";
-import { Table, Modal, Form, Button, Input, Select } from "antd";
+import { Table, Modal, Drawer, Form, Space, Button, Input, Select } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { PlusOutlined } from "@ant-design/icons";
 const { confirm } = Modal;
@@ -175,30 +175,31 @@ export default function UserListPage() {
                 rowKey={(record) => record.userid}
             ></Table>
 
-            <Modal
+            <Drawer
                 forceRender
                 title="Хэрэглэгч нэмэх"
+                width={720}
+                onClose={handleCancel}
                 open={isModalOpen}
-                onOk={onFinish}
-                onCancel={handleCancel}
-                bodyStyle={{ height: "100%" }}
-                style={{ float: "right", paddingTop: "24px", paddingRight: "10px" }}
-                footer={[
-                    <Button
-                        key="delete"
-                        danger
-                        onClick={showDeleteConfirm}
-                        hidden={formdata.getFieldValue("userid") === 0}
-                    >
-                        Устгах
-                    </Button>,
-                    <Button key="cancel" onClick={handleCancel}>
-                        Болих
-                    </Button>,
-                    <Button key="save" type="primary" onClick={onFinish}>
-                        Хадгалах
-                    </Button>,
-                ]}
+                bodyStyle={{ paddingBottom: 80, }}
+                extra={
+                    <Space>
+                        <Button
+                            key="delete"
+                            danger
+                            onClick={showDeleteConfirm}
+                            hidden={formdata.getFieldValue("userid") === 0}
+                        >
+                            Устгах
+                        </Button>
+                        <Button key="cancel" onClick={handleCancel}>
+                            Болих
+                        </Button>
+                        <Button key="save" type="primary" onClick={onFinish}>
+                            Хадгалах
+                        </Button>
+                    </Space>
+                }
             >
                 <Form form={formdata} labelCol={{ span: 8 }} wrapperCol={{ span: 14 }}>
                     <Form.Item name="userid" label="Дугаар" hidden={true}>
@@ -241,7 +242,7 @@ export default function UserListPage() {
                         <Input />
                     </Form.Item>
                 </Form>
-            </Modal>
+            </Drawer>
         </div>
     );
 }
