@@ -45,7 +45,7 @@ export default function HouseHoldListPage() {
         },
         {
             title: "Дүүрэг",
-            dataIndex: "district",
+            dataIndex: "districtname",
         },
         {
             title: "Хороо",
