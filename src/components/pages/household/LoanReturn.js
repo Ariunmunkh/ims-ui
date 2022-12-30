@@ -1,22 +1,15 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { api } from "../../system/api";
-import { Table, Modal, Drawer, Space, Form, Button, Input, DatePicker, InputNumber, Typography } from "antd";
+import { Table, Modal, Drawer, Space, Form, Button, DatePicker, InputNumber, Typography } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { PlusOutlined } from "@ant-design/icons";
+import dayjs from 'dayjs';
 const { confirm } = Modal;
 const { Text } = Typography;
 
 export default function LoanReturn() {
     const { householdid } = useParams();
-    const nulldata = {
-        memberid: 0,
-        householdid: householdid,
-        meetingdate: null,
-        isjoin: null,
-        quantity: null,
-    };
-
     const [griddata, setGridData] = useState();
     const [loading, setLoading] = useState(true);
     const [formdata] = Form.useForm();
@@ -106,8 +99,10 @@ export default function LoanReturn() {
     };
 
     const onFinish = async (values) => {
+        let fdata = formdata.getFieldsValue();
+        fdata.repaymentdate = fdata.repaymentdate.format('YYYY.MM.DD HH:mm:ss');
         await api
-            .post(`/api/record/coach/set_loanrepayment`, formdata.getFieldsValue())
+            .post(`/api/record/coach/set_loanrepayment`, fdata)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setIsModalOpen(false);
@@ -119,14 +114,22 @@ export default function LoanReturn() {
     const getFormData = async (entryid) => {
         await api.get(`/api/record/coach/get_loanrepayment?id=${entryid}`).then((res) => {
             if (res?.status === 200 && res?.data?.rettype === 0) {
-                formdata.setFieldsValue(res?.data?.retdata[0]);
+                let fdata = res?.data?.retdata[0];
+                fdata.repaymentdate = dayjs(fdata.repaymentdate, 'YYYY.MM.DD HH:mm:ss');
+                formdata.setFieldsValue(fdata);
                 showModal();
             }
         });
     };
 
     const newFormData = async () => {
-        formdata.setFieldsValue(nulldata);
+        formdata.setFieldsValue({
+            entryid: 0,
+            householdid: householdid,
+            repaymentdate: null,
+            amount: null,
+            balance: null,
+        });
         showModal();
     };
     return (
@@ -201,22 +204,28 @@ export default function LoanReturn() {
                     labelAlign="left"
                     labelWrap
                 >
+                    <Form.Item name="entryid" hidden={true} />
+                    <Form.Item name="householdid" hidden={true} />
                     <Form.Item name="repaymentdate" label="Зээлийн эргэн төлөлт хийсэн огноо">
                         <DatePicker style={{ width: "100%" }} placeholder="Өдөр сонгох" />
                     </Form.Item>
-                    <Form.Item name="householdid" label="householdid" hidden={true}>
-                        <Input />
-                    </Form.Item>
-
                     <Form.Item name="amount" label="Эргэн төлсөн мөнгөн дүн">
                         <InputNumber
                             min={0}
                             style={{ width: "100%" }}
                             placeholder="Мөнгөн дүн"
+                            formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                            parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
                         />
                     </Form.Item>
-                    <Form.Item name="note" label="Зээлийн үлдэгдэл">
-                        <Input.TextArea style={{ width: "100%" }} placeholder="Зээлийн үлдэгдэл" />
+                    <Form.Item name="balance" label="Зээлийн үлдэгдэл">
+                        <InputNumber
+                            min={0}
+                            style={{ width: "100%" }}
+                            placeholder="Мөнгөн дүн"
+                            formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                            parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
+                        />
                     </Form.Item>
                 </Form>
             </Drawer>
