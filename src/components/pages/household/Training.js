@@ -2,13 +2,19 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { api } from "../../system/api";
 import useUserInfo from "../../system/useUserInfo";
-import { Table, Modal, Drawer, Space, Form, Button, Input, DatePicker, Select, Divider, } from "antd";
+import { Table, Modal, Drawer, Space, Form, Button, Input, DatePicker, Select, Divider, InputNumber, Switch, } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { PlusOutlined } from "@ant-design/icons";
 import dayjs from 'dayjs';
 const { confirm } = Modal;
 
-export default function Visit() {
+const orgList = [
+    "Монголын улаан загалмай нийгэмлэг",
+    "Гэр бүл хүүхэд залуучуудын хөгжлийн хэлтэс",
+    "Эрүүл мэндийн төв",
+  ];
+
+export default function Training() {
     const { userinfo } = useUserInfo();
     const { householdid } = useParams();
     const [relationship, setrelationship] = useState([]);
@@ -20,7 +26,7 @@ export default function Visit() {
     const fetchData = useCallback(() => {
         setLoading(true);
         api
-            .get(`/api/record/coach/get_householdvisit_list?id=${householdid}`)
+            .get(`/api/record/coach/get_training_list?id=${householdid}`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setGridData(res?.data?.retdata);
@@ -43,24 +49,12 @@ export default function Visit() {
                 setLoading(false);
             });
 
-        api
-            .get(
-                `/api/record/coach/get_coach_list`
-            )
-            .then((res) => {
-                if (res?.status === 200 && res?.data?.rettype === 0) {
-                    setcoachlist(res?.data?.retdata);
-                }
-            })
-            .finally(() => {
-                setLoading(false);
-            });
     }, [householdid]);
 
     const tableOnRow = (record, rowIndex) => {
         return {
             onClick: (event) => {
-                getFormData(record.visitid);
+                getFormData(record.entryid);
             },
         };
     };
@@ -71,20 +65,28 @@ export default function Visit() {
 
     const gridcolumns = [
         {
-            title: "Айлчилсан огноо",
-            dataIndex: "visitdate",
+            title: "Огноо",
+            dataIndex: "trainingdate",
         },
         {
-            title: "Айлчлалаар уулзсан өрхийн гишүүд",
-            dataIndex: "membername",
+            title: "Зохион байгуулагдсан сургалт, үйл ажиллагааны нэр",
+            dataIndex: "name",
         },
         {
-            title: "Тайлбар",
-            dataIndex: "note",
+            title: "Сургалт, үйл ажиллагаа зохион байгуулсан байгууллагын нэр",
+            dataIndex: "orgname",
         },
         {
-            title: "Айлчилсан хүний нэр",
-            dataIndex: "coachname",
+            title: "Сургалтын үргэжилсэн хугацаа",
+            dataIndex: "duration",
+        },
+        {
+            title: "Өрхөөс уг сургалтад хамрагдсан эсэх",
+            dataIndex: "isjoin",
+        },
+        {
+            title: "Сургалт, үйл ажиллагаанд хамрагдсан өрхийн гишүүний нэр",
+            dataIndex: "memberid",
         },
     ];
 
@@ -118,8 +120,8 @@ export default function Visit() {
     const onDelete = async () => {
         await api
             .delete(
-                `/api/record/coach/delete_householdvisit?id=${formdata.getFieldValue(
-                    "visitid"
+                `/api/record/coach/delete_training?id=${formdata.getFieldValue(
+                    "entryid"
                 )}`
             )
             .then((res) => {
@@ -132,9 +134,9 @@ export default function Visit() {
 
     const onFinish = async (values) => {
         let fdata = formdata.getFieldsValue();
-        fdata.visitdate = fdata.visitdate.format('YYYY.MM.DD HH:mm:ss');
+        fdata.trainingdate = fdata.trainingdate.format('YYYY.MM.DD HH:mm:ss');
         await api
-            .post(`/api/record/coach/set_householdvisit`, fdata)
+            .post(`/api/record/coach/set_training`, fdata)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setIsModalOpen(false);
@@ -143,13 +145,13 @@ export default function Visit() {
             });
     };
 
-    const getFormData = async (visitid) => {
+    const getFormData = async (entryid) => {
         await api
-            .get(`/api/record/coach/get_householdvisit?id=${visitid}`)
+            .get(`/api/record/coach/get_training?id=${entryid}`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     let fdata = res?.data?.retdata[0];
-                    fdata.visitdate = dayjs(fdata.visitdate, 'YYYY.MM.DD HH:mm:ss');
+                    fdata.trainingdate = dayjs(fdata.trainingdate, 'YYYY.MM.DD HH:mm:ss');
                     formdata.setFieldsValue(fdata);
                     showModal();
                 }
@@ -158,12 +160,15 @@ export default function Visit() {
 
     const newFormData = async () => {
         formdata.setFieldsValue({
-            visitid: 0,
+            entryid: 0,
+            householdid: householdid,
+            trainingdate: null,
+            name: null,
+            orgname: null,
+            duration: null,
+            isjoin: null,
             coachid: userinfo.coachid,
             memberid: null,
-            householdid: householdid,
-            visitdate: null,
-            note: null,
         });
         showModal();
     };
@@ -175,7 +180,7 @@ export default function Visit() {
                 icon={<PlusOutlined />}
                 onClick={(e) => newFormData()}
             >
-                Өрхийн айлчлалын мэдээлэл нэмэх
+                Сургалт, үйл ажиллагааны мэдээлэл нэмэх
             </Button>
 
             <Table
@@ -184,11 +189,11 @@ export default function Visit() {
                 dataSource={griddata}
                 onRow={tableOnRow}
                 pagination={false}
-                rowKey={(record) => record.visitid}
+                rowKey={(record) => record.entryid}
             ></Table>
             <Drawer
                 forceRender
-                title="Өрхийн айлчлалын мэдээлэл нэмэх"
+                title="Сургалт, үйл ажиллагааны мэдээлэл нэмэх"
                 open={isModalOpen}
                 width={720}
                 onClose={handleCancel}
@@ -200,7 +205,7 @@ export default function Visit() {
                             key="delete"
                             danger
                             onClick={showDeleteConfirm}
-                            hidden={formdata.getFieldValue("visitid") === 0}
+                            hidden={formdata.getFieldValue("entryid") === 0}
                         >
                             Устгах
                         </Button>
@@ -221,21 +226,45 @@ export default function Visit() {
                     labelAlign="left"
                     labelWrap
                 >
-                    <Form.Item name="visitid" hidden={true} />
+                    <Form.Item name="entryid" hidden={true} />
                     <Form.Item name="householdid" hidden={true} />
-                    <Form.Item name="coachid" label="Айлчилсан хүний нэр" hidden={userinfo.coachid !== ''} >
-                        <Select style={{ width: "100%" }}>
-                            {coachlist?.map((t, i) => (
-                                <Select.Option key={i} value={t.coachid}>
+                    <Form.Item name="trainingdate" label="Огноо">
+                        <DatePicker style={{ width: "100%" }} placeholder="Өдөр сонгох" />
+                    </Form.Item>
+                    <Form.Item name="name" label="Зохион байгуулагдсан сургалт, үйл ажиллагааны нэр">
+                        {/* <Select style={{ width: "100%" }}>
+                            {relationship?.map((t, i) => (
+                                <Select.Option key={i} value={t.memberid}>
                                     {t.name}
+                                </Select.Option>
+                            ))}
+                        </Select> */}
+                        <Input/>
+                    </Form.Item>
+                    <Form.Item name="orgname" label="Сургалт, үйл ажиллагаа зохион байгуулсан байгууллагын нэр">
+                        <Select style={{ width: "100%" }}>
+                            {orgList?.map((t, i) => (
+                                <Select.Option key={i} value={t}>
+                                    {t}
                                 </Select.Option>
                             ))}
                         </Select>
                     </Form.Item>
-                    <Form.Item name="visitdate" label="Айлчилсан огноо">
-                        <DatePicker style={{ width: "100%" }} placeholder="Өдөр сонгох" />
+                    <Form.Item name="duration" label="Сургалтын үргэжилсэн хугацаа">
+                        <InputNumber placeholder="Хугацаа" min={0}  style={{ width: "100%" }}/>                
                     </Form.Item>
-                    <Form.Item name="memberid" label="Айлчлалаар уулзсан өрхийн гишүүн">
+                    <Form.Item
+                        name="isjoin"
+                        label="Өрхөөс уг сургалтад хамрагдсан эсэх"
+                        valuePropName="checked"
+                    >
+                        <Switch
+                            checkedChildren="Тийм"
+                            unCheckedChildren="Үгүй"
+                            style={{ width: "100%" }}
+                        />
+                    </Form.Item>
+                    <Form.Item name="memberid" label="Сургалт, үйл ажиллагаанд хамрагдсан өрхийн гишүүний нэр">
                         <Select style={{ width: "100%" }}>
                             {relationship?.map((t, i) => (
                                 <Select.Option key={i} value={t.memberid}>
@@ -244,9 +273,7 @@ export default function Visit() {
                             ))}
                         </Select>
                     </Form.Item>
-                    <Form.Item name="note" label="Тайлбар">
-                        <Input.TextArea />
-                    </Form.Item>
+                
                 </Form>
             </Drawer>
         </div>

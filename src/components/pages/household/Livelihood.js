@@ -1,15 +1,18 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { api } from "../../system/api";
-import { Table, Modal, Drawer, Space, Form, Button, DatePicker, InputNumber, Typography } from "antd";
+import useUserInfo from "../../system/useUserInfo";
+import { Table, Modal, Drawer, Space, Form, Button, Input, DatePicker, Select, Divider, InputNumber, Switch, } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { PlusOutlined } from "@ant-design/icons";
 import dayjs from 'dayjs';
 const { confirm } = Modal;
-const { Text } = Typography;
 
-export default function LoanReturn() {
+export default function Livelihood() {
+    const { userinfo } = useUserInfo();
     const { householdid } = useParams();
+    const [relationship, setrelationship] = useState([]);
+    const [coachlist, setcoachlist] = useState([]);
     const [griddata, setGridData] = useState();
     const [loading, setLoading] = useState(true);
     const [formdata] = Form.useForm();
@@ -17,7 +20,7 @@ export default function LoanReturn() {
     const fetchData = useCallback(() => {
         setLoading(true);
         api
-            .get(`/api/record/coach/get_loanrepayment_list?id=${householdid}`)
+            .get(`/api/record/coach/get_improvement_list?id=${householdid}`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setGridData(res?.data?.retdata);
@@ -26,6 +29,8 @@ export default function LoanReturn() {
             .finally(() => {
                 setLoading(false);
             });
+
+
     }, [householdid]);
 
     const tableOnRow = (record, rowIndex) => {
@@ -42,19 +47,16 @@ export default function LoanReturn() {
 
     const gridcolumns = [
         {
-            title: "Зээлийн эргэн төлөлт хийсэн огноо",
-            dataIndex: "repaymentdate",
-            width: 200,
+            title: "Амьжиргаа сайжруулах төлөвлөгөө боловсруулсан огноо",
+            dataIndex: "plandate",
         },
         {
-            title: "Эргэн төлсөн мөнгөн дүн",
-            dataIndex: "amount",
-            align: 'right',
+            title: "Өрхийн сонгосон аж ахуй",
+            dataIndex: "selectedfarm",
         },
         {
-            title: "Зээлийн үлдэгдэл",
-            dataIndex: "balance",
-            align: 'right',
+            title: "Харьяалагдах дэд салбар",
+            dataIndex: "subbranch",
         },
     ];
 
@@ -88,7 +90,9 @@ export default function LoanReturn() {
     const onDelete = async () => {
         await api
             .delete(
-                `/api/record/coach/delete_loanrepayment?id=${formdata.getFieldValue("entryid")}`
+                `/api/record/coach/delete_improvement?id=${formdata.getFieldValue(
+                    "entryid"
+                )}`
             )
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
@@ -100,9 +104,9 @@ export default function LoanReturn() {
 
     const onFinish = async (values) => {
         let fdata = formdata.getFieldsValue();
-        fdata.repaymentdate = fdata.repaymentdate.format('YYYY.MM.DD HH:mm:ss');
+        fdata.plandate = fdata.plandate.format('YYYY.MM.DD HH:mm:ss');
         await api
-            .post(`/api/record/coach/set_loanrepayment`, fdata)
+            .post(`/api/record/coach/set_improvement`, fdata)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setIsModalOpen(false);
@@ -112,23 +116,26 @@ export default function LoanReturn() {
     };
 
     const getFormData = async (entryid) => {
-        await api.get(`/api/record/coach/get_loanrepayment?id=${entryid}`).then((res) => {
-            if (res?.status === 200 && res?.data?.rettype === 0) {
-                let fdata = res?.data?.retdata[0];
-                fdata.repaymentdate = dayjs(fdata.repaymentdate, 'YYYY.MM.DD HH:mm:ss');
-                formdata.setFieldsValue(fdata);
-                showModal();
-            }
-        });
+        await api
+            .get(`/api/record/coach/get_improvement?id=${entryid}`)
+            .then((res) => {
+                if (res?.status === 200 && res?.data?.rettype === 0) {
+                    let fdata = res?.data?.retdata[0];
+                    fdata.plandate = dayjs(fdata.plandate, 'YYYY.MM.DD HH:mm:ss');
+                    formdata.setFieldsValue(fdata);
+                    showModal();
+                }
+            });
     };
 
     const newFormData = async () => {
         formdata.setFieldsValue({
             entryid: 0,
             householdid: householdid,
-            repaymentdate: null,
-            amount: null,
-            balance: null,
+            plandate: null,
+            selectedfarm: null,
+            subbranch: null,
+            coachid: userinfo.coachid,
         });
         showModal();
     };
@@ -140,7 +147,7 @@ export default function LoanReturn() {
                 icon={<PlusOutlined />}
                 onClick={(e) => newFormData()}
             >
-                Зээлийн эргэн төлөлтийн мэдээлэл
+                Амьжиргаа сайжруулах үйл ажиллагааны мэдээлэл нэмэх
             </Button>
 
             <Table
@@ -150,29 +157,10 @@ export default function LoanReturn() {
                 onRow={tableOnRow}
                 pagination={false}
                 rowKey={(record) => record.entryid}
-                summary={(pageData) => {
-
-                    let totalamount = 0;
-                    pageData.forEach(({ balance }) => {
-                        totalamount += parseFloat(balance.replaceAll(',', ''));
-                    });
-                    totalamount = totalamount.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
-                    return (
-                        <>
-                            <Table.Summary.Row style={{ background: '#fafafa' }}>
-                                <Table.Summary.Cell index={0}>Зээлийн үлдэгдэл</Table.Summary.Cell>
-                                <Table.Summary.Cell index={2} align='right'>
-                                    <Text>{totalamount}</Text>
-                                </Table.Summary.Cell>
-                                <Table.Summary.Cell index={2} />
-                            </Table.Summary.Row>
-                        </>
-                    );
-                }}
             ></Table>
             <Drawer
                 forceRender
-                title="Зээлийн эргэн төлөлтийн мэдээлэл нэмэх"
+                title="Амьжиргаа сайжруулах үйл ажиллагааны мэдээлэл нэмэх"
                 open={isModalOpen}
                 width={720}
                 onClose={handleCancel}
@@ -197,6 +185,7 @@ export default function LoanReturn() {
                     </Space>
                 }
             >
+                <Divider />
                 <Form
                     form={formdata}
                     labelCol={{ span: 8 }}
@@ -206,26 +195,28 @@ export default function LoanReturn() {
                 >
                     <Form.Item name="entryid" hidden={true} />
                     <Form.Item name="householdid" hidden={true} />
-                    <Form.Item name="repaymentdate" label="Зээлийн эргэн төлөлт хийсэн огноо">
+                    <Form.Item name="plandate" label="Амьжиргаа сайжруулах төлөвлөгөө боловсруулсан огноо">
                         <DatePicker style={{ width: "100%" }} placeholder="Өдөр сонгох" />
                     </Form.Item>
-                    <Form.Item name="amount" label="Эргэн төлсөн мөнгөн дүн">
-                        <InputNumber
-                            min={0}
-                            style={{ width: "100%" }}
-                            placeholder="Мөнгөн дүн"
-                            formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                            parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
-                        />
+                    <Form.Item name="selectedfarm" label="Өрхийн сонгосон аж ахуй">
+                        {/* <Select style={{ width: "100%" }}>
+                            {relationship?.map((t, i) => (
+                                <Select.Option key={i} value={t.memberid}>
+                                    {t.name}
+                                </Select.Option>
+                            ))}
+                        </Select> */}
+                        <Input/>
                     </Form.Item>
-                    <Form.Item name="balance" label="Зээлийн үлдэгдэл">
-                        <InputNumber
-                            min={0}
-                            style={{ width: "100%" }}
-                            placeholder="Мөнгөн дүн"
-                            formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                            parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
-                        />
+                    <Form.Item name="subbranch" label="Харьяалагдах дэд салбар">
+                        {/* <Select style={{ width: "100%" }}>
+                            {relationship?.map((t, i) => (
+                                <Select.Option key={i} value={t.memberid}>
+                                    {t.name}
+                                </Select.Option>
+                            ))}
+                        </Select> */}
+                        <Input/>
                     </Form.Item>
                 </Form>
             </Drawer>

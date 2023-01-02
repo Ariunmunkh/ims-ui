@@ -149,6 +149,7 @@ export default function Loan() {
                 onRow={tableOnRow}
                 pagination={false}
                 rowKey={(record) => record.entryid}
+                
                 summary={(pageData) => {
 
                     let totalamount = 0;
@@ -159,7 +160,7 @@ export default function Loan() {
                     return (
                         <>
                             <Table.Summary.Row style={{ background: '#fafafa' }}>
-                                <Table.Summary.Cell index={0}>Нийт</Table.Summary.Cell>
+                                <Table.Summary.Cell index={0}>Нийт:</Table.Summary.Cell>
                                 <Table.Summary.Cell index={1} align='right'>
                                     <Text>{totalamount}</Text>
                                 </Table.Summary.Cell>
@@ -169,6 +170,7 @@ export default function Loan() {
                     );
                 }}
             ></Table>
+            
             <Drawer
                 forceRender
                 title="Зээлийн мэдээлэл нэмэх"
