@@ -209,10 +209,14 @@ export default function Investment() {
             <>
               <Table.Summary.Row style={{ background: "#fafafa" }}>
                 <Table.Summary.Cell index={0}>Нийт:</Table.Summary.Cell>
-                <Table.Summary.Cell index={1} align="right">
+                <Table.Summary.Cell index={1} />
+                <Table.Summary.Cell index={2} />
+                <Table.Summary.Cell index={3} />
+                <Table.Summary.Cell index={4} align="right">
                   <Text>{totalamount}</Text>
                 </Table.Summary.Cell>
-                <Table.Summary.Cell index={2} />
+                <Table.Summary.Cell index={5} />
+                <Table.Summary.Cell index={6} />
               </Table.Summary.Row>
             </>
           );
