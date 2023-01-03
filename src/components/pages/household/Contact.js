@@ -234,7 +234,6 @@ export default function Contact() {
           <Form.Item
             name="orgname"
             label="Холбон зуучилсан  байгууллагын нэр"
-            hidden={userinfo.coachid !== ""}
           >
             <Select style={{ width: "100%" }}>
               {orgList?.map((t, i) => (

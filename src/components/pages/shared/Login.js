@@ -45,8 +45,8 @@ export default function Login({ setToken }) {
     <section className="vh-100">
       <div className="container-fluid">
         <div className="row">
-          <div className="col-sm-4 text-black position-relative">
-            <div className="d-flex align-items-center h-custom-2 px-5 ms-xl-4 mt-5 pt-5 pt-xl-0 mt-xl-n5 position-absolute top-50 start-0 translate-middle-y">
+          <div className="col-sm-4 text-black position-relative mt-5">
+            <div className="d-flex align-items-center h-custom-2 px-5 ms-xl-40 mt-5 pt-5 pt-xl-5 mt-xl-n5 position-absolute start-0">
               <Form
                 name="normal_login"
                 className="login-form"
@@ -119,7 +119,7 @@ export default function Login({ setToken }) {
                 style={{ objectFit: "cover", objectPosition: "center" }}
               />
               <div
-                className="position-absolute top-0 text-light w-100  m-2 p-0 rounded-4 mx-0 d-flex bg-primary bg-opacity-50"
+                className="position-absolute top-0 text-light w-100  m-2 p-0 rounded-4 mx-0 d-flex bg-primary bg-opacity-50 justify-content-center"
               >
                 <div className="p-3  d-flex align-items-center text-white ">
                   <img src={hudlogo} height={50}></img>

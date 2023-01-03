@@ -212,7 +212,7 @@ export default function Investment() {
                 <Table.Summary.Cell index={1} align="right">
                   <Text>{totalamount}</Text>
                 </Table.Summary.Cell>
-                <Table.Summary.Cell index={2} />
+                <Table.Summary.Cell index={2} colSpan={4} />
               </Table.Summary.Row>
             </>
           );
