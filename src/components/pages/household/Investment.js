@@ -215,12 +215,8 @@ export default function Investment() {
                 <Table.Summary.Cell index={4} align="right">
                   <Text>{totalamount}</Text>
                 </Table.Summary.Cell>
-<<<<<<< HEAD
-                <Table.Summary.Cell index={2} colSpan={4} />
-=======
                 <Table.Summary.Cell index={5} />
                 <Table.Summary.Cell index={6} />
->>>>>>> 03dcabcba529c7de81e2382f3fb24371f434501b
               </Table.Summary.Row>
             </>
           );

@@ -12,6 +12,10 @@ import {
     UserOutlined,
     HomeOutlined,
     LogoutOutlined,
+    StockOutlined,
+    SketchOutlined,
+    ApiOutlined,
+    SisternodeOutlined,
 } from "@ant-design/icons";
 import { Layout, Menu, theme, Space, Button, Typography } from "antd";
 import logo from "../../../assets/images/logo.png";
@@ -23,6 +27,7 @@ import useToken from "../../system/useToken";
 import useUserInfo from "../../system/useUserInfo";
 import NotFound from "./NotFound";
 import AccessDenied from "./AccessDenied";
+import Visit from "../household/Visit";
 
 const { Header, Sider, Content } = Layout;
 const { Text } = Typography;
@@ -48,48 +53,75 @@ export default function MasterPage() {
                         label: "Өрхийн бүртгэл",
                     },
                     {
+                        key: "visit",
                         icon: <UsergroupAddOutlined />,
-                        label: "Бүлгийн бүртгэл",
+                        label: "Айлчлалын бүртгэл",
                     },
                     {
                         icon: <SolutionOutlined />,
-                        label: "Сургалтын бүртгэл",
+                        label: "Хурлын ирцийн бүртгэл",
                     },
                     {
                         icon: <AppstoreAddOutlined />,
-                        label: "Хөрөнгийн бүртгэл",
+                        label: "Зээлийн бүртгэл",
                     },
                     {
                         icon: <FileSearchOutlined />,
-                        label: "Холбон зуучлалын бүртгэл",
+                        label: "Сургалт, үйл ажиллагааны бүртгэл",
                     },
                     {
-                        icon: <CrownOutlined />,
+                        icon: <SketchOutlined />,
+                        label: "Хөрөнгө оруулалт, тусламжийн бүртгэл",
+                    },
+                    {
+                        icon: <ApiOutlined />,
+                        label: "Холбон зуучилсан үйл ажиллаагааны бүртгэл",
+                    },
+                    {
+                        icon: <StockOutlined />,
                         label: "Үр дүн",
                     },
                 ];
             case "2":
                 return [
                     {
+                        key: "userlist",
+                        icon: <UserOutlined />,
+                        label: "Хэрэглэгч",
+                    },
+                    {
                         key: "householdlist",
                         icon: <HomeOutlined />,
                         label: "Өрхийн бүртгэл",
                     },
                     {
+                        key: "visit",
                         icon: <UsergroupAddOutlined />,
-                        label: "Бүлгийн бүртгэл",
+                        label: "Айлчлалын бүртгэл",
                     },
                     {
                         icon: <SolutionOutlined />,
-                        label: "Сургалтын бүртгэл",
+                        label: "Хурлын ирцийн бүртгэл",
                     },
                     {
                         icon: <AppstoreAddOutlined />,
-                        label: "Хөрөнгийн бүртгэл",
+                        label: "Зээлийн бүртгэл",
                     },
                     {
                         icon: <FileSearchOutlined />,
-                        label: "Холбон зуучлалын бүртгэл",
+                        label: "Сургалт, үйл ажиллагааны бүртгэл",
+                    },
+                    {
+                        icon: <SketchOutlined />,
+                        label: "Хөрөнгө оруулалт, тусламжийн бүртгэл",
+                    },
+                    {
+                        icon: <ApiOutlined />,
+                        label: "Холбон зуучилсан үйл ажиллаагааны бүртгэл",
+                    },
+                    {
+                        icon: <StockOutlined />,
+                        label: "Үр дүн",
                     },
                 ];
             case "3":
@@ -100,16 +132,33 @@ export default function MasterPage() {
                         label: "Өрхийн бүртгэл",
                     },
                     {
+                        key: "visit",
                         icon: <UsergroupAddOutlined />,
-                        label: "Бүлгийн бүртгэл",
+                        label: "Айлчлалын бүртгэл",
                     },
                     {
                         icon: <SolutionOutlined />,
-                        label: "Сургалтын бүртгэл",
+                        label: "Хурлын ирцийн бүртгэл",
                     },
                     {
                         icon: <AppstoreAddOutlined />,
-                        label: "Хөрөнгийн бүртгэл",
+                        label: "Зээлийн бүртгэл",
+                    },
+                    {
+                        icon: <FileSearchOutlined />,
+                        label: "Сургалт, үйл ажиллагааны бүртгэл",
+                    },
+                    {
+                        icon: <SketchOutlined />,
+                        label: "Хөрөнгө оруулалт, тусламжийн бүртгэл",
+                    },
+                    {
+                        icon: <ApiOutlined />,
+                        label: "Холбон зуучилсан үйл ажиллаагааны бүртгэл",
+                    },
+                    {
+                        icon: <StockOutlined />,
+                        label: "Үр дүн",
                     },
                 ];
             default:
@@ -191,11 +240,15 @@ export default function MasterPage() {
                         />
                         <Route
                             path="/householdlist"
-                            element={userinfo?.roleid === "1" ? <HouseHoldListPage /> : <AccessDenied />}
+                            element={userinfo?.roleid  ? <HouseHoldListPage /> : <AccessDenied />}
+                        />
+                        <Route
+                            path="/visit"
+                            element={userinfo?.roleid  ? <Visit /> : <AccessDenied />}
                         />
                         <Route
                             path="/household/:householdid"
-                            element={userinfo?.roleid === "1" ? <HouseHoldPage /> : <AccessDenied />}
+                            element={userinfo?.roleid  ? <HouseHoldPage /> : <AccessDenied />}
                         />
                         <Route path="*" element={<NotFound />} />
                     </Routes>
