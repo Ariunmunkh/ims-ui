@@ -8,14 +8,12 @@ import {
     SolutionOutlined,
     FileSearchOutlined,
     AppstoreAddOutlined,
-    CrownOutlined,
     UserOutlined,
     HomeOutlined,
     LogoutOutlined,
     StockOutlined,
     SketchOutlined,
     ApiOutlined,
-    SisternodeOutlined,
 } from "@ant-design/icons";
 import { Layout, Menu, theme, Space, Button, Typography } from "antd";
 import logo from "../../../assets/images/logo.png";
@@ -27,7 +25,7 @@ import useToken from "../../system/useToken";
 import useUserInfo from "../../system/useUserInfo";
 import NotFound from "./NotFound";
 import AccessDenied from "./AccessDenied";
-import Visit from "../household/Visit";
+import Visit from "../coach/Visit";
 
 const { Header, Sider, Content } = Layout;
 const { Text } = Typography;
