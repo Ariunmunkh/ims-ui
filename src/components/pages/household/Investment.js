@@ -67,51 +67,6 @@ export default function Investment() {
 
     }, [shirheg, dun]);
 
-<<<<<<< HEAD
-      <Table
-        loading={loading}
-        columns={gridcolumns}
-        dataSource={griddata}
-        onRow={tableOnRow}
-        pagination={false}
-        rowKey={(record) => record.entryid}
-        summary={(pageData) => {
-          let totalamount = 0;
-          pageData.forEach(({ totalprice }) => {
-            // totalamount += parseFloat(totalprice.replaceAll(',', ''));
-            totalamount += totalprice;
-          });
-          totalamount = totalamount
-            .toFixed(2)
-            .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
-          return (
-            <>
-              <Table.Summary.Row style={{ background: "#fafafa" }}>
-                <Table.Summary.Cell index={0}>Нийт:</Table.Summary.Cell>
-                <Table.Summary.Cell index={1} />
-                <Table.Summary.Cell index={2} />
-                <Table.Summary.Cell index={3} />
-                <Table.Summary.Cell index={4} align="right">
-                  <Text>{totalamount}</Text>
-                </Table.Summary.Cell>
-                <Table.Summary.Cell index={5} />
-                <Table.Summary.Cell index={6} />
-              </Table.Summary.Row>
-            </>
-          );
-        }}
-      ></Table>
-      <Drawer
-        forceRender
-        title="Хөрөнгө оруулалтын мэдээлэл нэмэх"
-        open={isModalOpen}
-        width={720}
-        onClose={handleCancel}
-        centered
-        bodyStyle={{ paddingBottom: 80 }}
-        extra={
-          <Space>
-=======
     const gridcolumns = [
         {
             title: "Хөрөнгө хүлээн авсан огноо",
@@ -225,7 +180,6 @@ export default function Investment() {
 
     return (
         <div>
->>>>>>> 49f2cdba8b6647843779ea0d7a8bf6174430ef9a
             <Button
                 style={{ marginBottom: 16 }}
                 type="primary"
