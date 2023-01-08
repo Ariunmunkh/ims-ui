@@ -11,10 +11,8 @@ import {
     Button,
     Input,
     DatePicker,
-    Select,
     Divider,
     InputNumber,
-    Switch,
     Typography,
 } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
@@ -26,13 +24,8 @@ const { Text } = Typography;
 export default function Investment() {
     const { userinfo } = useUserInfo();
     const { householdid } = useParams();
-    const [relationship, setrelationship] = useState([]);
-    const [coachlist, setcoachlist] = useState([]);
     const [griddata, setGridData] = useState();
     const [loading, setLoading] = useState(true);
-    const [shirheg, setQuantity] = useState(0);
-    const [dun, setUnitPrice] = useState(0);
-    const [nitDun, setTotalPrice] = useState(0);
     const [formdata] = Form.useForm();
 
     const fetchData = useCallback(() => {
@@ -60,12 +53,6 @@ export default function Investment() {
     useEffect(() => {
         fetchData();
     }, [fetchData]);
-
-    useEffect(() => {
-
-        setTotalPrice(shirheg.value * dun.value);
-
-    }, [shirheg, dun]);
 
     const gridcolumns = [
         {
@@ -280,9 +267,6 @@ export default function Investment() {
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
                             }
                             parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
-                            onChange={(value) => {
-                                setQuantity({ value });
-                            }}
                         />
                     </Form.Item>
                     <Form.Item name="unitprice" label="Нэгжийн үнэ">
@@ -294,9 +278,6 @@ export default function Investment() {
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
                             }
                             parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
-                            onChange={(value) => {
-                                setUnitPrice({ value });
-                            }}
                         />
                     </Form.Item>
                     {/* <Form.Item name="totalprice" label="Нийт үнэ">

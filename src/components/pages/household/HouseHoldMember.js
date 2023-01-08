@@ -18,6 +18,7 @@ export default function HouseHoldMember() {
         employment: null,
         health: null,
         istogether: true,
+        isparticipant: false,
     };
 
     const [griddata, setGridData] = useState();
@@ -77,6 +78,10 @@ export default function HouseHoldMember() {
         {
             title: "Хүйс",
             dataIndex: "gender",
+        },
+        {
+            title: "Гол оролцогч",
+            dataIndex: "isparticipant",
         },
         {
             title: "Боловсролын зэрэг",
@@ -238,6 +243,13 @@ export default function HouseHoldMember() {
                                 }
                             ]}
                         />
+                    </Form.Item>
+                    <Form.Item
+                        name="isparticipant"
+                        label="Гол оролцогч эсэх?"
+                        valuePropName="checked"
+                    >
+                        <Switch checkedChildren="Тийм" unCheckedChildren="Үгүй" style={{ width: '100%' }} />
                     </Form.Item>
                     <Form.Item
                         name="istogether"

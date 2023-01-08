@@ -14,7 +14,10 @@ export default function UserListPage() {
     };
     const [griddata, setGridData] = useState();
     const [loading, setLoading] = useState(true);
+    const [iscoach, setiscoach] = useState(true);
     const [formdata] = Form.useForm();
+    const [districtlist, setdistrictlist] = useState([]);
+    const [coachlist, setcoachlist] = useState([]);
 
     const fetchData = async () => {
         setLoading(true);
@@ -39,6 +42,18 @@ export default function UserListPage() {
     };
 
     useEffect(() => {
+        api.get(`/api/record/base/get_district_list`)
+            .then((res) => {
+                if (res?.status === 200 && res?.data?.rettype === 0) {
+                    setdistrictlist(res?.data?.retdata);
+                }
+            });
+        api.get(`/api/record/coach/get_coach_list`)
+            .then((res) => {
+                if (res?.status === 200 && res?.data?.rettype === 0) {
+                    setcoachlist(res?.data?.retdata);
+                }
+            });
         fetchData();
     }, []);
     const gridcolumns = [
@@ -129,8 +144,14 @@ export default function UserListPage() {
     };
 
     const onFinish = async (values) => {
+
+        let sdata = formdata.getFieldsValue();
+
+        if (sdata.coachid) {
+            api.post(`/api/record/coach/set_coach`, sdata).then((res) => { });
+        }
         await api
-            .post(`/api/systems/User/set_user`, formdata.getFieldsValue())
+            .post(`/api/systems/User/set_user`, sdata)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setIsModalOpen(false);
@@ -143,6 +164,7 @@ export default function UserListPage() {
         await api.get(`/api/systems/User/get_user?userid=${userid}`).then((res) => {
             if (res?.status === 200 && res?.data?.rettype === 0) {
                 formdata.setFieldsValue(res?.data?.retdata[0]);
+                setiscoach(res?.data?.retdata[0].roleid !== 3);
                 showModal();
             }
         });
@@ -151,6 +173,23 @@ export default function UserListPage() {
     const newFormData = async () => {
         formdata.setFieldsValue(nulldata);
         showModal();
+    };
+
+    const roleidChange = (value) => {
+        setiscoach(value !== 3);
+        formdata.setFieldValue("coachid", null);
+        formdata.setFieldValue("name", null);
+        formdata.setFieldValue("phone", null);
+        formdata.setFieldValue("districtid", null);
+    };
+
+    const coachidChange = (value) => {
+        const found = coachlist.find(element => element.coachid === value);
+        if (found) {
+            formdata.setFieldValue("name", found.name);
+            formdata.setFieldValue("phone", found.phone);
+            formdata.setFieldValue("districtid", found.districtid);
+        }
     };
 
     return (
@@ -201,12 +240,17 @@ export default function UserListPage() {
                     </Space>
                 }
             >
-                <Form form={formdata} labelCol={{ span: 8 }} wrapperCol={{ span: 14 }}>
+                <Form
+                    form={formdata}
+                    labelCol={{ span: 8 }}
+                    wrapperCol={{ span: 14 }}
+                >
                     <Form.Item name="userid" label="Дугаар" hidden={true}>
                         <Input />
                     </Form.Item>
                     <Form.Item name="roleid" label="Үүрэг" rules={[{ required: true }]}>
                         <Select
+                            onChange={roleidChange}
                             style={{ width: 275 }}
                             options={[
                                 {
@@ -224,6 +268,31 @@ export default function UserListPage() {
                             ]}
                         />
                     </Form.Item>
+
+                    <Form.Item name="coachid" label="Коучийн нэр" hidden={iscoach}>
+                        <Select style={{ width: "100%" }}
+                            onChange={coachidChange}>
+                            {coachlist?.map((t, i) => (
+                                <Select.Option key={i} value={t.coachid}>
+                                    {t.name}
+                                </Select.Option>
+                            ))}
+                        </Select>
+                    </Form.Item>
+                    <Form.Item name="name" label="Коучийн нэр" hidden={true}/>
+                    <Form.Item name="phone" label="Утас" hidden={iscoach}>
+                        <Input />
+                    </Form.Item>
+                    <Form.Item name="districtid" label="Дүүрэг" hidden={iscoach}>
+                        <Select style={{ width: "100%" }}>
+                            {districtlist?.map((t, i) => (
+                                <Select.Option key={i} value={t.districtid}>
+                                    {t.name}
+                                </Select.Option>
+                            ))}
+                        </Select>
+                    </Form.Item>
+
                     <Form.Item
                         name="username"
                         label="Нэвтрэх нэр"
