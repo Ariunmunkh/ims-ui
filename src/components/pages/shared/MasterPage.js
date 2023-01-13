@@ -8,7 +8,7 @@ import {
     SolutionOutlined,
     FileSearchOutlined,
     AppstoreAddOutlined,
-    UserOutlined,
+    SettingOutlined,
     HomeOutlined,
     LogoutOutlined,
     StockOutlined,
@@ -18,7 +18,7 @@ import {
 import { Layout, Menu, theme, Space, Button, Typography } from "antd";
 import logo from "../../../assets/images/logo.png";
 
-import UserListPage from "../user/UserListPage";
+import AdminPage from "./AdminPage";
 import HouseHoldListPage from "../household/HouseHoldListPage";
 import HouseHoldPage from "../household/HouseHoldPage";
 import useToken from "../../system/useToken";
@@ -41,9 +41,9 @@ export default function MasterPage() {
             case "1":
                 return [
                     {
-                        key: "userlist",
-                        icon: <UserOutlined />,
-                        label: "Хэрэглэгч",
+                        key: "adminpage",
+                        icon: <SettingOutlined />,
+                        label: "Суурь бүртгэл",
                     },
                     {
                         key: "householdlist",
@@ -83,9 +83,9 @@ export default function MasterPage() {
             case "2":
                 return [
                     {
-                        key: "userlist",
-                        icon: <UserOutlined />,
-                        label: "Хэрэглэгч",
+                        key: "adminpage",
+                        icon: <SettingOutlined />,
+                        label: "Суурь бүртгэл",
                     },
                     {
                         key: "householdlist",
@@ -216,7 +216,7 @@ export default function MasterPage() {
                     <Button
                         type="primary"
                         style={{ float: 'right', margin: '16px' }}
-                        icon={<LogoutOutlined  />}
+                        icon={<LogoutOutlined />}
                         size={"middle"}
                         onClick={onLogoutClick}
                     >
@@ -233,20 +233,20 @@ export default function MasterPage() {
                 >
                     <Routes>
                         <Route
-                            path="/userlist"
-                            element={userinfo?.roleid === "1" ? <UserListPage /> : <AccessDenied />}
+                            path="/adminpage"
+                            element={userinfo?.roleid === "1" ? <AdminPage /> : <AccessDenied />}
                         />
                         <Route
                             path="/householdlist"
-                            element={userinfo?.roleid  ? <HouseHoldListPage /> : <AccessDenied />}
+                            element={userinfo?.roleid ? <HouseHoldListPage /> : <AccessDenied />}
                         />
                         <Route
                             path="/visit"
-                            element={userinfo?.roleid  ? <Visit /> : <AccessDenied />}
+                            element={userinfo?.roleid ? <Visit /> : <AccessDenied />}
                         />
                         <Route
                             path="/household/:householdid"
-                            element={userinfo?.roleid  ? <HouseHoldPage /> : <AccessDenied />}
+                            element={userinfo?.roleid ? <HouseHoldPage /> : <AccessDenied />}
                         />
                         <Route path="*" element={<NotFound />} />
                     </Routes>
