@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { api } from "../../system/api";
 import useUserInfo from "../../system/useUserInfo";
-import { Table, Modal, Drawer, Space, Form, Button, Input, DatePicker, Select, Divider, } from "antd";
+import { Table, Modal, Drawer, Space, Form, Button, Typography, Switch, DatePicker, InputNumber, } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { PlusOutlined } from "@ant-design/icons";
 import dayjs from 'dayjs';
 const { confirm } = Modal;
+const { Text } = Typography;
 
-export default function Visit() {
+export default function Meeting() {
     const { userinfo } = useUserInfo();
-    const [coachlist, setcoachlist] = useState([]);
     const [griddata, setGridData] = useState();
     const [loading, setLoading] = useState(true);
     const [formdata] = Form.useForm();
@@ -18,8 +18,7 @@ export default function Visit() {
         setLoading(true);
         let coachid = userinfo.coachid;
         coachid = coachid || coachid === '' ? '0' : coachid;
-        api
-            .get(`/api/record/coach/get_householdvisit_list?coachid=${coachid}`)
+        api.get(`/api/record/coach/get_meetingattendance_list?coachid=${coachid}`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setGridData(res?.data?.retdata);
@@ -33,37 +32,32 @@ export default function Visit() {
     const tableOnRow = (record, rowIndex) => {
         return {
             onClick: (event) => {
-                getFormData(record.visitid);
+                getFormData(record.entryid);
             },
         };
     };
 
     useEffect(() => {
-        api.get(`/api/record/coach/get_coach_list`)
-            .then((res) => {
-                if (res?.status === 200 && res?.data?.rettype === 0) {
-                    setcoachlist(res?.data?.retdata);
-                }
-            });
         fetchData();
     }, [fetchData]);
 
     const gridcolumns = [
         {
-            title: "Айлчилсан огноо",
-            dataIndex: "visitdate",
+            title: "Бүлгийн хурал зохион байгуулагдсан огноо",
+            dataIndex: "meetingdate",
         },
         {
-            title: "Айлчлалаар уулзсан өрхийн гишүүд",
-            dataIndex: "membername",
+            title: "Бүлгийн хуралд оролцсон эсэх",
+            dataIndex: "isjoin",
         },
         {
-            title: "Тайлбар",
-            dataIndex: "note",
+            title: "Худалдан авсан хувьцааны тоо",
+            dataIndex: "quantity",
         },
         {
-            title: "Айлчилсан хүний нэр",
-            dataIndex: "coachname",
+            title: "Хуримтлуулсан мөнгөн дүн",
+            dataIndex: "famount",
+            align: 'right',
         },
     ];
 
@@ -97,8 +91,8 @@ export default function Visit() {
     const onDelete = async () => {
         await api
             .delete(
-                `/api/record/coach/delete_householdvisit?id=${formdata.getFieldValue(
-                    "visitid"
+                `/api/record/coach/delete_meetingattendance?id=${formdata.getFieldValue(
+                    "entryid"
                 )}`
             )
             .then((res) => {
@@ -111,9 +105,9 @@ export default function Visit() {
 
     const onFinish = async (values) => {
         let fdata = formdata.getFieldsValue();
-        fdata.visitdate = fdata.visitdate.format('YYYY.MM.DD HH:mm:ss');
+        fdata.meetingdate = fdata.meetingdate.format('YYYY.MM.DD HH:mm:ss');
         await api
-            .post(`/api/record/coach/set_householdvisit`, fdata)
+            .post(`/api/record/coach/set_meetingattendance`, fdata)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setIsModalOpen(false);
@@ -122,13 +116,13 @@ export default function Visit() {
             });
     };
 
-    const getFormData = async (visitid) => {
+    const getFormData = async (entryid) => {
         await api
-            .get(`/api/record/coach/get_householdvisit?id=${visitid}`)
+            .get(`/api/record/coach/get_meetingattendance?id=${entryid}`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     let fdata = res?.data?.retdata[0];
-                    fdata.visitdate = dayjs(fdata.visitdate, 'YYYY.MM.DD HH:mm:ss');
+                    fdata.meetingdate = dayjs(fdata.meetingdate, 'YYYY.MM.DD HH:mm:ss');
                     formdata.setFieldsValue(fdata);
                     showModal();
                 }
@@ -137,12 +131,13 @@ export default function Visit() {
 
     const newFormData = async () => {
         formdata.setFieldsValue({
-            visitid: 0,
-            coachid: userinfo.coachid,
+            entryid: 0,
             memberid: null,
             householdid: null,
-            visitdate: null,
-            note: null,
+            meetingdate: null,
+            isjoin: true,
+            quantity: null,
+            amount: null,
         });
         showModal();
     };
@@ -154,7 +149,7 @@ export default function Visit() {
                 icon={<PlusOutlined />}
                 onClick={(e) => newFormData()}
             >
-                Өрхийн айлчлалын мэдээлэл нэмэх
+                Хурлын ирцийн мэдээлэл нэмэх
             </Button>
 
             <Table
@@ -163,15 +158,38 @@ export default function Visit() {
                 dataSource={griddata}
                 onRow={tableOnRow}
                 pagination={false}
-                rowKey={(record) => record.visitid}
+                rowKey={(record) => record.entryid}
+                summary={(pageData) => {
+
+                    let totalamount = 0;
+                    let totalquantity = 0;
+                    pageData.forEach(({ amount, quantity }) => {
+                        totalamount += parseFloat(amount);
+                        totalquantity += quantity;
+                    });
+                    totalamount = totalamount.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+                    return (
+                        <>
+                            <Table.Summary.Row style={{ background: '#fafafa' }}>
+                                <Table.Summary.Cell index={0}>Нийт:</Table.Summary.Cell>
+                                <Table.Summary.Cell index={1} />
+                                <Table.Summary.Cell index={2} >
+                                    <Text>{totalquantity}</Text>
+                                </Table.Summary.Cell>
+                                <Table.Summary.Cell index={3} align='right'>
+                                    <Text>{totalamount}</Text>
+                                </Table.Summary.Cell>
+                            </Table.Summary.Row>
+                        </>
+                    );
+                }}
             ></Table>
             <Drawer
                 forceRender
-                title="Өрхийн айлчлалын мэдээлэл нэмэх"
+                title="Хурлын ирцийн мэдээлэл нэмэх"
                 open={isModalOpen}
                 width={720}
                 onClose={handleCancel}
-                centered
                 bodyStyle={{ paddingBottom: 80, }}
                 extra={
                     <Space>
@@ -179,7 +197,7 @@ export default function Visit() {
                             key="delete"
                             danger
                             onClick={showDeleteConfirm}
-                            hidden={formdata.getFieldValue("visitid") === 0}
+                            hidden={formdata.getFieldValue("entryid") === 0}
                         >
                             Устгах
                         </Button>
@@ -192,7 +210,6 @@ export default function Visit() {
                     </Space>
                 }
             >
-                <Divider />
                 <Form
                     form={formdata}
                     labelCol={{ span: 8 }}
@@ -200,31 +217,42 @@ export default function Visit() {
                     labelAlign="left"
                     labelWrap
                 >
-                    <Form.Item name="visitid" hidden={true} />
+
+                    <Form.Item name="entryid" hidden={true} />
+                    <Form.Item name="coachid" hidden={true} />
                     <Form.Item name="householdid" hidden={true} />
-                    <Form.Item name="coachid" label="Айлчилсан хүний нэр" hidden={userinfo.coachid !== ''} >
-                        <Select style={{ width: "100%" }}>
-                            {coachlist?.map((t, i) => (
-                                <Select.Option key={i} value={t.coachid}>
-                                    {t.name}
-                                </Select.Option>
-                            ))}
-                        </Select>
-                    </Form.Item>
-                    <Form.Item name="visitdate" label="Айлчилсан огноо">
+                    <Form.Item
+                        name="meetingdate"
+                        label="Бүлгийн хурал зохион байгуулагдсан огноо"
+                    >
                         <DatePicker style={{ width: "100%" }} placeholder="Өдөр сонгох" />
                     </Form.Item>
-                    <Form.Item name="memberid" label="Айлчлалаар уулзсан өрхийн гишүүн">
-                        <Select style={{ width: "100%" }}>
-                            {/*{relationship?.map((t, i) => (*/}
-                            {/*    <Select.Option key={i} value={t.memberid}>*/}
-                            {/*        {t.name}*/}
-                            {/*    </Select.Option>*/}
-                            {/*))}*/}
-                        </Select>
+
+                    <Form.Item
+                        name="isjoin"
+                        label="Бүлгийн хуралд оролцсон эсэх"
+                        valuePropName="checked"
+                    >
+                        <Switch
+                            checkedChildren="Тийм"
+                            unCheckedChildren="Үгүй"
+                            style={{ width: "100%" }}
+                        />
                     </Form.Item>
-                    <Form.Item name="note" label="Тайлбар">
-                        <Input.TextArea />
+                    <Form.Item name="quantity" label="Худалдан авсан хувьцааны тоо">
+                        <InputNumber
+                            min={0}
+                            style={{ width: "100%" }}
+                            placeholder="Хувьцааны тоо"
+                        />
+                    </Form.Item>
+                    <Form.Item name="amount" label="Хуримтлуулсан мөнгөн дүн">
+                        <InputNumber
+                            style={{ width: "100%" }}
+                            placeholder="Мөнгөн дүн"
+                            formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                            parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
+                        />
                     </Form.Item>
                 </Form>
             </Drawer>

@@ -1,25 +1,25 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { api } from "../../system/api";
 import useUserInfo from "../../system/useUserInfo";
-import { Table, Modal, Drawer, Space, Form, Button, Input, DatePicker, Select, Divider, } from "antd";
+import { Table, Modal, Drawer, Space, Form, Button, Input, Select, DatePicker, InputNumber, Typography, } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { PlusOutlined } from "@ant-design/icons";
 import dayjs from 'dayjs';
 const { confirm } = Modal;
+const { Text } = Typography;
 
-export default function Visit() {
+export default function Loan() {
     const { userinfo } = useUserInfo();
-    const [coachlist, setcoachlist] = useState([]);
     const [griddata, setGridData] = useState();
     const [loading, setLoading] = useState(true);
     const [formdata] = Form.useForm();
+    const [loanpurpose, setloanpurpose] = useState([]);
 
     const fetchData = useCallback(() => {
         setLoading(true);
         let coachid = userinfo.coachid;
         coachid = coachid || coachid === '' ? '0' : coachid;
-        api
-            .get(`/api/record/coach/get_householdvisit_list?coachid=${coachid}`)
+        api.get(`/api/record/coach/get_loan_list?coachid=${coachid}`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setGridData(res?.data?.retdata);
@@ -33,16 +33,16 @@ export default function Visit() {
     const tableOnRow = (record, rowIndex) => {
         return {
             onClick: (event) => {
-                getFormData(record.visitid);
+                getFormData(record.entryid);
             },
         };
     };
 
     useEffect(() => {
-        api.get(`/api/record/coach/get_coach_list`)
+        api.get(`/api/record/base/get_dropdown_item_list?type=loanpurpose`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
-                    setcoachlist(res?.data?.retdata);
+                    setloanpurpose(res?.data?.retdata);
                 }
             });
         fetchData();
@@ -50,20 +50,18 @@ export default function Visit() {
 
     const gridcolumns = [
         {
-            title: "Айлчилсан огноо",
-            dataIndex: "visitdate",
+            title: "Зээл авсан огноо",
+            dataIndex: "loandate",
+            width: 200,
         },
         {
-            title: "Айлчлалаар уулзсан өрхийн гишүүд",
-            dataIndex: "membername",
+            title: "Бүлгээс зээлсэн мөнгөн дүн",
+            dataIndex: "amount",
+            align: 'right',
         },
         {
-            title: "Тайлбар",
-            dataIndex: "note",
-        },
-        {
-            title: "Айлчилсан хүний нэр",
-            dataIndex: "coachname",
+            title: "Зээлийн зориулалт",
+            dataIndex: "loanpurpose",
         },
     ];
 
@@ -97,9 +95,7 @@ export default function Visit() {
     const onDelete = async () => {
         await api
             .delete(
-                `/api/record/coach/delete_householdvisit?id=${formdata.getFieldValue(
-                    "visitid"
-                )}`
+                `/api/record/coach/delete_loan?id=${formdata.getFieldValue("entryid")}`
             )
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
@@ -111,9 +107,9 @@ export default function Visit() {
 
     const onFinish = async (values) => {
         let fdata = formdata.getFieldsValue();
-        fdata.visitdate = fdata.visitdate.format('YYYY.MM.DD HH:mm:ss');
+        fdata.loandate = fdata.loandate.format('YYYY.MM.DD HH:mm:ss');
         await api
-            .post(`/api/record/coach/set_householdvisit`, fdata)
+            .post(`/api/record/coach/set_loan`, fdata)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setIsModalOpen(false);
@@ -122,27 +118,24 @@ export default function Visit() {
             });
     };
 
-    const getFormData = async (visitid) => {
-        await api
-            .get(`/api/record/coach/get_householdvisit?id=${visitid}`)
-            .then((res) => {
-                if (res?.status === 200 && res?.data?.rettype === 0) {
-                    let fdata = res?.data?.retdata[0];
-                    fdata.visitdate = dayjs(fdata.visitdate, 'YYYY.MM.DD HH:mm:ss');
-                    formdata.setFieldsValue(fdata);
-                    showModal();
-                }
-            });
+    const getFormData = async (entryid) => {
+        await api.get(`/api/record/coach/get_loan?id=${entryid}`).then((res) => {
+            if (res?.status === 200 && res?.data?.rettype === 0) {
+                let fdata = res?.data?.retdata[0];
+                fdata.loandate = dayjs(fdata.loandate, 'YYYY.MM.DD HH:mm:ss');
+                formdata.setFieldsValue(fdata);
+                showModal();
+            }
+        });
     };
 
     const newFormData = async () => {
         formdata.setFieldsValue({
-            visitid: 0,
-            coachid: userinfo.coachid,
-            memberid: null,
+            entryid: 0,
             householdid: null,
-            visitdate: null,
-            note: null,
+            loandate: null,
+            amount: null,
+            loanpurposeid: null,
         });
         showModal();
     };
@@ -154,7 +147,7 @@ export default function Visit() {
                 icon={<PlusOutlined />}
                 onClick={(e) => newFormData()}
             >
-                Өрхийн айлчлалын мэдээлэл нэмэх
+                Зээлийн мэдээлэл нэмэх
             </Button>
 
             <Table
@@ -163,15 +156,34 @@ export default function Visit() {
                 dataSource={griddata}
                 onRow={tableOnRow}
                 pagination={false}
-                rowKey={(record) => record.visitid}
+                rowKey={(record) => record.entryid}
+                summary={(pageData) => {
+
+                    let totalamount = 0;
+                    pageData.forEach(({ amount }) => {
+                        totalamount += parseFloat(amount.replaceAll(',', ''));
+                    });
+                    totalamount = totalamount.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+                    return (
+                        <>
+                            <Table.Summary.Row style={{ background: '#fafafa' }}>
+                                <Table.Summary.Cell index={0}>Нийт:</Table.Summary.Cell>
+                                <Table.Summary.Cell index={1} align='right'>
+                                    <Text>{totalamount}</Text>
+                                </Table.Summary.Cell>
+                                <Table.Summary.Cell index={2} />
+                            </Table.Summary.Row>
+                        </>
+                    );
+                }}
             ></Table>
+
             <Drawer
                 forceRender
-                title="Өрхийн айлчлалын мэдээлэл нэмэх"
+                title="Зээлийн мэдээлэл нэмэх"
                 open={isModalOpen}
                 width={720}
                 onClose={handleCancel}
-                centered
                 bodyStyle={{ paddingBottom: 80, }}
                 extra={
                     <Space>
@@ -179,7 +191,7 @@ export default function Visit() {
                             key="delete"
                             danger
                             onClick={showDeleteConfirm}
-                            hidden={formdata.getFieldValue("visitid") === 0}
+                            hidden={formdata.getFieldValue("entryid") === 0}
                         >
                             Устгах
                         </Button>
@@ -192,7 +204,6 @@ export default function Visit() {
                     </Space>
                 }
             >
-                <Divider />
                 <Form
                     form={formdata}
                     labelCol={{ span: 8 }}
@@ -200,31 +211,25 @@ export default function Visit() {
                     labelAlign="left"
                     labelWrap
                 >
-                    <Form.Item name="visitid" hidden={true} />
-                    <Form.Item name="householdid" hidden={true} />
-                    <Form.Item name="coachid" label="Айлчилсан хүний нэр" hidden={userinfo.coachid !== ''} >
-                        <Select style={{ width: "100%" }}>
-                            {coachlist?.map((t, i) => (
-                                <Select.Option key={i} value={t.coachid}>
-                                    {t.name}
-                                </Select.Option>
-                            ))}
-                        </Select>
-                    </Form.Item>
-                    <Form.Item name="visitdate" label="Айлчилсан огноо">
+                    <Form.Item name="loandate" label="Зээл авсан огноо">
                         <DatePicker style={{ width: "100%" }} placeholder="Өдөр сонгох" />
                     </Form.Item>
-                    <Form.Item name="memberid" label="Айлчлалаар уулзсан өрхийн гишүүн">
-                        <Select style={{ width: "100%" }}>
-                            {/*{relationship?.map((t, i) => (*/}
-                            {/*    <Select.Option key={i} value={t.memberid}>*/}
-                            {/*        {t.name}*/}
-                            {/*    </Select.Option>*/}
-                            {/*))}*/}
-                        </Select>
+                    <Form.Item name="householdid" label="householdid" hidden={true}>
+                        <Input />
                     </Form.Item>
-                    <Form.Item name="note" label="Тайлбар">
-                        <Input.TextArea />
+
+                    <Form.Item name="amount" label="Бүлгээс зээлсэн мөнгөн дүн">
+                        <InputNumber
+                            style={{ width: "100%" }}
+                            placeholder="Мөнгөн дүн"
+                            formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                            parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
+                        />
+                    </Form.Item>
+                    <Form.Item name="loanpurposeid" label="Зээлийн зориулалт">
+                        <Select style={{ width: '100%' }}>
+                            {loanpurpose?.map((t, i) => (<Select.Option key={i} value={t.id}>{t.name}</Select.Option>))}
+                        </Select>
                     </Form.Item>
                 </Form>
             </Drawer>

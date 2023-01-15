@@ -26,6 +26,11 @@ import useUserInfo from "../../system/useUserInfo";
 import NotFound from "./NotFound";
 import AccessDenied from "./AccessDenied";
 import Visit from "../coach/Visit";
+import Meeting from "../coach/Meeting";
+import Loan from "../coach/Loan";
+import Training from "../coach/Training";
+import Investment from "../coach/Investment";
+import Contact from "../coach/Contact";
 
 const { Header, Sider, Content } = Layout;
 const { Text } = Typography;
@@ -56,22 +61,27 @@ export default function MasterPage() {
                         label: "Айлчлалын бүртгэл",
                     },
                     {
+                        key: "meeting",
                         icon: <SolutionOutlined />,
-                        label: "Хурлын ирцийн бүртгэл",
+                        label: "Бүлгийн хурлын мэдээлэл",
                     },
                     {
+                        key: "loan",
                         icon: <AppstoreAddOutlined />,
                         label: "Зээлийн бүртгэл",
                     },
                     {
+                        key: "training",
                         icon: <FileSearchOutlined />,
                         label: "Сургалт, үйл ажиллагааны бүртгэл",
                     },
                     {
+                        key: "investment",
                         icon: <SketchOutlined />,
                         label: "Хөрөнгө оруулалт, тусламжийн бүртгэл",
                     },
                     {
+                        key: "contact",
                         icon: <ApiOutlined />,
                         label: "Холбон зуучилсан үйл ажиллаагааны бүртгэл",
                     },
@@ -98,22 +108,27 @@ export default function MasterPage() {
                         label: "Айлчлалын бүртгэл",
                     },
                     {
+                        key: "meeting",
                         icon: <SolutionOutlined />,
-                        label: "Хурлын ирцийн бүртгэл",
+                        label: "Бүлгийн хурлын мэдээлэл",
                     },
                     {
+                        key: "loan",
                         icon: <AppstoreAddOutlined />,
                         label: "Зээлийн бүртгэл",
                     },
                     {
+                        key: "training",
                         icon: <FileSearchOutlined />,
                         label: "Сургалт, үйл ажиллагааны бүртгэл",
                     },
                     {
+                        key: "investment",
                         icon: <SketchOutlined />,
                         label: "Хөрөнгө оруулалт, тусламжийн бүртгэл",
                     },
                     {
+                        key: "contact",
                         icon: <ApiOutlined />,
                         label: "Холбон зуучилсан үйл ажиллаагааны бүртгэл",
                     },
@@ -135,22 +150,27 @@ export default function MasterPage() {
                         label: "Айлчлалын бүртгэл",
                     },
                     {
+                        key: "meeting",
                         icon: <SolutionOutlined />,
-                        label: "Хурлын ирцийн бүртгэл",
+                        label: "Бүлгийн хурлын мэдээлэл",
                     },
                     {
+                        key: "loan",
                         icon: <AppstoreAddOutlined />,
                         label: "Зээлийн бүртгэл",
                     },
                     {
+                        key: "training",
                         icon: <FileSearchOutlined />,
                         label: "Сургалт, үйл ажиллагааны бүртгэл",
                     },
                     {
+                        key: "investment",
                         icon: <SketchOutlined />,
                         label: "Хөрөнгө оруулалт, тусламжийн бүртгэл",
                     },
                     {
+                        key: "contact",
                         icon: <ApiOutlined />,
                         label: "Холбон зуучилсан үйл ажиллаагааны бүртгэл",
                     },
@@ -243,6 +263,26 @@ export default function MasterPage() {
                         <Route
                             path="/visit"
                             element={userinfo?.roleid ? <Visit /> : <AccessDenied />}
+                        />
+                        <Route
+                            path="/meeting"
+                            element={userinfo?.roleid ? <Meeting /> : <AccessDenied />}
+                        />
+                        <Route
+                            path="/loan"
+                            element={userinfo?.roleid ? <Loan /> : <AccessDenied />}
+                        />
+                        <Route
+                            path="/training"
+                            element={userinfo?.roleid ? <Training /> : <AccessDenied />}
+                        />
+                        <Route
+                            path="/investment"
+                            element={userinfo?.roleid ? <Investment /> : <AccessDenied />}
+                        />
+                        <Route
+                            path="/contact"
+                            element={userinfo?.roleid ? <Contact /> : <AccessDenied />}
                         />
                         <Route
                             path="/household/:householdid"
