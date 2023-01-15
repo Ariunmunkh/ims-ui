@@ -1,4 +1,4 @@
-﻿import React from "react";
+import React from "react";
 import { Tabs } from "antd";
 import UserListPage from "../user/UserListPage";
 import AssetReceived from "../baseinfo/AssetReceived";
