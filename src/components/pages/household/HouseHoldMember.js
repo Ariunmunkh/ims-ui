@@ -23,6 +23,9 @@ export default function HouseHoldMember() {
 
     const [griddata, setGridData] = useState();
     const [relationship, setrelationship] = useState([]);
+    const [educationdegree, seteducationdegree] = useState([]);
+    const [employmentstatus, setemploymentstatus] = useState([]);
+    const [healthcondition, sethealthcondition] = useState([]);
     const [loading, setLoading] = useState(true);
     const [formdata] = Form.useForm();
 
@@ -60,6 +63,33 @@ export default function HouseHoldMember() {
 
     useEffect(() => {
         fetchData();
+        api.get(`/api/record/base/get_dropdown_item_list?type=educationdegree`)
+            .then((res) => {
+                if (res?.status === 200 && res?.data?.rettype === 0) {
+                    seteducationdegree(res?.data?.retdata);
+                }
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+        api.get(`/api/record/base/get_dropdown_item_list?type=employmentstatus`)
+            .then((res) => {
+                if (res?.status === 200 && res?.data?.rettype === 0) {
+                    setemploymentstatus(res?.data?.retdata);
+                }
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+        api.get(`/api/record/base/get_dropdown_item_list?type=healthcondition`)
+            .then((res) => {
+                if (res?.status === 200 && res?.data?.rettype === 0) {
+                    sethealthcondition(res?.data?.retdata);
+                }
+            })
+            .finally(() => {
+                setLoading(false);
+            });
     }, [fetchData]);
 
     const gridcolumns = [
@@ -85,15 +115,15 @@ export default function HouseHoldMember() {
         },
         {
             title: "Боловсролын зэрэг",
-            dataIndex: "educationlevel",
+            dataIndex: "educationdegree",
         },
         {
             title: "Хөдөлмөр эрхлэлтийн байдал",
-            dataIndex: "employment",
+            dataIndex: "employmentstatus",
         },
         {
             title: "Эрүүл мэндийн байдал",
-            dataIndex: "health",
+            dataIndex: "healthcondition",
         },
     ];
 
@@ -259,14 +289,20 @@ export default function HouseHoldMember() {
                         <Switch checkedChildren="Тийм" unCheckedChildren="Үгүй" style={{ width: '100%' }} />
                     </Form.Item>
 
-                    <Form.Item name="educationlevel" label="Боловсролын зэрэг">
-                        <Input />
+                    <Form.Item name="educationdegreeid" label="Боловсролын зэрэг">
+                        <Select style={{ width: '100%' }}>
+                            {educationdegree?.map((t, i) => (<Select.Option key={i} value={t.id}>{t.name}</Select.Option>))}
+                        </Select>
                     </Form.Item>
-                    <Form.Item name="employment" label="Хөдөлмөр эрхлэлтийн байдал">
-                        <Input />
+                    <Form.Item name="employmentstatusid" label="Хөдөлмөр эрхлэлтийн байдал">
+                        <Select style={{ width: '100%' }}>
+                            {employmentstatus?.map((t, i) => (<Select.Option key={i} value={t.id}>{t.name}</Select.Option>))}
+                        </Select>
                     </Form.Item>
-                    <Form.Item name="health" label="Эрүүл мэндийн байдал">
-                        <Input />
+                    <Form.Item name="healthconditionid" label="Эрүүл мэндийн байдал">
+                        <Select style={{ width: '100%' }}>
+                            {healthcondition?.map((t, i) => (<Select.Option key={i} value={t.id}>{t.name}</Select.Option>))}
+                        </Select>
                     </Form.Item>
 
                 </Form>

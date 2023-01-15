@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { api } from "../../system/api";
-import { Table, Modal, Drawer, Space, Form, Button, Input, DatePicker, InputNumber, Typography, } from "antd";
+import { Table, Modal, Drawer, Space, Form, Button, Input, Select, DatePicker, InputNumber, Typography, } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { PlusOutlined } from "@ant-design/icons";
 import dayjs from 'dayjs';
@@ -13,6 +13,7 @@ export default function Loan() {
     const [griddata, setGridData] = useState();
     const [loading, setLoading] = useState(true);
     const [formdata] = Form.useForm();
+    const [loanpurpose, setloanpurpose] = useState([]);
 
     const fetchData = useCallback(() => {
         setLoading(true);
@@ -38,6 +39,15 @@ export default function Loan() {
 
     useEffect(() => {
         fetchData();
+        api.get(`/api/record/base/get_dropdown_item_list?type=loanpurpose`)
+            .then((res) => {
+                if (res?.status === 200 && res?.data?.rettype === 0) {
+                    setloanpurpose(res?.data?.retdata);
+                }
+            })
+            .finally(() => {
+                setLoading(false);
+            });
     }, [fetchData]);
 
     const gridcolumns = [
@@ -53,7 +63,7 @@ export default function Loan() {
         },
         {
             title: "Зээлийн зориулалт",
-            dataIndex: "note",
+            dataIndex: "loanpurpose",
         },
     ];
 
@@ -127,7 +137,7 @@ export default function Loan() {
             householdid: householdid,
             loandate: null,
             amount: null,
-            note: null,
+            loanpurposeid: null,
         });
         showModal();
     };
@@ -149,7 +159,6 @@ export default function Loan() {
                 onRow={tableOnRow}
                 pagination={false}
                 rowKey={(record) => record.entryid}
-                
                 summary={(pageData) => {
 
                     let totalamount = 0;
@@ -170,7 +179,7 @@ export default function Loan() {
                     );
                 }}
             ></Table>
-            
+
             <Drawer
                 forceRender
                 title="Зээлийн мэдээлэл нэмэх"
@@ -219,8 +228,10 @@ export default function Loan() {
                             parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
                         />
                     </Form.Item>
-                    <Form.Item name="note" label="Тайлбар">
-                        <Input.TextArea style={{ width: "100%" }} placeholder="Тайлбар" />
+                    <Form.Item name="loanpurposeid" label="Зээлийн зориулалт">
+                        <Select style={{ width: '100%' }}>
+                            {loanpurpose?.map((t, i) => (<Select.Option key={i} value={t.id}>{t.name}</Select.Option>))}
+                        </Select>
                     </Form.Item>
                 </Form>
             </Drawer>

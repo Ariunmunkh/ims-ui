@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { api } from "../../system/api";
-import { Table, Modal, Drawer, Space, Form, Button, Switch, DatePicker, InputNumber, } from "antd";
+import { Table, Modal, Drawer, Space, Form, Button, Typography, Switch, DatePicker, InputNumber, } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { PlusOutlined } from "@ant-design/icons";
 import dayjs from 'dayjs';
 const { confirm } = Modal;
+const { Text } = Typography;
+
 export default function Meeting() {
     const { householdid } = useParams();
     const [griddata, setGridData] = useState();
@@ -50,6 +52,11 @@ export default function Meeting() {
         {
             title: "Худалдан авсан хувьцааны тоо",
             dataIndex: "quantity",
+        },
+        {
+            title: "Хуримтлуулсан мөнгөн дүн",
+            dataIndex: "famount",
+            align: 'right',
         },
     ];
 
@@ -129,6 +136,7 @@ export default function Meeting() {
             meetingdate: null,
             isjoin: true,
             quantity: null,
+            amount: null,
         });
         showModal();
     };
@@ -150,6 +158,30 @@ export default function Meeting() {
                 onRow={tableOnRow}
                 pagination={false}
                 rowKey={(record) => record.entryid}
+                summary={(pageData) => {
+
+                    let totalamount = 0;
+                    let totalquantity = 0;
+                    pageData.forEach(({ amount, quantity }) => {
+                        totalamount += parseFloat(amount);
+                        totalquantity += quantity;
+                    });
+                    totalamount = totalamount.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+                    return (
+                        <>
+                            <Table.Summary.Row style={{ background: '#fafafa' }}>
+                                <Table.Summary.Cell index={0}>Нийт:</Table.Summary.Cell>
+                                <Table.Summary.Cell index={1} />
+                                <Table.Summary.Cell index={2} >
+                                    <Text>{totalquantity}</Text>
+                                </Table.Summary.Cell>
+                                <Table.Summary.Cell index={3} align='right'>
+                                    <Text>{totalamount}</Text>
+                                </Table.Summary.Cell>
+                            </Table.Summary.Row>
+                        </>
+                    );
+                }}
             ></Table>
             <Drawer
                 forceRender
@@ -211,6 +243,14 @@ export default function Meeting() {
                             min={0}
                             style={{ width: "100%" }}
                             placeholder="Хувьцааны тоо"
+                        />
+                    </Form.Item>
+                    <Form.Item name="amount" label="Хуримтлуулсан мөнгөн дүн">
+                        <InputNumber
+                            style={{ width: "100%" }}
+                            placeholder="Мөнгөн дүн"
+                            formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                            parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
                         />
                     </Form.Item>
                 </Form>

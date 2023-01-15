@@ -84,7 +84,7 @@ export default function TrainingType() {
     const onDelete = async () => {
         await api
             .delete(
-                `/api/record/base/delete_dropdown_item?id==${formdata.getFieldValue("id")}&type=${formtype}`
+                `/api/record/base/delete_dropdown_item?id=${formdata.getFieldValue("id")}&type=${formtype}`
             )
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
@@ -106,7 +106,7 @@ export default function TrainingType() {
     };
 
     const getFormData = async (id) => {
-        await api.get(`/api/record/base/get_dropdown_item?id==${id}&type=${formtype}`).then((res) => {
+        await api.get(`/api/record/base/get_dropdown_item?id=${id}&type=${formtype}`).then((res) => {
             if (res?.status === 200 && res?.data?.rettype === 0) {
                 formdata.setFieldsValue(res?.data?.retdata[0]);
                 showModal();

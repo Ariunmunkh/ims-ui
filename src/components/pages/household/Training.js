@@ -22,6 +22,9 @@ export default function Training() {
     const [griddata, setGridData] = useState();
     const [loading, setLoading] = useState(true);
     const [formdata] = Form.useForm();
+    const [trainingtype, settrainingtype] = useState([]);
+    const [trainingandactivity, settrainingandactivity] = useState([]);
+    const [organization, setorganization] = useState([]);
 
     const fetchData = useCallback(() => {
         setLoading(true);
@@ -61,6 +64,33 @@ export default function Training() {
 
     useEffect(() => {
         fetchData();
+        api.get(`/api/record/base/get_dropdown_item_list?type=trainingtype`)
+            .then((res) => {
+                if (res?.status === 200 && res?.data?.rettype === 0) {
+                    settrainingtype(res?.data?.retdata);
+                }
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+        api.get(`/api/record/base/get_dropdown_item_list?type=trainingandactivity`)
+            .then((res) => {
+                if (res?.status === 200 && res?.data?.rettype === 0) {
+                    settrainingandactivity(res?.data?.retdata);
+                }
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+        api.get(`/api/record/base/get_dropdown_item_list?type=organization`)
+            .then((res) => {
+                if (res?.status === 200 && res?.data?.rettype === 0) {
+                    setorganization(res?.data?.retdata);
+                }
+            })
+            .finally(() => {
+                setLoading(false);
+            });
     }, [fetchData]);
 
     const gridcolumns = [
@@ -69,12 +99,16 @@ export default function Training() {
             dataIndex: "trainingdate",
         },
         {
+            title: "Сургалтын төрөл",
+            dataIndex: "trainingtype",
+        },
+        {
             title: "Зохион байгуулагдсан сургалт, үйл ажиллагааны нэр",
-            dataIndex: "name",
+            dataIndex: "trainingandactivity",
         },
         {
             title: "Сургалт, үйл ажиллагаа зохион байгуулсан байгууллагын нэр",
-            dataIndex: "orgname",
+            dataIndex: "organization",
         },
         {
             title: "Сургалтын үргэжилсэн хугацаа",
@@ -86,7 +120,7 @@ export default function Training() {
         },
         {
             title: "Сургалт, үйл ажиллагаанд хамрагдсан өрхийн гишүүний нэр",
-            dataIndex: "memberid",
+            dataIndex: "membername",
         },
     ];
 
@@ -163,11 +197,11 @@ export default function Training() {
             entryid: 0,
             householdid: householdid,
             trainingdate: null,
-            name: null,
-            orgname: null,
+            trainingtypeid: null,
+            trainingandactivityid: null,
+            organizationid: null,
             duration: null,
             isjoin: null,
-            coachid: userinfo.coachid,
             memberid: null,
         });
         showModal();
@@ -231,23 +265,19 @@ export default function Training() {
                     <Form.Item name="trainingdate" label="Огноо">
                         <DatePicker style={{ width: "100%" }} placeholder="Өдөр сонгох" />
                     </Form.Item>
-                    <Form.Item name="name" label="Зохион байгуулагдсан сургалт, үйл ажиллагааны нэр">
-                        {/* <Select style={{ width: "100%" }}>
-                            {relationship?.map((t, i) => (
-                                <Select.Option key={i} value={t.memberid}>
-                                    {t.name}
-                                </Select.Option>
-                            ))}
-                        </Select> */}
-                        <Input/>
+                    <Form.Item name="trainingtypeid" label="Сургалтын төрөл">
+                        <Select style={{ width: '100%' }}>
+                            {trainingtype?.map((t, i) => (<Select.Option key={i} value={t.id}>{t.name}</Select.Option>))}
+                        </Select>
                     </Form.Item>
-                    <Form.Item name="orgname" label="Сургалт, үйл ажиллагаа зохион байгуулсан байгууллагын нэр">
-                        <Select style={{ width: "100%" }}>
-                            {orgList?.map((t, i) => (
-                                <Select.Option key={i} value={t}>
-                                    {t}
-                                </Select.Option>
-                            ))}
+                    <Form.Item name="trainingandactivityid" label="Зохион байгуулагдсан сургалт, үйл ажиллагааны нэр">
+                        <Select style={{ width: '100%' }}>
+                            {trainingandactivity?.map((t, i) => (<Select.Option key={i} value={t.id}>{t.name}</Select.Option>))}
+                        </Select>
+                    </Form.Item>
+                    <Form.Item name="organizationid" label="Сургалт, үйл ажиллагаа зохион байгуулсан байгууллагын нэр">
+                        <Select style={{ width: '100%' }}>
+                            {organization?.map((t, i) => (<Select.Option key={i} value={t.id}>{t.name}</Select.Option>))}
                         </Select>
                     </Form.Item>
                     <Form.Item name="duration" label="Сургалтын үргэжилсэн хугацаа">

@@ -11,8 +11,7 @@ const { confirm } = Modal;
 export default function Livelihood() {
     const { userinfo } = useUserInfo();
     const { householdid } = useParams();
-    const [relationship, setrelationship] = useState([]);
-    const [coachlist, setcoachlist] = useState([]);
+    const [subbranch, setsubbranch] = useState([]);
     const [griddata, setGridData] = useState();
     const [loading, setLoading] = useState(true);
     const [formdata] = Form.useForm();
@@ -43,6 +42,15 @@ export default function Livelihood() {
 
     useEffect(() => {
         fetchData();
+        api.get(`/api/record/base/get_dropdown_item_list?type=subbranch`)
+            .then((res) => {
+                if (res?.status === 200 && res?.data?.rettype === 0) {
+                    setsubbranch(res?.data?.retdata);
+                }
+            })
+            .finally(() => {
+                setLoading(false);
+            });
     }, [fetchData]);
 
     const gridcolumns = [
@@ -134,8 +142,7 @@ export default function Livelihood() {
             householdid: householdid,
             plandate: null,
             selectedfarm: null,
-            subbranch: null,
-            coachid: userinfo.coachid,
+            subbranchid: null,
         });
         showModal();
     };
@@ -199,24 +206,12 @@ export default function Livelihood() {
                         <DatePicker style={{ width: "100%" }} placeholder="Өдөр сонгох" />
                     </Form.Item>
                     <Form.Item name="selectedfarm" label="Өрхийн сонгосон аж ахуй">
-                        {/* <Select style={{ width: "100%" }}>
-                            {relationship?.map((t, i) => (
-                                <Select.Option key={i} value={t.memberid}>
-                                    {t.name}
-                                </Select.Option>
-                            ))}
-                        </Select> */}
-                        <Input/>
+                        <Input />
                     </Form.Item>
-                    <Form.Item name="subbranch" label="Харьяалагдах дэд салбар">
-                        {/* <Select style={{ width: "100%" }}>
-                            {relationship?.map((t, i) => (
-                                <Select.Option key={i} value={t.memberid}>
-                                    {t.name}
-                                </Select.Option>
-                            ))}
-                        </Select> */}
-                        <Input/>
+                    <Form.Item name="subbranchid" label="Харьяалагдах дэд салбар">
+                        <Select style={{ width: '100%' }}>
+                            {subbranch?.map((t, i) => (<Select.Option key={i} value={t.id}>{t.name}</Select.Option>))}
+                        </Select>
                     </Form.Item>
                 </Form>
             </Drawer>

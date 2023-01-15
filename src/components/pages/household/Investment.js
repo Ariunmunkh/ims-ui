@@ -12,6 +12,7 @@ import {
     Input,
     DatePicker,
     Divider,
+    Select,
     InputNumber,
     Typography,
 } from "antd";
@@ -27,6 +28,8 @@ export default function Investment() {
     const [griddata, setGridData] = useState();
     const [loading, setLoading] = useState(true);
     const [formdata] = Form.useForm();
+    const [assetreceivedtype, setassetreceivedtype] = useState([]);
+    const [assetreceived, setassetreceived] = useState([]);
 
     const fetchData = useCallback(() => {
         setLoading(true);
@@ -52,6 +55,24 @@ export default function Investment() {
 
     useEffect(() => {
         fetchData();
+        api.get(`/api/record/base/get_dropdown_item_list?type=assetreceivedtype`)
+            .then((res) => {
+                if (res?.status === 200 && res?.data?.rettype === 0) {
+                    setassetreceivedtype(res?.data?.retdata);
+                }
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+        api.get(`/api/record/base/get_dropdown_item_list?type=assetreceived`)
+            .then((res) => {
+                if (res?.status === 200 && res?.data?.rettype === 0) {
+                    setassetreceived(res?.data?.retdata);
+                }
+            })
+            .finally(() => {
+                setLoading(false);
+            });
     }, [fetchData]);
 
     const gridcolumns = [
@@ -60,20 +81,27 @@ export default function Investment() {
             dataIndex: "investmentdate",
         },
         {
+            title: "Хүлээн авсан хөрөнгийн төрөл",
+            dataIndex: "assetreceivedtype",
+        },
+        {
             title: "Хүлээн авсан хөрөнгийн нэр",
-            dataIndex: "name",
+            dataIndex: "assetreceived",
         },
         {
             title: "Тоо ширхэг",
             dataIndex: "quantity",
+            align: 'right',
         },
         {
             title: "Нэгжийн үнэ",
-            dataIndex: "unitprice",
+            dataIndex: "funitprice",
+            align: 'right',
         },
         {
             title: "Нийт үнэ",
-            dataIndex: "totalprice",
+            dataIndex: "ftotalprice",
+            align: 'right',
         },
         {
             title: "Тайлбар (марк, дугаар)",
@@ -155,12 +183,12 @@ export default function Investment() {
             entryid: 0,
             householdid: householdid,
             investmentdate: null,
-            name: null,
-            quantity: null,
-            unitprice: null,
-            totalprice: null,
+            assetreceivedtypeid: null,
+            assetreceivedid: null,
+            quantity: 0,
+            unitprice: 0,
+            totalprice: 0,
             note: null,
-            coachid: userinfo.coachid,
         });
         showModal();
     };
@@ -173,7 +201,7 @@ export default function Investment() {
                 icon={<PlusOutlined />}
                 onClick={(e) => newFormData()}
             >
-                Хөрөнгө оруулалтын мэдээлэл нэмэх
+                Хөрөнгө оруулалтын мэдээлэл
             </Button>
 
             <Table
@@ -185,8 +213,9 @@ export default function Investment() {
                 rowKey={(record) => record.entryid}
                 summary={(pageData) => {
                     let totalamount = 0;
-                    pageData.forEach(({ totalprice }) => {
-                        // totalamount += parseFloat(totalprice.replaceAll(',', ''));
+                    let totalquantity = 0;
+                    pageData.forEach(({ totalprice, quantity }) => {
+                        totalquantity += quantity;
                         totalamount += totalprice;
                     });
                     totalamount = totalamount.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
@@ -196,13 +225,14 @@ export default function Investment() {
                                 <Table.Summary.Cell index={0}>Нийт:</Table.Summary.Cell>
                                 <Table.Summary.Cell index={1} />
                                 <Table.Summary.Cell index={2} />
-                                <Table.Summary.Cell index={3} />
-                                <Table.Summary.Cell index={4} align="right">
+                                <Table.Summary.Cell index={3} align="right">
+                                    <Text>{totalquantity}</Text>
+                                </Table.Summary.Cell>
+                                <Table.Summary.Cell index={4} />
+                                <Table.Summary.Cell index={5} align="right">
                                     <Text>{totalamount}</Text>
                                 </Table.Summary.Cell>
-                                <Table.Summary.Cell index={5} />
                                 <Table.Summary.Cell index={6} />
-                                <Table.Summary.Cell index={7} />
                             </Table.Summary.Row>
                         </>
                     );
@@ -248,15 +278,15 @@ export default function Investment() {
                     <Form.Item name="investmentdate" label="Хөрөнгө хүлээн авсан огноо">
                         <DatePicker style={{ width: "100%" }} placeholder="Өдөр сонгох" />
                     </Form.Item>
-                    <Form.Item name="name" label="Хүлээн авсан хөрөнгийн нэр">
-                        {/* <Select style={{ width: "100%" }}>
-                            {relationship?.map((t, i) => (
-                                <Select.Option key={i} value={t.memberid}>
-                                    {t.name}
-                                </Select.Option>
-                            ))}
-                        </Select> */}
-                        <Input placeholder="Хүлээн авсан хөрөнгийн нэр" />
+                    <Form.Item name="assetreceivedtypeid" label="Хүлээн авсан хөрөнгийн төрөл">
+                        <Select style={{ width: '100%' }}>
+                            {assetreceivedtype?.map((t, i) => (<Select.Option key={i} value={t.id}>{t.name}</Select.Option>))}
+                        </Select>
+                    </Form.Item>
+                    <Form.Item name="assetreceivedid" label="Хүлээн авсан хөрөнгийн нэр">
+                        <Select style={{ width: '100%' }}>
+                            {assetreceived?.map((t, i) => (<Select.Option key={i} value={t.id}>{t.name}</Select.Option>))}
+                        </Select>
                     </Form.Item>
                     <Form.Item name="quantity" label="Тоо ширхэг">
                         <InputNumber
@@ -280,23 +310,6 @@ export default function Investment() {
                             parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
                         />
                     </Form.Item>
-                    {/* <Form.Item name="totalprice" label="Нийт үнэ">
-            <InputNumber
-              placeholder="Нийт үнэ"
-              min={0}
-              style={{ width: "100%" }}
-              formatter={(value) =>
-                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-              }
-              parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
-              defaultValue={0}
-              value={nitDun}
-              disabled
-              onChange={(value) => setTotalPrice({value})}
-            />
-            {console.log(nitDun)}
-          </Form.Item> */}
-
                     <Form.Item name="totalprice" label="Нийт үнэ">
                         <InputNumber
                             placeholder="Нийт үнэ"

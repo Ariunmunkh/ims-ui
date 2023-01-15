@@ -153,14 +153,14 @@ export default function LoanReturn() {
                 summary={(pageData) => {
 
                     let totalamount = 0;
-                    pageData.forEach(({ balance }) => {
-                        totalamount += parseFloat(balance.replaceAll(',', ''));
+                    pageData.forEach(({ amount }) => {
+                        totalamount += parseFloat(amount.replaceAll(',', ''));
                     });
                     totalamount = totalamount.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
                     return (
                         <>
                             <Table.Summary.Row style={{ background: '#fafafa' }}>
-                                <Table.Summary.Cell index={0}>Зээлийн үлдэгдэл</Table.Summary.Cell>
+                                <Table.Summary.Cell index={0}>Нийт:</Table.Summary.Cell>
                                 <Table.Summary.Cell index={2} align='right'>
                                     <Text>{totalamount}</Text>
                                 </Table.Summary.Cell>
