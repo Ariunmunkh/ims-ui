@@ -3,6 +3,7 @@ import { Tabs } from "antd";
 import UserListPage from "../user/UserListPage";
 import AssetReceived from "../baseinfo/AssetReceived";
 import AssetReceivedType from "../baseinfo/AssetReceivedType";
+import District from "../baseinfo/District";
 import EducationDegree from "../baseinfo/EducationDegree";
 import EmploymentStatus from "../baseinfo/EmploymentStatus";
 import HealthCondition from "../baseinfo/HealthCondition";
@@ -12,6 +13,7 @@ import LoanPurpose from "../baseinfo/LoanPurpose";
 import MediatedServiceType from "../baseinfo/MediatedServiceType";
 import Organization from "../baseinfo/Organization";
 import ProxyService from "../baseinfo/ProxyService";
+import Relationship from "../baseinfo/Relationship";
 import SponsoringOrganization from "../baseinfo/SponsoringOrganization";
 import SubBranch from "../baseinfo/SubBranch";
 import SupportReceivedType from "../baseinfo/SupportReceivedType";
@@ -32,14 +34,19 @@ export default function AdminPage() {
                         children: <UserListPage />,
                     },
                     {
-                        label: `Хүлээн авсан хөрөнгийн нэр`,
-                        key: "2",
-                        children: <AssetReceived />,
+                        label: `Сум, Дүүрэг`,
+                        key: "18",
+                        children: <District />,
                     },
                     {
-                        label: `Хүлээн авсан хөрөнгийн төрөл`,
-                        key: "3",
-                        children: <AssetReceivedType />,
+                        label: `Өрхийн статус`,
+                        key: "17",
+                        children: <HouseholdStatus />,
+                    },
+                    {
+                        label: `Ураг төрлийн нэршил`,
+                        key: "19",
+                        children: <Relationship />,
                     },
                     {
                         label: `Боловсролын зэрэг`,
@@ -57,49 +64,9 @@ export default function AdminPage() {
                         children: <HealthCondition />,
                     },
                     {
-                        label: `Холбон зуучилсан байгууллагын нэр`,
-                        key: "7",
-                        children: <IntermediaryOrganization />,
-                    },
-                    {
                         label: `Зээлийн зориулалт`,
                         key: "8",
                         children: <LoanPurpose />,
-                    },
-                    {
-                        label: `Холбон зуучилсан үйлчилгээний төрөл`,
-                        key: "9",
-                        children: <MediatedServiceType />,
-                    },
-                    {
-                        label: `Сургалт, үйл ажиллагаа зохион байгуулсан байгууллагын нэр`,
-                        key: "10",
-                        children: <Organization />,
-                    },
-                    {
-                        label: `Холбон зуучилсан үйлчилгээний нэр`,
-                        key: "11",
-                        children: <ProxyService />,
-                    },
-                    {
-                        label: `Дэмжлэг олгосон байгууллагын нэр`,
-                        key: "12",
-                        children: <SponsoringOrganization />,
-                    },
-                    {
-                        label: `Харьяалагдах дэд салбар`,
-                        key: "13",
-                        children: <SubBranch />,
-                    },
-                    {
-                        label: `Хүлээн авсан дэмжлэгийн төрөл`,
-                        key: "14",
-                        children: <SupportReceivedType />,
-                    },
-                    {
-                        label: `Сургалт, үйл ажиллагааны нэр`,
-                        key: "15",
-                        children: <TrainingAndActivity />,
                     },
                     {
                         label: `Сургалтын төрөл`,
@@ -107,9 +74,54 @@ export default function AdminPage() {
                         children: <TrainingType />,
                     },
                     {
-                        label: `Өрхийн статус`,
-                        key: "17",
-                        children: <HouseholdStatus />,
+                        label: `Сургалт, үйл ажиллагааны нэр`,
+                        key: "15",
+                        children: <TrainingAndActivity />,
+                    },
+                    {
+                        label: `Сургалт, үйл ажиллагаа зохион байгуулсан байгууллагын нэр`,
+                        key: "10",
+                        children: <Organization />,
+                    },
+                    {
+                        label: `Харьяалагдах дэд салбар`,
+                        key: "13",
+                        children: <SubBranch />,
+                    },
+                    {
+                        label: `Хүлээн авсан хөрөнгийн төрөл`,
+                        key: "3",
+                        children: <AssetReceivedType />,
+                    },
+                    {
+                        label: `Хүлээн авсан хөрөнгийн нэр`,
+                        key: "2",
+                        children: <AssetReceived />,
+                    },
+                    {
+                        label: `Хүлээн авсан дэмжлэгийн төрөл`,
+                        key: "14",
+                        children: <SupportReceivedType />,
+                    },
+                    {
+                        label: `Дэмжлэг олгосон байгууллагын нэр`,
+                        key: "12",
+                        children: <SponsoringOrganization />,
+                    },
+                    {
+                        label: `Холбон зуучилсан үйлчилгээний төрөл`,
+                        key: "9",
+                        children: <MediatedServiceType />,
+                    },
+                    {
+                        label: `Холбон зуучилсан байгууллагын нэр`,
+                        key: "7",
+                        children: <IntermediaryOrganization />,
+                    },
+                    {
+                        label: `Холбон зуучилсан үйлчилгээний нэр`,
+                        key: "11",
+                        children: <ProxyService />,
                     },
                 ]}
             />

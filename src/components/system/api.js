@@ -1,4 +1,4 @@
-﻿import axios from "axios";
+import axios from "axios";
 import { message } from "antd";
 import { getBaseURL } from "./apiconfig";
 

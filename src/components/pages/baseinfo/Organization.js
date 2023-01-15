@@ -39,11 +39,6 @@ export default function Organization() {
     }, [fetchData]);
 
     const gridcolumns = [
-
-        {
-            title: "Бүртгэлийн дугаар",
-            dataIndex: "id",
-        },
         {
             title: "Нэр",
             dataIndex: "name",
@@ -51,6 +46,7 @@ export default function Organization() {
         {
             title: "Огноо",
             dataIndex: "updated",
+            width: 160,
         },
     ];
 

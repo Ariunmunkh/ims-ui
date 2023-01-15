@@ -4,18 +4,17 @@ import { Table, Modal, Drawer, Form, Space, Button, Input } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { PlusOutlined } from "@ant-design/icons";
 const { confirm } = Modal;
-export default function HealthCondition() {
+export default function District() {
 
     const [griddata, setGridData] = useState();
     const [loading, setLoading] = useState(true);
-    const [formtitle] = useState('Эрүүл мэндийн байдал');
-    const [formtype] = useState('healthcondition');
+    const [formtitle] = useState('Сум, дүүрэг');
     const [formdata] = Form.useForm();
 
     const fetchData = useCallback(async () => {
         setLoading(true);
         await api
-            .get(`/api/record/base/get_dropdown_item_list?type=${formtype}`)
+            .get(`/api/record/base/get_district_list`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setGridData(res?.data?.retdata);
@@ -24,12 +23,12 @@ export default function HealthCondition() {
             .finally(() => {
                 setLoading(false);
             });
-    }, [formtype]);
+    }, [setLoading]);
 
     const tableOnRow = (record, rowIndex) => {
         return {
             onClick: (event) => {
-                getFormData(record.id);
+                getFormData(record.districtid);
             },
         };
     };
@@ -78,10 +77,7 @@ export default function HealthCondition() {
     };
 
     const onDelete = async () => {
-        await api
-            .delete(
-                `/api/record/base/delete_dropdown_item?id=${formdata.getFieldValue("id")}&type=${formtype}`
-            )
+        await api.delete(`/api/record/base/delete_district?id=${formdata.getFieldValue("districtid")}`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setIsModalOpen(false);
@@ -91,8 +87,7 @@ export default function HealthCondition() {
     };
 
     const onFinish = async (values) => {
-        await api
-            .post(`/api/record/base/set_dropdown_item`, formdata.getFieldsValue())
+        await api.post(`/api/record/base/set_district`, formdata.getFieldsValue())
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setIsModalOpen(false);
@@ -102,7 +97,7 @@ export default function HealthCondition() {
     };
 
     const getFormData = async (id) => {
-        await api.get(`/api/record/base/get_dropdown_item?id=${id}&type=${formtype}`).then((res) => {
+        await api.get(`/api/record/base/get_district?id=${id}`).then((res) => {
             if (res?.status === 200 && res?.data?.rettype === 0) {
                 formdata.setFieldsValue(res?.data?.retdata[0]);
                 showModal();
@@ -111,7 +106,7 @@ export default function HealthCondition() {
     };
 
     const newFormData = async () => {
-        formdata.setFieldsValue({ id: 0, name: null, type: formtype });
+        formdata.setFieldsValue({ districtid: 0, name: null });
         showModal();
     };
 
@@ -124,7 +119,7 @@ export default function HealthCondition() {
                 type="primary"
                 onClick={(e) => newFormData()}
             >
-                {`${formtitle} нэмэх`}
+                нэмэх
             </Button>
 
             <Table
@@ -151,7 +146,7 @@ export default function HealthCondition() {
                             key="delete"
                             danger
                             onClick={showDeleteConfirm}
-                            hidden={formdata.getFieldValue("id") === 0}
+                            hidden={formdata.getFieldValue("districtid") === 0}
                         >
                             Устгах
                         </Button>
@@ -169,11 +164,7 @@ export default function HealthCondition() {
                     labelCol={{ span: 8 }}
                     wrapperCol={{ span: 14 }}
                 >
-                    <Form.Item name="id" label="Дугаар" hidden={true}>
-                        <Input />
-                    </Form.Item>
-
-                    <Form.Item name="type" label="Төрөл" hidden={true} >
+                    <Form.Item name="districtid" label="Дугаар" hidden={true}>
                         <Input />
                     </Form.Item>
 
@@ -186,3 +177,4 @@ export default function HealthCondition() {
         </div>
     );
 }
+
