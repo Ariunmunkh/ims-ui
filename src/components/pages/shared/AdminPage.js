@@ -6,6 +6,7 @@ import AssetReceivedType from "../baseinfo/AssetReceivedType";
 import EducationDegree from "../baseinfo/EducationDegree";
 import EmploymentStatus from "../baseinfo/EmploymentStatus";
 import HealthCondition from "../baseinfo/HealthCondition";
+import HouseholdStatus from "../baseinfo/HouseholdStatus";
 import IntermediaryOrganization from "../baseinfo/IntermediaryOrganization";
 import LoanPurpose from "../baseinfo/LoanPurpose";
 import MediatedServiceType from "../baseinfo/MediatedServiceType";
@@ -104,6 +105,11 @@ export default function AdminPage() {
                         label: `Сургалтын төрөл`,
                         key: "16",
                         children: <TrainingType />,
+                    },
+                    {
+                        label: `Өрхийн статус`,
+                        key: "17",
+                        children: <HouseholdStatus />,
                     },
                 ]}
             />

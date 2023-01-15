@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { api } from "../../system/api";
 import { Table, Modal, Drawer, Space, Form, Button, Input, Select, Switch, Divider } from "antd";
@@ -40,17 +40,6 @@ export default function HouseHoldMember() {
             .finally(() => {
                 setLoading(false);
             });
-
-        api.get(`/api/record/base/get_relationship_list`)
-            .then((res) => {
-                if (res?.status === 200 && res?.data?.rettype === 0) {
-                    setrelationship(res?.data?.retdata);
-                }
-            })
-            .finally(() => {
-                setLoading(false);
-            });
-
     }, [householdid]);
 
     const tableOnRow = (record, rowIndex) => {
@@ -62,34 +51,31 @@ export default function HouseHoldMember() {
     };
 
     useEffect(() => {
-        fetchData();
+        api.get(`/api/record/base/get_relationship_list`)
+            .then((res) => {
+                if (res?.status === 200 && res?.data?.rettype === 0) {
+                    setrelationship(res?.data?.retdata);
+                }
+            });
         api.get(`/api/record/base/get_dropdown_item_list?type=educationdegree`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     seteducationdegree(res?.data?.retdata);
                 }
-            })
-            .finally(() => {
-                setLoading(false);
             });
         api.get(`/api/record/base/get_dropdown_item_list?type=employmentstatus`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setemploymentstatus(res?.data?.retdata);
                 }
-            })
-            .finally(() => {
-                setLoading(false);
             });
         api.get(`/api/record/base/get_dropdown_item_list?type=healthcondition`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     sethealthcondition(res?.data?.retdata);
                 }
-            })
-            .finally(() => {
-                setLoading(false);
             });
+        fetchData();
     }, [fetchData]);
 
     const gridcolumns = [

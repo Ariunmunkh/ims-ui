@@ -1,23 +1,21 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { useParams } from "react-router-dom";
+﻿import React, { useState, useEffect, useCallback } from "react";
 import { api } from "../../system/api";
-import { Table, Modal, Drawer, Space, Form, Button, Input, DatePicker, Select, Divider, } from "antd";
+import { Table, Modal, Drawer, Form, Space, Button, Input } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { PlusOutlined } from "@ant-design/icons";
-import dayjs from 'dayjs';
 const { confirm } = Modal;
+export default function HouseholdStatus() {
 
-export default function Livelihood() {
-    const { householdid } = useParams();
-    const [subbranch, setsubbranch] = useState([]);
     const [griddata, setGridData] = useState();
     const [loading, setLoading] = useState(true);
+    const [formtitle] = useState('Өрхийн статус');
+    const [formtype] = useState('householdstatus');
     const [formdata] = Form.useForm();
 
-    const fetchData = useCallback(() => {
+    const fetchData = useCallback(async () => {
         setLoading(true);
-        api
-            .get(`/api/record/coach/get_improvement_list?id=${householdid}`)
+        await api
+            .get(`/api/record/base/get_dropdown_item_list?type=${formtype}`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setGridData(res?.data?.retdata);
@@ -26,38 +24,33 @@ export default function Livelihood() {
             .finally(() => {
                 setLoading(false);
             });
-    }, [householdid]);
+    }, [formtype]);
 
     const tableOnRow = (record, rowIndex) => {
         return {
             onClick: (event) => {
-                getFormData(record.entryid);
+                getFormData(record.id);
             },
         };
     };
 
     useEffect(() => {
-        api.get(`/api/record/base/get_dropdown_item_list?type=subbranch`)
-            .then((res) => {
-                if (res?.status === 200 && res?.data?.rettype === 0) {
-                    setsubbranch(res?.data?.retdata);
-                }
-            });
         fetchData();
     }, [fetchData]);
 
     const gridcolumns = [
+
         {
-            title: "Амьжиргаа сайжруулах төлөвлөгөө боловсруулсан огноо",
-            dataIndex: "plandate",
+            title: "Бүртгэлийн дугаар",
+            dataIndex: "id",
         },
         {
-            title: "Өрхийн сонгосон аж ахуй",
-            dataIndex: "selectedfarm",
+            title: "Нэр",
+            dataIndex: "name",
         },
         {
-            title: "Харьяалагдах дэд салбар",
-            dataIndex: "subbranch",
+            title: "Огноо",
+            dataIndex: "updated",
         },
     ];
 
@@ -91,9 +84,7 @@ export default function Livelihood() {
     const onDelete = async () => {
         await api
             .delete(
-                `/api/record/coach/delete_improvement?id=${formdata.getFieldValue(
-                    "entryid"
-                )}`
+                `/api/record/base/delete_dropdown_item?id=${formdata.getFieldValue("id")}&type=${formtype}`
             )
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
@@ -104,10 +95,8 @@ export default function Livelihood() {
     };
 
     const onFinish = async (values) => {
-        let fdata = formdata.getFieldsValue();
-        fdata.plandate = fdata.plandate.format('YYYY.MM.DD HH:mm:ss');
         await api
-            .post(`/api/record/coach/set_improvement`, fdata)
+            .post(`/api/record/base/set_dropdown_item`, formdata.getFieldsValue())
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setIsModalOpen(false);
@@ -116,55 +105,49 @@ export default function Livelihood() {
             });
     };
 
-    const getFormData = async (entryid) => {
-        await api
-            .get(`/api/record/coach/get_improvement?id=${entryid}`)
-            .then((res) => {
-                if (res?.status === 200 && res?.data?.rettype === 0) {
-                    let fdata = res?.data?.retdata[0];
-                    fdata.plandate = dayjs(fdata.plandate, 'YYYY.MM.DD HH:mm:ss');
-                    formdata.setFieldsValue(fdata);
-                    showModal();
-                }
-            });
+    const getFormData = async (id) => {
+        await api.get(`/api/record/base/get_dropdown_item?id=${id}&type=${formtype}`).then((res) => {
+            if (res?.status === 200 && res?.data?.rettype === 0) {
+                formdata.setFieldsValue(res?.data?.retdata[0]);
+                showModal();
+            }
+        });
     };
 
     const newFormData = async () => {
-        formdata.setFieldsValue({
-            entryid: 0,
-            householdid: householdid,
-            plandate: null,
-            selectedfarm: null,
-            subbranchid: null,
-        });
+        formdata.setFieldsValue({ id: 0, name: null, type: formtype });
         showModal();
     };
+
+
     return (
         <div>
             <Button
                 style={{ marginBottom: 16 }}
-                type="primary"
                 icon={<PlusOutlined />}
+                type="primary"
                 onClick={(e) => newFormData()}
             >
-                Амьжиргаа сайжруулах үйл ажиллагааны мэдээлэл нэмэх
+                нэмэх
             </Button>
 
             <Table
+                title={() => formtitle}
+                bordered
                 loading={loading}
                 columns={gridcolumns}
                 dataSource={griddata}
                 onRow={tableOnRow}
                 pagination={false}
-                rowKey={(record) => record.entryid}
+                rowKey={(record) => record.id}
             ></Table>
+
             <Drawer
                 forceRender
-                title="Амьжиргаа сайжруулах үйл ажиллагааны мэдээлэл нэмэх"
-                open={isModalOpen}
+                title={formtitle}
                 width={720}
                 onClose={handleCancel}
-                centered
+                open={isModalOpen}
                 bodyStyle={{ paddingBottom: 80, }}
                 extra={
                     <Space>
@@ -172,7 +155,7 @@ export default function Livelihood() {
                             key="delete"
                             danger
                             onClick={showDeleteConfirm}
-                            hidden={formdata.getFieldValue("entryid") === 0}
+                            hidden={formdata.getFieldValue("id") === 0}
                         >
                             Устгах
                         </Button>
@@ -185,29 +168,26 @@ export default function Livelihood() {
                     </Space>
                 }
             >
-                <Divider />
                 <Form
                     form={formdata}
                     labelCol={{ span: 8 }}
                     wrapperCol={{ span: 14 }}
-                    labelAlign="left"
-                    labelWrap
                 >
-                    <Form.Item name="entryid" hidden={true} />
-                    <Form.Item name="householdid" hidden={true} />
-                    <Form.Item name="plandate" label="Амьжиргаа сайжруулах төлөвлөгөө боловсруулсан огноо">
-                        <DatePicker style={{ width: "100%" }} placeholder="Өдөр сонгох" />
-                    </Form.Item>
-                    <Form.Item name="selectedfarm" label="Өрхийн сонгосон аж ахуй">
+                    <Form.Item name="id" label="Дугаар" hidden={true}>
                         <Input />
                     </Form.Item>
-                    <Form.Item name="subbranchid" label="Харьяалагдах дэд салбар">
-                        <Select style={{ width: '100%' }}>
-                            {subbranch?.map((t, i) => (<Select.Option key={i} value={t.id}>{t.name}</Select.Option>))}
-                        </Select>
+
+                    <Form.Item name="type" label="Төрөл" hidden={true} >
+                        <Input />
                     </Form.Item>
+
+                    <Form.Item name="name" label="Нэр" >
+                        <Input />
+                    </Form.Item>
+
                 </Form>
             </Drawer>
         </div>
     );
 }
+

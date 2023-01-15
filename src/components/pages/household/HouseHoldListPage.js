@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../../system/api";
 import { Table, Button } from "antd";
@@ -14,11 +14,14 @@ export default function HouseHoldListPage() {
     const [formdata] = Form.useForm();
     const [districtlist, setdistrictlist] = useState([]);
     const [coachlist, setcoachlist] = useState([]);
+    const [householdstatus, sethouseholdstatus] = useState([]);
 
-    const fetchData = async () => {
+    const fetchData = useCallback(async () => {
         setLoading(true);
+        let coachid = userinfo.coachid;
+        coachid = coachid || coachid === '' ? '0' : coachid;
         await api
-            .get(`/api/record/households/get_household_list`)
+            .get(`/api/record/households/get_household_list?coachid=${coachid}`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setGridData(res?.data?.retdata);
@@ -27,7 +30,7 @@ export default function HouseHoldListPage() {
             .finally(() => {
                 setLoading(false);
             });
-    };
+    }, [userinfo]);
 
     const tableOnRow = (record, rowIndex) => {
         return {
@@ -38,7 +41,6 @@ export default function HouseHoldListPage() {
     };
 
     useEffect(() => {
-        fetchData();
         api.get(`/api/record/base/get_district_list`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
@@ -51,9 +53,20 @@ export default function HouseHoldListPage() {
                     setcoachlist(res?.data?.retdata);
                 }
             });
-    }, []);
+        api.get(`/api/record/base/get_dropdown_item_list?type=householdstatus`)
+            .then((res) => {
+                if (res?.status === 200 && res?.data?.rettype === 0) {
+                    sethouseholdstatus(res?.data?.retdata);
+                }
+            });
+        fetchData();
+    }, [fetchData]);
 
     const gridcolumns = [
+        {
+            title: "Өрхийн статус",
+            dataIndex: "householdstatus",
+        },
         {
             title: "Ам бүлийн тоо",
             dataIndex: "numberof",
@@ -61,6 +74,10 @@ export default function HouseHoldListPage() {
         {
             title: "Өрхийн тэргүүний нэр",
             dataIndex: "name",
+        },
+        {
+            title: "Гол оролцогч",
+            dataIndex: "participant",
         },
         {
             title: "Дүүрэг",
@@ -87,7 +104,7 @@ export default function HouseHoldListPage() {
     const newFormData = async () => {
         formdata.setFieldsValue({
             householdid: 0,
-            status: 0,
+            status: null,
             numberof: 0,
             name: null,
             districtid: null,
@@ -156,13 +173,14 @@ export default function HouseHoldListPage() {
                     <Form.Item name="householdid" label="Өрхийн дугаар" hidden={true} />
                     <Form.Item name="numberof" label="Ам бүлийн тоо" hidden={true} />
                     <Form.Item name="name" label="Өрхийн тэргүүний нэр" hidden={true} />
+                    <Form.Item name="status" label="Өрхийн статус">
+                        <Select style={{ width: '100%' }}>
+                            {householdstatus?.map((t, i) => (<Select.Option key={i} value={t.id}>{t.name}</Select.Option>))}
+                        </Select>
+                    </Form.Item>
                     <Form.Item name="districtid" label="Дүүрэг">
                         <Select style={{ width: "100%" }}>
-                            {districtlist?.map((t, i) => (
-                                <Select.Option key={i} value={t.districtid}>
-                                    {t.name}
-                                </Select.Option>
-                            ))}
+                            {districtlist?.map((t, i) => (<Select.Option key={i} value={t.districtid}>{t.name}</Select.Option>))}
                         </Select>
                     </Form.Item>
                     <Form.Item name="section" label="Хороо" >

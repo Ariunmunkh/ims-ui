@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { api } from "../../system/api";
-import useUserInfo from "../../system/useUserInfo";
 import {
     Table,
     Modal,
@@ -14,7 +13,6 @@ import {
     Select,
     Divider,
     InputNumber,
-    Switch,
     Typography,
 } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
@@ -24,7 +22,6 @@ const { confirm } = Modal;
 const { Text } = Typography;
 
 export default function Support() {
-    const { userinfo } = useUserInfo();
     const { householdid } = useParams();
     const [griddata, setGridData] = useState();
     const [loading, setLoading] = useState(true);
@@ -55,25 +52,19 @@ export default function Support() {
     };
 
     useEffect(() => {
-        fetchData();
         api.get(`/api/record/base/get_dropdown_item_list?type=supportreceivedtype`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setsupportreceivedtype(res?.data?.retdata);
                 }
-            })
-            .finally(() => {
-                setLoading(false);
             });
         api.get(`/api/record/base/get_dropdown_item_list?type=sponsoringorganization`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setsponsoringorganization(res?.data?.retdata);
                 }
-            })
-            .finally(() => {
-                setLoading(false);
             });
+        fetchData();
     }, [fetchData]);
 
 

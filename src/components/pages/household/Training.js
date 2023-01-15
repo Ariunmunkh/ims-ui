@@ -1,24 +1,15 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { api } from "../../system/api";
-import useUserInfo from "../../system/useUserInfo";
-import { Table, Modal, Drawer, Space, Form, Button, Input, DatePicker, Select, Divider, InputNumber, Switch, } from "antd";
+import { Table, Modal, Drawer, Space, Form, Button, DatePicker, Select, Divider, InputNumber, Switch, } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { PlusOutlined } from "@ant-design/icons";
 import dayjs from 'dayjs';
 const { confirm } = Modal;
 
-const orgList = [
-    "Монголын улаан загалмай нийгэмлэг",
-    "Гэр бүл хүүхэд залуучуудын хөгжлийн хэлтэс",
-    "Эрүүл мэндийн төв",
-  ];
-
 export default function Training() {
-    const { userinfo } = useUserInfo();
     const { householdid } = useParams();
     const [relationship, setrelationship] = useState([]);
-    const [coachlist, setcoachlist] = useState([]);
     const [griddata, setGridData] = useState();
     const [loading, setLoading] = useState(true);
     const [formdata] = Form.useForm();
@@ -28,8 +19,7 @@ export default function Training() {
 
     const fetchData = useCallback(() => {
         setLoading(true);
-        api
-            .get(`/api/record/coach/get_training_list?id=${householdid}`)
+        api.get(`/api/record/coach/get_training_list?id=${householdid}`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setGridData(res?.data?.retdata);
@@ -38,20 +28,6 @@ export default function Training() {
             .finally(() => {
                 setLoading(false);
             });
-
-        api
-            .get(
-                `/api/record/households/get_householdmember_list?householdid=${householdid}`
-            )
-            .then((res) => {
-                if (res?.status === 200 && res?.data?.rettype === 0) {
-                    setrelationship(res?.data?.retdata);
-                }
-            })
-            .finally(() => {
-                setLoading(false);
-            });
-
     }, [householdid]);
 
     const tableOnRow = (record, rowIndex) => {
@@ -63,35 +39,32 @@ export default function Training() {
     };
 
     useEffect(() => {
-        fetchData();
+        api.get(`/api/record/households/get_householdmember_list?householdid=${householdid}`)
+            .then((res) => {
+                if (res?.status === 200 && res?.data?.rettype === 0) {
+                    setrelationship(res?.data?.retdata);
+                }
+            });
         api.get(`/api/record/base/get_dropdown_item_list?type=trainingtype`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     settrainingtype(res?.data?.retdata);
                 }
-            })
-            .finally(() => {
-                setLoading(false);
             });
         api.get(`/api/record/base/get_dropdown_item_list?type=trainingandactivity`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     settrainingandactivity(res?.data?.retdata);
                 }
-            })
-            .finally(() => {
-                setLoading(false);
             });
         api.get(`/api/record/base/get_dropdown_item_list?type=organization`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setorganization(res?.data?.retdata);
                 }
-            })
-            .finally(() => {
-                setLoading(false);
             });
-    }, [fetchData]);
+        fetchData();
+    }, [fetchData, householdid]);
 
     const gridcolumns = [
         {
@@ -281,7 +254,7 @@ export default function Training() {
                         </Select>
                     </Form.Item>
                     <Form.Item name="duration" label="Сургалтын үргэжилсэн хугацаа">
-                        <InputNumber placeholder="Хугацаа" min={0}  style={{ width: "100%" }}/>                
+                        <InputNumber placeholder="Хугацаа" min={0} style={{ width: "100%" }} />
                     </Form.Item>
                     <Form.Item
                         name="isjoin"
@@ -303,7 +276,7 @@ export default function Training() {
                             ))}
                         </Select>
                     </Form.Item>
-                
+
                 </Form>
             </Drawer>
         </div>

@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { api } from "../../system/api";
-import useUserInfo from "../../system/useUserInfo";
 import {
     Table,
     Modal,
@@ -9,7 +8,6 @@ import {
     Space,
     Form,
     Button,
-    Input,
     DatePicker,
     Select,
     Divider,
@@ -19,7 +17,6 @@ import dayjs from "dayjs";
 const { confirm } = Modal;
 
 export default function Contact() {
-    const { userinfo } = useUserInfo();
     const { householdid } = useParams();
     const [household, sethousehold] = useState([]);
     const [griddata, setGridData] = useState();
@@ -41,15 +38,6 @@ export default function Contact() {
                 setLoading(false);
             });
 
-        api.get(`/api/record/households/get_householdmember_list?householdid=${householdid}`)
-            .then((res) => {
-                if (res?.status === 200 && res?.data?.rettype === 0) {
-                    sethousehold(res?.data?.retdata);
-                }
-            })
-            .finally(() => {
-                setLoading(false);
-            });
     }, [householdid]);
 
     const tableOnRow = (record, rowIndex) => {
@@ -61,35 +49,32 @@ export default function Contact() {
     };
 
     useEffect(() => {
-        fetchData();
+        api.get(`/api/record/households/get_householdmember_list?householdid=${householdid}`)
+            .then((res) => {
+                if (res?.status === 200 && res?.data?.rettype === 0) {
+                    sethousehold(res?.data?.retdata);
+                }
+            });
         api.get(`/api/record/base/get_dropdown_item_list?type=mediatedservicetype`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setmediatedservicetype(res?.data?.retdata);
                 }
-            })
-            .finally(() => {
-                setLoading(false);
             });
         api.get(`/api/record/base/get_dropdown_item_list?type=intermediaryorganization`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setintermediaryorganization(res?.data?.retdata);
                 }
-            })
-            .finally(() => {
-                setLoading(false);
             });
         api.get(`/api/record/base/get_dropdown_item_list?type=proxyservice`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setproxyservice(res?.data?.retdata);
                 }
-            })
-            .finally(() => {
-                setLoading(false);
             });
-    }, [fetchData]);
+        fetchData();
+    }, [fetchData, householdid]);
 
     const gridcolumns = [
         {

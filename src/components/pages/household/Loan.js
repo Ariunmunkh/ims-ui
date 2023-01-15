@@ -38,16 +38,13 @@ export default function Loan() {
     };
 
     useEffect(() => {
-        fetchData();
         api.get(`/api/record/base/get_dropdown_item_list?type=loanpurpose`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setloanpurpose(res?.data?.retdata);
                 }
-            })
-            .finally(() => {
-                setLoading(false);
             });
+        fetchData();
     }, [fetchData]);
 
     const gridcolumns = [

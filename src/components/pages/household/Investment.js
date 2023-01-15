@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { api } from "../../system/api";
-import useUserInfo from "../../system/useUserInfo";
 import {
     Table,
     Modal,
@@ -23,7 +22,6 @@ const { confirm } = Modal;
 const { Text } = Typography;
 
 export default function Investment() {
-    const { userinfo } = useUserInfo();
     const { householdid } = useParams();
     const [griddata, setGridData] = useState();
     const [loading, setLoading] = useState(true);
@@ -54,25 +52,19 @@ export default function Investment() {
     };
 
     useEffect(() => {
-        fetchData();
         api.get(`/api/record/base/get_dropdown_item_list?type=assetreceivedtype`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setassetreceivedtype(res?.data?.retdata);
                 }
-            })
-            .finally(() => {
-                setLoading(false);
             });
         api.get(`/api/record/base/get_dropdown_item_list?type=assetreceived`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setassetreceived(res?.data?.retdata);
                 }
-            })
-            .finally(() => {
-                setLoading(false);
             });
+        fetchData();
     }, [fetchData]);
 
     const gridcolumns = [

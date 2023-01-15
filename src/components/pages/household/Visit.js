@@ -19,8 +19,7 @@ export default function Visit() {
 
     const fetchData = useCallback(() => {
         setLoading(true);
-        api
-            .get(`/api/record/coach/get_householdvisit_list?id=${householdid}`)
+        api.get(`/api/record/coach/get_householdvisit_list?id=${householdid}`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setGridData(res?.data?.retdata);
@@ -30,31 +29,6 @@ export default function Visit() {
                 setLoading(false);
             });
 
-        api
-            .get(
-                `/api/record/households/get_householdmember_list?householdid=${householdid}`
-            )
-            .then((res) => {
-                if (res?.status === 200 && res?.data?.rettype === 0) {
-                    setrelationship(res?.data?.retdata);
-                }
-            })
-            .finally(() => {
-                setLoading(false);
-            });
-
-        api
-            .get(
-                `/api/record/coach/get_coach_list`
-            )
-            .then((res) => {
-                if (res?.status === 200 && res?.data?.rettype === 0) {
-                    setcoachlist(res?.data?.retdata);
-                }
-            })
-            .finally(() => {
-                setLoading(false);
-            });
     }, [householdid]);
 
     const tableOnRow = (record, rowIndex) => {
@@ -66,8 +40,20 @@ export default function Visit() {
     };
 
     useEffect(() => {
+        api.get(`/api/record/households/get_householdmember_list?householdid=${householdid}`)
+            .then((res) => {
+                if (res?.status === 200 && res?.data?.rettype === 0) {
+                    setrelationship(res?.data?.retdata);
+                }
+            });
+        api.get(`/api/record/coach/get_coach_list`)
+            .then((res) => {
+                if (res?.status === 200 && res?.data?.rettype === 0) {
+                    setcoachlist(res?.data?.retdata);
+                }
+            });
         fetchData();
-    }, [fetchData]);
+    }, [fetchData, householdid]);
 
     const gridcolumns = [
         {

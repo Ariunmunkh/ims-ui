@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { api } from "../../system/api";
 import useUserInfo from "../../system/useUserInfo";
@@ -11,6 +11,7 @@ export default function HouseHold() {
     const [formdata] = Form.useForm();
     const [districtlist, setdistrictlist] = useState([]);
     const [coachlist, setcoachlist] = useState([]);
+    const [householdstatus, sethouseholdstatus] = useState([]);
 
     const fetchData = useCallback(() => {
         api.get(`/api/record/households/get_household?id=${householdid}`)
@@ -31,6 +32,12 @@ export default function HouseHold() {
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setcoachlist(res?.data?.retdata);
+                }
+            });
+        api.get(`/api/record/base/get_dropdown_item_list?type=householdstatus`)
+            .then((res) => {
+                if (res?.status === 200 && res?.data?.rettype === 0) {
+                    sethouseholdstatus(res?.data?.retdata);
                 }
             });
     }, [fetchData]);
@@ -106,6 +113,11 @@ export default function HouseHold() {
                     <Form.Item name="householdid" label="Өрхийн дугаар" hidden={true} />
                     <Form.Item name="numberof" label="Ам бүлийн тоо" hidden={true} />
                     <Form.Item name="name" label="Өрхийн тэргүүний нэр" hidden={true} />
+                    <Form.Item name="status" label="Өрхийн статус">
+                        <Select style={{ width: '100%' }}>
+                            {householdstatus?.map((t, i) => (<Select.Option key={i} value={t.id}>{t.name}</Select.Option>))}
+                        </Select>
+                    </Form.Item>
                     <Form.Item name="districtname" hidden={true} />
                     <Form.Item name="districtid" label="Дүүрэг">
                         <Select style={{ width: "100%" }}>
