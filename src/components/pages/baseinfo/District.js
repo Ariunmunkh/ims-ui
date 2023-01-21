@@ -119,7 +119,7 @@ export default function District() {
                 type="primary"
                 onClick={(e) => newFormData()}
             >
-                нэмэх
+                {`${formtitle} нэмэх`}
             </Button>
 
             <Table

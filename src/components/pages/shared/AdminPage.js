@@ -1,6 +1,7 @@
 import React from "react";
 import { Tabs } from "antd";
 import UserListPage from "../user/UserListPage";
+import CoachListPage from "../coach/CoachListPage";
 import AssetReceived from "../baseinfo/AssetReceived";
 import AssetReceivedType from "../baseinfo/AssetReceivedType";
 import District from "../baseinfo/District";
@@ -18,6 +19,7 @@ import SponsoringOrganization from "../baseinfo/SponsoringOrganization";
 import SubBranch from "../baseinfo/SubBranch";
 import SupportReceivedType from "../baseinfo/SupportReceivedType";
 import TrainingAndActivity from "../baseinfo/TrainingAndActivity";
+import HouseholdGroup from "../baseinfo/HouseholdGroup";
 import TrainingType from "../baseinfo/TrainingType";
 
 export default function AdminPage() {
@@ -26,12 +28,18 @@ export default function AdminPage() {
         <div>
             <Tabs
                 tabPosition={"left"}
+                style={{ height: '80vh' }}
                 defaultActiveKey="1"
                 items={[
                     {
                         label: `Хэрэглэгч`,
                         key: "1",
                         children: <UserListPage />,
+                    },
+                    {
+                        label: `Коучийн жагсаалт`,
+                        key: "20",
+                        children: <CoachListPage />,
                     },
                     {
                         label: `Сум, Дүүрэг`,
@@ -42,6 +50,11 @@ export default function AdminPage() {
                         label: `Өрхийн статус`,
                         key: "17",
                         children: <HouseholdStatus />,
+                    },
+                    {
+                        label: `Бүлэг /Өрх/`,
+                        key: "21",
+                        children: <HouseholdGroup />,
                     },
                     {
                         label: `Ураг төрлийн нэршил`,
@@ -79,7 +92,7 @@ export default function AdminPage() {
                         children: <TrainingAndActivity />,
                     },
                     {
-                        label: `Сургалт, үйл ажиллагаа зохион байгуулсан байгууллагын нэр`,
+                        label: `Сургалт, үйл ажиллагаа зохиох байгууллагын нэр`,
                         key: "10",
                         children: <Organization />,
                     },

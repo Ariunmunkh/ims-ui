@@ -16,7 +16,6 @@ export default function UserListPage() {
     const [loading, setLoading] = useState(true);
     const [iscoach, setiscoach] = useState(true);
     const [formdata] = Form.useForm();
-    const [districtlist, setdistrictlist] = useState([]);
     const [coachlist, setcoachlist] = useState([]);
 
     const fetchData = async () => {
@@ -42,12 +41,6 @@ export default function UserListPage() {
     };
 
     useEffect(() => {
-        api.get(`/api/record/base/get_district_list`)
-            .then((res) => {
-                if (res?.status === 200 && res?.data?.rettype === 0) {
-                    setdistrictlist(res?.data?.retdata);
-                }
-            });
         api.get(`/api/record/coach/get_coach_list`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
@@ -65,6 +58,7 @@ export default function UserListPage() {
                     <Select
                         value={record?.roleid}
                         disabled
+                        bordered={false}
                         options={[
                             {
                                 value: 1,
@@ -144,14 +138,8 @@ export default function UserListPage() {
     };
 
     const onFinish = async (values) => {
-
-        let sdata = formdata.getFieldsValue();
-
-        if (sdata.coachid) {
-            api.post(`/api/record/coach/set_coach`, sdata).then((res) => { });
-        }
         await api
-            .post(`/api/systems/User/set_user`, sdata)
+            .post(`/api/systems/User/set_user`, formdata.getFieldsValue())
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setIsModalOpen(false);
@@ -178,18 +166,6 @@ export default function UserListPage() {
     const roleidChange = (value) => {
         setiscoach(value !== 3);
         formdata.setFieldValue("coachid", null);
-        formdata.setFieldValue("name", null);
-        formdata.setFieldValue("phone", null);
-        formdata.setFieldValue("districtid", null);
-    };
-
-    const coachidChange = (value) => {
-        const found = coachlist.find(element => element.coachid === value);
-        if (found) {
-            formdata.setFieldValue("name", found.name);
-            formdata.setFieldValue("phone", found.phone);
-            formdata.setFieldValue("districtid", found.districtid);
-        }
     };
 
     return (
@@ -211,6 +187,7 @@ export default function UserListPage() {
                 dataSource={griddata}
                 onRow={tableOnRow}
                 pagination={false}
+                scroll={{ y: '70vh' }}
                 rowKey={(record) => record.userid}
             ></Table>
 
@@ -268,10 +245,8 @@ export default function UserListPage() {
                             ]}
                         />
                     </Form.Item>
-
                     <Form.Item name="coachid" label="Коучийн нэр" hidden={iscoach}>
-                        <Select style={{ width: "100%" }}
-                            onChange={coachidChange}>
+                        <Select style={{ width: "100%" }}>
                             {coachlist?.map((t, i) => (
                                 <Select.Option key={i} value={t.coachid}>
                                     {t.name}
@@ -279,20 +254,6 @@ export default function UserListPage() {
                             ))}
                         </Select>
                     </Form.Item>
-                    <Form.Item name="name" label="Коучийн нэр" hidden={true}/>
-                    <Form.Item name="phone" label="Утас" hidden={iscoach}>
-                        <Input />
-                    </Form.Item>
-                    <Form.Item name="districtid" label="Дүүрэг" hidden={iscoach}>
-                        <Select style={{ width: "100%" }}>
-                            {districtlist?.map((t, i) => (
-                                <Select.Option key={i} value={t.districtid}>
-                                    {t.name}
-                                </Select.Option>
-                            ))}
-                        </Select>
-                    </Form.Item>
-
                     <Form.Item
                         name="username"
                         label="Нэвтрэх нэр"

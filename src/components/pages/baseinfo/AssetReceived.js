@@ -124,7 +124,7 @@ export default function AssetReceived() {
                 type="primary"
                 onClick={(e) => newFormData()}
             >
-                нэмэх
+                {`${formtitle} нэмэх`}
             </Button>
 
             <Table

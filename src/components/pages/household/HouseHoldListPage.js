@@ -15,6 +15,7 @@ export default function HouseHoldListPage() {
     const [districtlist, setdistrictlist] = useState([]);
     const [coachlist, setcoachlist] = useState([]);
     const [householdstatus, sethouseholdstatus] = useState([]);
+    const [householdgroup, sethouseholdgroup] = useState([]);
 
     const fetchData = useCallback(async () => {
         setLoading(true);
@@ -31,14 +32,6 @@ export default function HouseHoldListPage() {
                 setLoading(false);
             });
     }, [userinfo]);
-
-    const tableOnRow = (record, rowIndex) => {
-        return {
-            onClick: (event) => {
-                navigate(`/household/${record.householdid}`);
-            },
-        };
-    };
 
     useEffect(() => {
         api.get(`/api/record/base/get_district_list`)
@@ -59,13 +52,52 @@ export default function HouseHoldListPage() {
                     sethouseholdstatus(res?.data?.retdata);
                 }
             });
+        api.get(`/api/record/base/get_dropdown_item_list?type=householdgroup`)
+            .then((res) => {
+                if (res?.status === 200 && res?.data?.rettype === 0) {
+                    sethouseholdgroup(res?.data?.retdata);
+                }
+            });
         fetchData();
     }, [fetchData]);
+
+    const groupchange = (householdgroupid, householdid) => {
+
+        const tdata = [...griddata];
+        const found = tdata.find(a => a.householdid === householdid);
+        if (found)
+            found.householdgroupid = householdgroupid;
+
+        setGridData(tdata);
+
+        api.post(`/api/record/households/set_household_group?householdid=${householdid}&householdgroupid=${householdgroupid}`);
+    };
 
     const gridcolumns = [
         {
             title: "Өрхийн статус",
             dataIndex: "householdstatus",
+            render: (text, record, index) => {
+                return (
+                    <Button type="link" onClick={() => navigate(`/household/${record.householdid}`)}>{text}</Button>
+                );
+            },
+        },
+        {
+            title: "Бүлэг",
+            dataIndex: "householdgroupid",
+            render: (text, record, index) => {
+                return (
+                    <Select
+                        style={{ width: 275 }}
+                        bordered={false}
+                        value={record?.householdgroupid}
+                        onChange={(value) => groupchange(value, record.householdid)}
+                    >
+                        {householdgroup?.map((t, i) => (<Select.Option key={i} value={t.id}>{t.name}</Select.Option>))}
+                    </Select>
+                );
+            },
         },
         {
             title: "Ам бүлийн тоо",
@@ -209,7 +241,6 @@ export default function HouseHoldListPage() {
                 loading={loading}
                 columns={gridcolumns}
                 dataSource={userinfo.roleid === '1' ? griddata : content}
-                onRow={tableOnRow}
                 pagination={false}
                 rowKey={(record) => record.householdid}
             ></Table>

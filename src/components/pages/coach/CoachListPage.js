@@ -1,20 +1,33 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { api } from "../../system/api";
-import { Table, Modal, Drawer, Form, Space, Button, Switch, Input } from "antd";
+import { Table, Modal, Drawer, Form, Space, Button, Input, Select } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { PlusOutlined } from "@ant-design/icons";
 const { confirm } = Modal;
-export default function Relationship() {
+export default function CoachListPage() {
 
     const [griddata, setGridData] = useState();
     const [loading, setLoading] = useState(true);
-    const [formtitle] = useState('Ураг төрлийн нэршил');
     const [formdata] = Form.useForm();
+    const [project, setproject] = useState([]);
+    const [district, setdistrict] = useState([]);
 
-    const fetchData = useCallback(async () => {
+    const fetchData = async () => {
         setLoading(true);
+        api.get(`/api/record/coach/get_project_list`)
+            .then((res) => {
+                if (res?.status === 200 && res?.data?.rettype === 0) {
+                    setproject(res?.data?.retdata);
+                }
+            });
+        api.get(`/api/record/base/get_district_list`)
+            .then((res) => {
+                if (res?.status === 200 && res?.data?.rettype === 0) {
+                    setdistrict(res?.data?.retdata);
+                }
+            });
         await api
-            .get(`/api/record/base/get_relationship_list`)
+            .get(`/api/record/coach/get_coach_list`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setGridData(res?.data?.retdata);
@@ -23,29 +36,39 @@ export default function Relationship() {
             .finally(() => {
                 setLoading(false);
             });
-    }, [setLoading]);
+    };
 
     const tableOnRow = (record, rowIndex) => {
         return {
             onClick: (event) => {
-                getFormData(record.relationshipid);
+                getFormData(record.coachid);
             },
         };
     };
 
     useEffect(() => {
         fetchData();
-    }, [fetchData]);
-
+    }, []);
     const gridcolumns = [
         {
-            title: "Нэр",
+            title: "Коучийн дугаар",
+            dataIndex: "coachid",
+        },
+        {
+            title: "Коучийн нэр",
             dataIndex: "name",
         },
         {
-            title: "Огноо",
-            dataIndex: "updated",
-            width: 160,
+            title: "Утас",
+            dataIndex: "phone",
+        },
+        {
+            title: "Төслийн нэр",
+            dataIndex: "projectname",
+        },
+        {
+            title: "Дүүрэг",
+            dataIndex: "districtname",
         },
     ];
 
@@ -63,22 +86,16 @@ export default function Relationship() {
         confirm({
             title: "Устгах уу?",
             icon: <ExclamationCircleFilled />,
-            //content: 'Some descriptions',
             okText: "Тийм",
             okType: "danger",
             cancelText: "Үгүй",
-            onOk() {
-                onDelete();
-            },
-            onCancel() {
-                //console.log('Cancel');
-            },
+            onOk() { onDelete(); },
         });
     };
 
     const onDelete = async () => {
-        await api
-            .delete(`/api/record/base/delete_relationship?id=${formdata.getFieldValue("relationshipid")}`).then((res) => {
+        await api.delete(`/api/record/coach/delete_coach?id=${formdata.getFieldValue("coachid")}`)
+            .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setIsModalOpen(false);
                     fetchData();
@@ -88,7 +105,7 @@ export default function Relationship() {
 
     const onFinish = async (values) => {
         await api
-            .post(`/api/record/base/set_relationship`, formdata.getFieldsValue())
+            .post(`/api/record/coach/set_coach`, formdata.getFieldsValue())
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setIsModalOpen(false);
@@ -97,8 +114,8 @@ export default function Relationship() {
             });
     };
 
-    const getFormData = async (id) => {
-        await api.get(`/api/record/base/get_relationship?id=${id}`).then((res) => {
+    const getFormData = async (coachid) => {
+        await api.get(`/api/record/coach/get_coach?id=${coachid}`).then((res) => {
             if (res?.status === 200 && res?.data?.rettype === 0) {
                 formdata.setFieldsValue(res?.data?.retdata[0]);
                 showModal();
@@ -107,10 +124,9 @@ export default function Relationship() {
     };
 
     const newFormData = async () => {
-        formdata.setFieldsValue({ relationshipid: 0, name: null, ishead: false });
+        formdata.setFieldsValue({ coachid: 0, name: null, phone: null, projectid: 0, districtid: 0, });
         showModal();
     };
-
 
     return (
         <div>
@@ -120,23 +136,23 @@ export default function Relationship() {
                 type="primary"
                 onClick={(e) => newFormData()}
             >
-                {`${formtitle} нэмэх`}
+                Коуч нэмэх
             </Button>
 
             <Table
-                title={() => formtitle}
+                title={() => `Коучийн жагсаалт:`}
                 bordered
                 loading={loading}
                 columns={gridcolumns}
                 dataSource={griddata}
                 onRow={tableOnRow}
                 pagination={false}
-                rowKey={(record) => record.id}
+                rowKey={(record) => record.coachid}
             ></Table>
 
             <Drawer
                 forceRender
-                title={formtitle}
+                title="Коучийн бүртгэл"
                 width={720}
                 onClose={handleCancel}
                 open={isModalOpen}
@@ -147,7 +163,7 @@ export default function Relationship() {
                             key="delete"
                             danger
                             onClick={showDeleteConfirm}
-                            hidden={formdata.getFieldValue("id") === 0}
+                            hidden={formdata.getFieldValue("coachid") === 0}
                         >
                             Устгах
                         </Button>
@@ -165,20 +181,27 @@ export default function Relationship() {
                     labelCol={{ span: 8 }}
                     wrapperCol={{ span: 14 }}
                 >
-                    <Form.Item name="relationshipid" label="Дугаар" hidden={true}>
+                    <Form.Item name="coachid" label="Дугаар" hidden={true}>
                         <Input />
                     </Form.Item>
-
-                    <Form.Item name="name" label="Нэр" >
+                    <Form.Item name="name" label="Коучийн нэр">
                         <Input />
                     </Form.Item>
-
-                    <Form.Item name="ishead" label="Өрхийн тэргүүн эсэх" valuePropName="checked" >
-                        <Switch checkedChildren="Тийм" unCheckedChildren="Үгүй" style={{ width: '100%' }} />
+                    <Form.Item name="phone" label="Утас">
+                        <Input />
+                    </Form.Item>
+                    <Form.Item name="projectid" label="Төслийн нэр">
+                        <Select style={{ width: "100%" }}>
+                            {project?.map((t, i) => (<Select.Option key={i} value={t.id}>{t.name}</Select.Option>))}
+                        </Select>
+                    </Form.Item>
+                    <Form.Item name="districtid" label="Дүүрэг">
+                        <Select style={{ width: "100%" }}>
+                            {district?.map((t, i) => (<Select.Option key={i} value={t.districtid}>{t.name}</Select.Option>))}
+                        </Select>
                     </Form.Item>
                 </Form>
             </Drawer>
         </div>
     );
 }
-

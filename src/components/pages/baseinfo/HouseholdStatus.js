@@ -124,7 +124,7 @@ export default function HouseholdStatus() {
                 type="primary"
                 onClick={(e) => newFormData()}
             >
-                нэмэх
+                {`${formtitle} нэмэх`}
             </Button>
 
             <Table
