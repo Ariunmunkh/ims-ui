@@ -31,6 +31,7 @@ import Loan from "../coach/Loan";
 import Training from "../coach/Training";
 import Investment from "../coach/Investment";
 import Contact from "../coach/Contact";
+import MapPage from "../coach/MapPage";
 
 const { Header, Sider, Content } = Layout;
 const { Text } = Typography;
@@ -252,6 +253,10 @@ export default function MasterPage() {
                     }}
                 >
                     <Routes>
+                        <Route
+                            path="/"
+                            element={userinfo?.roleid ? <MapPage /> : <AccessDenied />}
+                        />
                         <Route
                             path="/adminpage"
                             element={userinfo?.roleid === "1" ? <AdminPage /> : <AccessDenied />}
