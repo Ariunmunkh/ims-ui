@@ -2,15 +2,18 @@ import React, { useRef, useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../../system/api";
 import { Table, Button } from "antd";
-import { Drawer, Space, Form, Input, Select, InputNumber } from "antd";
+import { Drawer, Space, Form, Input, Select, InputNumber, Typography, Row, Col } from "antd";
 import { SearchOutlined } from '@ant-design/icons';
 import useUserInfo from "../../system/useUserInfo";
 import Highlighter from 'react-highlight-words';
+const { Text } = Typography;
 
 export default function HouseHoldListPage() {
     const navigate = useNavigate();
     const [griddata, setGridData] = useState();
-    const [loading, setLoading] = useState(true);
+    const [status, setstatus] = useState(1);
+    const [group, setgroup] = useState(0);
+    const [loading, setLoading] = useState(false);
     const { userinfo } = useUserInfo();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [formdata] = Form.useForm();
@@ -24,7 +27,7 @@ export default function HouseHoldListPage() {
         let coachid = userinfo.coachid;
         coachid = coachid || coachid === '' ? '0' : coachid;
         await api
-            .get(`/api/record/households/get_household_list?coachid=${coachid}`)
+            .get(`/api/record/households/get_household_list?coachid=${coachid}&status=${status}&group=${group === undefined ? 0 : group}`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setGridData(res?.data?.retdata);
@@ -33,7 +36,7 @@ export default function HouseHoldListPage() {
             .finally(() => {
                 setLoading(false);
             });
-    }, [userinfo]);
+    }, [userinfo, status, group]);
 
     useEffect(() => {
         api.get(`/api/record/base/get_district_list`)
@@ -218,11 +221,11 @@ export default function HouseHoldListPage() {
             dataIndex: "name",
             ...getColumnSearchProps('name'),
         },
-        {
-            title: "Гол оролцогч",
-            dataIndex: "participant",
-            ...getColumnSearchProps('participant'),
-        },
+        //{
+        //    title: "Гол оролцогч",
+        //    dataIndex: "participant",
+        //    ...getColumnSearchProps('participant'),
+        //},
         {
             title: "Дүүрэг",
             dataIndex: "districtname",
@@ -284,15 +287,41 @@ export default function HouseHoldListPage() {
         });
     };
 
+    const changeStatus = async (value) => {
+        setstatus(value);
+    };
+    const changeGroup = async (value) => {
+        setgroup(value);
+    };
+
     return (
         <div>
-            <Button
-                style={{ marginBottom: 16 }}
-                type="primary"
-                onClick={(e) => newFormData()}
-            >
-                Шинэ
-            </Button>
+            <Row gutter={16} style={{ marginTop: 16, marginBottom: 16 }}>
+                <Col span={2}>
+                    <Button
+                        type="primary"
+                        onClick={(e) => newFormData()}
+                    >
+                        Шинэ
+                    </Button>
+                </Col>
+                <Col>
+                    <Text>Өрхийн статус</Text>
+                </Col>
+                <Col>
+                    <Select defaultValue={1} onChange={(value) => changeStatus(value)} style={{ width: '200px' }}>
+                        {householdstatus?.map((t, i) => (<Select.Option key={i} value={t.id}>{t.name}</Select.Option>))}
+                    </Select>
+                </Col>
+                <Col>
+                    <Text>Бүлэг</Text>
+                </Col>
+                <Col>
+                    <Select onChange={(value) => changeGroup(value)} allowClear style={{ width: '200px' }}>
+                        {householdgroup?.map((t, i) => (<Select.Option key={i} value={t.id}>{t.name}</Select.Option>))}
+                    </Select>
+                </Col>
+            </Row>
             <Drawer
                 forceRender
                 title="Өрхийн мэдээлэл засах"

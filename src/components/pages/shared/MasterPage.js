@@ -87,6 +87,7 @@ export default function MasterPage() {
                         label: "Холбон зуучилсан үйл ажиллаагааны бүртгэл",
                     },
                     {
+                        key: "",
                         icon: <StockOutlined />,
                         label: "Үр дүн",
                     },
@@ -134,6 +135,7 @@ export default function MasterPage() {
                         label: "Холбон зуучилсан үйл ажиллаагааны бүртгэл",
                     },
                     {
+                        key: "",
                         icon: <StockOutlined />,
                         label: "Үр дүн",
                     },
@@ -176,6 +178,7 @@ export default function MasterPage() {
                         label: "Холбон зуучилсан үйл ажиллаагааны бүртгэл",
                     },
                     {
+                        key: "",
                         icon: <StockOutlined />,
                         label: "Үр дүн",
                     },
