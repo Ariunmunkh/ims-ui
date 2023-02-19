@@ -2,7 +2,8 @@ import React, { useState, useEffect, useCallback } from "react";
 import BingMapsReact from "bingmaps-react";
 import { api } from "../../system/api";
 import useUserInfo from "../../system/useUserInfo";
-import { Spin, Select, Typography, Row, Col } from "antd";
+import { Spin, Select, Typography, Row, Col, Divider } from "antd";
+import _ from 'lodash';
 const { Text } = Typography;
 
 export default function MapPage() {
@@ -10,9 +11,9 @@ export default function MapPage() {
     const { userinfo } = useUserInfo();
     const [loading, setloading] = useState(true);
     const [pushPins, setdata] = useState([]);
-    const [coachlist, setcoachlist] = useState([]);
+    const [coachlist, setcoachlist] = useState([{ coachid: 0, coachname: 'хоосон' }]);
     const [coachid, setcoachid] = useState(0);
-    const [districtlist, setdistrictlist] = useState([]);
+    const [districtlist, setdistrictlist] = useState([{ districtid: 0, districtname: 'хоосон' }]);
     const [districtid, setdistrictid] = useState(0);
 
     const fetchData = useCallback(async () => {
@@ -25,7 +26,18 @@ export default function MapPage() {
         await api.get(`/api/record/households/get_household_location?coachid=${tcoachid}&districtid=${districtid}`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
+
                     setdata(res?.data?.retdata);
+
+                    var tcoach = _.uniqBy(res?.data?.retdata, 'coachid');
+                    tcoach.push({ coachid: 0, coachname: 'хоосон' });
+                    tcoach.sort((a, b) => a.coachid - b.coachid);
+                    setcoachlist(tcoach);
+
+                    var tdistrict = _.uniqBy(res?.data?.retdata, 'districtid');
+                    tdistrict.push({ districtid: 0, districtname: 'хоосон' });
+                    tdistrict.sort((a, b) => a.districtid - b.districtid);
+                    setdistrictlist(tdistrict);
                 }
             })
             .finally(() => {
@@ -35,20 +47,6 @@ export default function MapPage() {
     }, [userinfo, districtid, coachid]);
 
     useEffect(() => {
-        api.get(`/api/record/base/get_district_list`)
-            .then((res) => {
-                if (res?.status === 200 && res?.data?.rettype === 0) {
-                    res?.data?.retdata.push({ districtid: 0, name: 'хоосон' });
-                    setdistrictlist(res?.data?.retdata);
-                }
-            });
-        api.get(`/api/record/coach/get_coach_list`)
-            .then((res) => {
-                if (res?.status === 200 && res?.data?.rettype === 0) {
-                    res?.data?.retdata.push({ coachid: 0, name: 'хоосон' });
-                    setcoachlist(res?.data?.retdata);
-                }
-            });
         fetchData();
     }, [fetchData]);
 
@@ -63,7 +61,7 @@ export default function MapPage() {
                     <Select style={{ width: "150px" }} value={districtid} onChange={(value) => { setcoachid(0); setdistrictid(value); }}>
                         {districtlist?.map((t, i) => (
                             <Select.Option key={i} value={t.districtid}>
-                                {t.name}
+                                {t.districtname}
                             </Select.Option>
                         ))}
                     </Select>
@@ -75,14 +73,14 @@ export default function MapPage() {
                     <Select style={{ width: "150px" }} value={coachid} onChange={(value) => setcoachid(value)}>
                         {coachlist?.map((t, i) => (
                             <Select.Option key={i} value={t.coachid}>
-                                {t.name}
+                                {t.coachname}
                             </Select.Option>
                         ))}
                     </Select>
                 </Col>
             </Row >
             <Row >
-                <Col style={{ width: "80%", height: "80vh" }}>
+                <Col span={20}>
                     <div style={{ width: "100%", height: "80vh" }}>
                         <BingMapsReact
                             bingMapsKey="Al5_dVdiKO78I00m1mkAwVz7EmrK9ylIMTqI7qzQvwo2LSruRN2OkQFeRAsIaI24"
@@ -90,8 +88,27 @@ export default function MapPage() {
                         />
                     </div>
                 </Col>
-                <Col>
-                    <Text>Коуч</Text>
+                <Col span={4}>
+                    <Row>
+                        <Col>
+                            <Divider>{`Өрхийн тоо: ${pushPins.length}`}</Divider>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                            <Divider>{`Хорооны тоо: ${_.uniqBy(pushPins, 'section').length}`}</Divider>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                            <Divider>{`Коучийн тоо: ${_.uniqBy(pushPins, 'coachid').length}`}</Divider>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                            <Divider>{`Бүлгийн тоо: ${_.uniqBy(pushPins, 'householdgroupid').length}`}</Divider>
+                        </Col>
+                    </Row>
                 </Col>
             </Row >
         </Spin >
