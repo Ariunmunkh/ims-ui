@@ -32,6 +32,7 @@ import Training from "../coach/Training";
 import Investment from "../coach/Investment";
 import Contact from "../coach/Contact";
 import MapPage from "../coach/MapPage";
+import Report from "../report";
 
 const { Header, Sider, Content } = Layout;
 const { Text } = Typography;
@@ -87,7 +88,7 @@ export default function MasterPage() {
                         label: "Холбон зуучилсан үйл ажиллаагааны бүртгэл",
                     },
                     {
-                        key: "",
+                        key: "report",
                         icon: <StockOutlined />,
                         label: "Үр дүн",
                     },
@@ -135,7 +136,7 @@ export default function MasterPage() {
                         label: "Холбон зуучилсан үйл ажиллаагааны бүртгэл",
                     },
                     {
-                        key: "",
+                        key: "report",
                         icon: <StockOutlined />,
                         label: "Үр дүн",
                     },
@@ -178,7 +179,7 @@ export default function MasterPage() {
                         label: "Холбон зуучилсан үйл ажиллаагааны бүртгэл",
                     },
                     {
-                        key: "",
+                        key: "report",
                         icon: <StockOutlined />,
                         label: "Үр дүн",
                     },
@@ -295,6 +296,10 @@ export default function MasterPage() {
                         <Route
                             path="/household/:householdid"
                             element={userinfo?.roleid ? <HouseHoldPage /> : <AccessDenied />}
+                        />
+                        <Route
+                            path="/report"
+                            element={userinfo?.roleid ? <Report /> : <AccessDenied />}
                         />
                         <Route path="*" element={<NotFound />} />
                     </Routes>
