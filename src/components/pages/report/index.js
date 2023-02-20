@@ -99,6 +99,7 @@ export default function Report() {
         else
             setcoachlist([]);
     }
+    console.log(grouplist);
 
     return (
         <>
