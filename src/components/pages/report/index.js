@@ -6,7 +6,7 @@ const { RangePicker } = DatePicker;
 const { Text } = Typography;
 export default function Report() {
 
-    const [griddata, setGridData] = useState();
+    const [data, setdata] = useState();
     const [statuslist, setstatuslist] = useState([]);
     const [status, setstatus] = useState(null);
     const [districtlist, setdistrictlist] = useState([]);
@@ -22,28 +22,39 @@ export default function Report() {
 
     const fetchData = useCallback(async () => {
         setLoading(true);
-        await api
-            .get(`/api/record/coach/get_project_list`)
-            .then((res) => {
-                if (res?.status === 200 && res?.data?.rettype === 0) {
-                    setGridData(res?.data?.retdata);
-                }
-            })
-            .finally(() => {
-                setLoading(false);
-            });
-    }, []);
-
-    useEffect(() => {
         api
             .get(`/api/record/base/get_tree_dropdown`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setstatuslist(res?.data?.retdata);
                 }
+            }).finally(() => {
+                setLoading(false);
             });
+
+    }, []);
+
+    useEffect(() => {
+
         fetchData();
     }, [fetchData]);
+
+    const getData = async (_status, _district, _section, _group, _coach) => {
+
+        setLoading(true);
+
+        await api
+            .get(`/api/record/households/get_household_survey?status=${_status}&district=${_district}&section=${_section}&group=${_group}&coach=${_coach}&household=0&begindate=2023.01.01&enddate=2023.12.31`)
+            .then((res) => {
+                if (res?.status === 200 && res?.data?.rettype === 0) {
+                    setdata(res?.data?.retdata[0]);
+                }
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+
+    };
 
     const changeStatus = (value) => {
         setstatus(value);
@@ -58,6 +69,8 @@ export default function Report() {
         }
         else
             setdistrictlist([]);
+
+        getData(value, 0, 0, 0, 0);
     }
 
     const changeDistrict = (value) => {
@@ -72,6 +85,8 @@ export default function Report() {
         }
         else
             setsectionlist([]);
+
+        getData(status, value, 0, 0, 0);
     }
 
     const changeSection = (value) => {
@@ -86,6 +101,7 @@ export default function Report() {
         else
             setgrouplist([]);
 
+        getData(status, district, value, 0, 0);
     }
 
     const changeGroup = (value) => {
@@ -98,9 +114,15 @@ export default function Report() {
         }
         else
             setcoachlist([]);
-    }
-    console.log(grouplist);
 
+        getData(status, district, section, value, 0);
+    }
+
+    const changeCoach = (value) => {
+        setcoach(value);
+
+        getData(status, district, section, group, value);
+    }
     return (
         <>
             <Spin spinning={loading}>
@@ -181,7 +203,7 @@ export default function Report() {
                         <Select
                             allowClear
                             value={coach}
-                            onChange={(value) => setcoach(value)}
+                            onChange={(value) => changeCoach(value)}
                             style={{ width: "200px" }}
                         >
                             {coachlist?.map((t, i) => (
@@ -233,12 +255,12 @@ export default function Report() {
                                                 <div className="progress progress-xs">
                                                     <div
                                                         className="progress-bar progress-bar-danger"
-                                                        style={{ width: "55%" }}
+                                                        style={{ width: `${data?.h1}%` }}
                                                     />
                                                 </div>
                                             </td>
                                             <td>
-                                                <span className="badge bg-danger">55%</span>
+                                                <span className="badge bg-danger">{`${data?.h1}%`}</span>
                                             </td>
                                         </tr>
                                         <tr>

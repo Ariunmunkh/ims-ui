@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import BingMapsReact from "bingmaps-react";
 import { api } from "../../system/api";
 import useUserInfo from "../../system/useUserInfo";
-import { Spin, Select, Typography, Row, Col, Divider } from "antd";
+import { Spin, Select, Typography, Row, Col } from "antd";
 import _ from "lodash";
 const { Text } = Typography;
 
