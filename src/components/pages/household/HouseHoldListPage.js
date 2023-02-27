@@ -386,9 +386,10 @@ export default function HouseHoldListPage() {
                 loading={loading}
                 columns={gridcolumns}
                 dataSource={userinfo.roleid === '1' ? griddata : content}
-                pagination={false}
+                pagination={true}
                 rowKey={(record) => record.householdid}
             ></Table>
+            {console.log(griddata)}
         </div>
     );
 }
