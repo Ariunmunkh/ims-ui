@@ -1,19 +1,17 @@
 import React, { useEffect, useState, useCallback } from "react";
 import {
-  Col,
   DatePicker,
-  Row,
   Space,
   Typography,
   Select,
   Spin,
   Button,
+  Slider,
 } from "antd";
 import { api } from "../../system/api";
 import { SearchOutlined, UserOutlined } from "@ant-design/icons";
 import { Progress } from "antd";
-const { RangePicker } = DatePicker;
-const { Text } = Typography;
+
 export default function Report() {
   const [data, setdata] = useState();
   const [statuslist, setstatuslist] = useState([]);
@@ -128,12 +126,31 @@ export default function Report() {
     setShow(!show);
   };
 
-  var r1 = (((data?.h1) + (data?.h2) + (data?.h3)) / 3).toFixed(1);
-  var r2 = (((data?.h4) + (data?.h5)) / 2).toFixed(1);
-  var r3 = (((data?.h6) + (data?.h7)) / 2).toFixed(1);
-  var r4 = (((data?.h8) + (data?.h9) + (data?.h10) + (data?.h11) + (data?.h12) + (data?.h13)) / 6).toFixed(1);
-  var r5 = (((data?.h1) + (data?.h2) + (data?.h3) + (data?.h4) + (data?.h5) + (data?.h6) + (data?.h7) + (data?.h8) + (data?.h9) + (data?.h10) + (data?.h11) + (data?.h12) + (data?.h13)) / 13).toFixed(1);;
-console.log(r5);
+  var r1 = ((data?.h1 + data?.h2 + data?.h3) / 3).toFixed(1);
+  var r2 = ((data?.h4 + data?.h5) / 2).toFixed(1);
+  var r3 = ((data?.h6 + data?.h7) / 2).toFixed(1);
+  var r4 = (
+    (data?.h8 + data?.h9 + data?.h10 + data?.h11 + data?.h12 + data?.h13) /
+    6
+  ).toFixed(1);
+  var r5 = (
+    (data?.h1 +
+      data?.h2 +
+      data?.h3 +
+      data?.h4 +
+      data?.h5 +
+      data?.h6 +
+      data?.h7 +
+      data?.h8 +
+      data?.h9 +
+      data?.h10 +
+      data?.h11 +
+      data?.h12 +
+      data?.h13) /
+    13
+  ).toFixed(1);
+  console.log(data);
+
   return (
     <>
       <Spin spinning={loading}>
@@ -141,11 +158,12 @@ console.log(r5);
         <hr />
         <div className="card card-default">
           <div className="card-header">
-            {show && 
-            <h6 className="card-title">
-             Дараах үр дүнд <UserOutlined />{data.householdcount} өрхийн мэдээллийг харуулж байна. 
-            </h6>
-            }
+            {show && (
+              <h6 className="card-title">
+                Дараах үр дүнд <UserOutlined />
+                {data.householdcount} өрхийн мэдээллийг харуулж байна.
+              </h6>
+            )}
           </div>
           <div className="card-body">
             <div className="row">
@@ -196,8 +214,8 @@ console.log(r5);
                 </div>
                 <div className="form-group">
                   <Space direction="vertical" size={12}>
-                    <strong>Үр дүн харах өдрөө сонгоно уу.</strong>
-                    <RangePicker />
+                    <strong>Үр дүн харах дугаарыг сонгоно уу.</strong>
+                    <Slider range dots max={5} min={1} defaultValue={[1, 5]} />
                   </Space>
                 </div>
               </div>
@@ -254,309 +272,369 @@ console.log(r5);
         </div>
 
         <br />
-        {show && 
-        <div className="row" id="result">
-          <div className="col-md-6 col-xs-12">
-            <div className="card">
-              <div className="card-header">
-                <h6 className="card-title">ШАЛГУУР ҮЗҮҮЛЭЛТ</h6>
-              </div>
-              <div className="card-body">
-                <table className="table table-bordered">
-                  <thead>
-                    <tr>
-                      <th>Шалгуур</th>
-                      <th>Явц</th>
-                      <th style={{ width: 40 }}>Хувь</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>Шалгуур 1</td>
-                      <td>
-                        <div className="progress progress-xs">
-                          <div
-                            className="progress-bar progress-bar-danger"
-                            style={{ width: `${(data?.h1).toFixed(1)}%` }}
-                          />
-                        </div>
-                      </td>
-                      <td>
-                        <span className="badge bg-danger">{`${(data?.h1).toFixed(1)}%`}</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Шалгуур 2</td>
-                      <td>
-                        <div className="progress progress-xs">
-                          <div
-                            className="progress-bar bg-secondary"
-                            style={{ width: `${(data?.h2).toFixed(1)}%` }}
-                          />
-                        </div>
-                      </td>
-                      <td>
-                        <span className="badge bg-danger">{`${(data?.h2).toFixed(1)}%`}</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Шалгуур 3</td>
-                      <td>
-                        <div className="progress progress-xs">
-                          <div
-                            className="progress-bar bg-info"
-                            style={{ width: `${(data?.h3).toFixed(1)}%` }}
-                          />
-                        </div>
-                      </td>
-                      <td>
-                        <span className="badge bg-danger">{`${(data?.h3).toFixed(1)}%`}</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Шалгуур 4</td>
-                      <td>
-                        <div className="progress progress-xs">
-                          <div
-                            className="progress-bar bg-warning"
-                            style={{ width: `${(data?.h4).toFixed(1)}%` }}
-                          />
-                        </div>
-                      </td>
-                      <td>
-                        <span className="badge bg-danger">{`${(data?.h4).toFixed(1)}%`}</span>
-                      </td>
-                    </tr>
+        {show && (
+          <>
+            <div className="row">
+              <div className="col-md-12 col-xs-12">
+                <div className="card">
+                  <div className="card-header">
+                    <h6 className="card-title">ШАЛГУУР ҮЗҮҮЛЭЛТ</h6>
+                  </div>
+                  <div className="card-body">
+                    <table className="table table-bordered">
+                      <thead>
+                        <tr>
+                          <th>Шалгуур</th>
+                          <th>Асуумж 1</th>
+                          <th>Асуумж 2</th>
+                          <th>Асуумж 3</th>
+                          <th>Асуумж 4</th>
+                          <th>Асуумж 5</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>Шалгуур 1</td>
+                          <td>
+                            <span className="badge bg-danger">{`${(data?.h1).toFixed(
+                              1
+                            )}%`}</span>
+                          </td>
+                          <td>
+                            <span className="badge bg-danger">{`${(data?.h1).toFixed(
+                              1
+                            )}%`}</span>
+                          </td>
+                          <td>
+                            <span className="badge bg-danger">{`${(data?.h1).toFixed(
+                              1
+                            )}%`}</span>
+                          </td>
+                          <td>
+                            <span className="badge bg-danger">{`${(data?.h1).toFixed(
+                              1
+                            )}%`}</span>
+                          </td>
+                          <td>
+                            <span className="badge bg-danger">{`${(data?.h1).toFixed(
+                              1
+                            )}%`}</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>Шалгуур 2</td>
+                          <td>
+                            <span className="badge bg-danger">{`${(data?.h2).toFixed(
+                              1
+                            )}%`}</span>
+                          </td>
+                          <td>
+                            <span className="badge bg-danger">{`${(data?.h1).toFixed(
+                              1
+                            )}%`}</span>
+                          </td>
+                          <td>
+                            <span className="badge bg-danger">{`${(data?.h1).toFixed(
+                              1
+                            )}%`}</span>
+                          </td>
+                          <td>
+                            <span className="badge bg-danger">{`${(data?.h1).toFixed(
+                              1
+                            )}%`}</span>
+                          </td>
+                          <td>
+                            <span className="badge bg-danger">{`${(data?.h1).toFixed(
+                              1
+                            )}%`}</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>Шалгуур 3</td>
+                          <td>
+                            <div className="progress progress-xs">
+                              <div
+                                className="progress-bar bg-info"
+                                style={{ width: `${(data?.h3).toFixed(1)}%` }}
+                              />
+                            </div>
+                          </td>
+                          <td>
+                            <span className="badge bg-danger">{`${(data?.h3).toFixed(
+                              1
+                            )}%`}</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>Шалгуур 4</td>
+                          <td>
+                            <div className="progress progress-xs">
+                              <div
+                                className="progress-bar bg-warning"
+                                style={{ width: `${(data?.h4).toFixed(1)}%` }}
+                              />
+                            </div>
+                          </td>
+                          <td>
+                            <span className="badge bg-danger">{`${(data?.h4).toFixed(
+                              1
+                            )}%`}</span>
+                          </td>
+                        </tr>
 
-                    <tr>
-                      <td>Шалгуур 5</td>
-                      <td>
-                        <div className="progress progress-xs">
-                          <div
-                            className="progress-bar bg-secondary"
-                            style={{ width: `${(data?.h5).toFixed(1)}%` }}
-                          />
-                        </div>
-                      </td>
-                      <td>
-                        <span className="badge bg-danger">{`${(data?.h5).toFixed(1)}%`}</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Шалгуур 6</td>
-                      <td>
-                        <div className="progress progress-xs">
-                          <div
-                            className="progress-bar bg-info"
-                            style={{ width: `${(data?.h6).toFixed(1)}%` }}
-                          />
-                        </div>
-                      </td>
-                      <td>
-                        <span className="badge bg-danger">{`${(data?.h6).toFixed(1)}%`}</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Шалгуур 7</td>
-                      <td>
-                        <div className="progress progress-xs">
-                          <div
-                            className="progress-bar bg-warning"
-                            style={{ width: `${(data?.h7).toFixed(1)}%` }}
-                          />
-                        </div>
-                      </td>
-                      <td>
-                        <span className="badge bg-danger">{`${(data?.h7).toFixed(1)}%`}</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Шалгуур 8</td>
-                      <td>
-                        <div className="progress progress-xs">
-                          <div
-                            className="progress-bar progress-bar-danger"
-                            style={{ width: `${(data?.h8).toFixed(1)}%` }}
-                          />
-                        </div>
-                      </td>
-                      <td>
-                        <span className="badge bg-danger">{`${(data?.h8).toFixed(1)}%`}</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Шалгуур 9</td>
-                      <td>
-                        <div className="progress progress-xs">
-                          <div
-                            className="progress-bar bg-secondary"
-                            style={{ width: `${(data?.h9).toFixed(1)}%` }}
-                          />
-                        </div>
-                      </td>
-                      <td>
-                        <span className="badge bg-danger">{`${(data?.h9).toFixed(1)}%`}</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Шалгуур 10</td>
-                      <td>
-                        <div className="progress progress-xs">
-                          <div
-                            className="progress-bar bg-info"
-                            style={{ width: `${(data?.h10).toFixed(1)}%` }}
-                          />
-                        </div>
-                      </td>
-                      <td>
-                        <span className="badge bg-danger">{`${(data?.h10).toFixed(1)}%`}</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Шалгуур 11</td>
-                      <td>
-                        <div className="progress progress-xs">
-                          <div
-                            className="progress-bar bg-warning"
-                            style={{ width: `${(data?.h11).toFixed(1)}%` }}
-                          />
-                        </div>
-                      </td>
-                      <td>
-                        <span className="badge bg-danger">{`${(data?.h11).toFixed(1)}%`}</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Шалгуур 12</td>
-                      <td>
-                        <div className="progress progress-xs">
-                          <div
-                            className="progress-bar progress-bar-danger"
-                            style={{ width: `${(data?.h12).toFixed(1)}%` }}
-                          />
-                        </div>
-                      </td>
-                      <td>
-                        <span className="badge bg-danger">{`${(data?.h12).toFixed(1)}%`}</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Шалгуур 13</td>
-                      <td>
-                        <div className="progress progress-xs">
-                          <div
-                            className="progress-bar bg-info"
-                            style={{ width: `${(data?.h13).toFixed(1)}%` }}
-                          />
-                        </div>
-                      </td>
-                      <td>
-                        <span className="badge bg-danger">{`${(data?.h13).toFixed(1)}%`}</span>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+                        <tr>
+                          <td>Шалгуур 5</td>
+                          <td>
+                            <div className="progress progress-xs">
+                              <div
+                                className="progress-bar bg-secondary"
+                                style={{ width: `${(data?.h5).toFixed(1)}%` }}
+                              />
+                            </div>
+                          </td>
+                          <td>
+                            <span className="badge bg-danger">{`${(data?.h5).toFixed(
+                              1
+                            )}%`}</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>Шалгуур 6</td>
+                          <td>
+                            <div className="progress progress-xs">
+                              <div
+                                className="progress-bar bg-info"
+                                style={{ width: `${(data?.h6).toFixed(1)}%` }}
+                              />
+                            </div>
+                          </td>
+                          <td>
+                            <span className="badge bg-danger">{`${(data?.h6).toFixed(
+                              1
+                            )}%`}</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>Шалгуур 7</td>
+                          <td>
+                            <div className="progress progress-xs">
+                              <div
+                                className="progress-bar bg-warning"
+                                style={{ width: `${(data?.h7).toFixed(1)}%` }}
+                              />
+                            </div>
+                          </td>
+                          <td>
+                            <span className="badge bg-danger">{`${(data?.h7).toFixed(
+                              1
+                            )}%`}</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>Шалгуур 8</td>
+                          <td>
+                            <div className="progress progress-xs">
+                              <div
+                                className="progress-bar progress-bar-danger"
+                                style={{ width: `${(data?.h8).toFixed(1)}%` }}
+                              />
+                            </div>
+                          </td>
+                          <td>
+                            <span className="badge bg-danger">{`${(data?.h8).toFixed(
+                              1
+                            )}%`}</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>Шалгуур 9</td>
+                          <td>
+                            <div className="progress progress-xs">
+                              <div
+                                className="progress-bar bg-secondary"
+                                style={{ width: `${(data?.h9).toFixed(1)}%` }}
+                              />
+                            </div>
+                          </td>
+                          <td>
+                            <span className="badge bg-danger">{`${(data?.h9).toFixed(
+                              1
+                            )}%`}</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>Шалгуур 10</td>
+                          <td>
+                            <div className="progress progress-xs">
+                              <div
+                                className="progress-bar bg-info"
+                                style={{ width: `${(data?.h10).toFixed(1)}%` }}
+                              />
+                            </div>
+                          </td>
+                          <td>
+                            <span className="badge bg-danger">{`${(data?.h10).toFixed(
+                              1
+                            )}%`}</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>Шалгуур 11</td>
+                          <td>
+                            <div className="progress progress-xs">
+                              <div
+                                className="progress-bar bg-warning"
+                                style={{ width: `${(data?.h11).toFixed(1)}%` }}
+                              />
+                            </div>
+                          </td>
+                          <td>
+                            <span className="badge bg-danger">{`${(data?.h11).toFixed(
+                              1
+                            )}%`}</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>Шалгуур 12</td>
+                          <td>
+                            <div className="progress progress-xs">
+                              <div
+                                className="progress-bar progress-bar-danger"
+                                style={{ width: `${(data?.h12).toFixed(1)}%` }}
+                              />
+                            </div>
+                          </td>
+                          <td>
+                            <span className="badge bg-danger">{`${(data?.h12).toFixed(
+                              1
+                            )}%`}</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>Шалгуур 13</td>
+                          <td>
+                            <div className="progress progress-xs">
+                              <div
+                                className="progress-bar bg-info"
+                                style={{ width: `${(data?.h13).toFixed(1)}%` }}
+                              />
+                            </div>
+                          </td>
+                          <td>
+                            <span className="badge bg-danger">{`${(data?.h13).toFixed(
+                              1
+                            )}%`}</span>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-          <div className="col-md-6 col-xs-12">
-            <div className="card">
-              <div className="card-header">
-                <h6 className="card-title">ЕРӨНХИЙ БҮЛГИЙН ХҮРЭЭНД</h6>
-              </div>
-              <div className="card-body">
-                <table className="table table-bordered">
-                  <thead>
-                    <tr>
-                      <th style={{ width: 250 }}>Гүйцэтгэл</th>
-                      <th style={{ width: 250 }}>Явц</th>
-                      <th style={{ width: 40 }}>Хувь</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>Нийгмийн хамгаалал</td>
-                      <td>
-                        <Progress
-                          percent={r1}
-                          strokeColor={{
-                            "0%": "#108ee9",
-                            "100%": "#87d068",
-                          }}
-                        />
-                      </td>
-                      <td>
-                        <span className="badge bg-danger">{`${r1}%`}</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Амьжиргаа</td>
-                      <td>
-                        <Progress
-                          percent={r2}
-                          strokeColor={{
-                            "0%": "#108ee9",
-                            "100%": "#87d068",
-                          }}
-                        />
-                      </td>
-                      <td>
-                        <span className="badge bg-danger">{`${r2}%`}</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Санхүүгийн оролцоо</td>
-                      <td>
-                        <Progress
-                          percent={r3}
-                          strokeColor={{
-                            "0%": "#108ee9",
-                            "100%": "#87d068",
-                          }}
-                        />
-                      </td>
-                      <td>
-                        <span className="badge bg-danger">{`${r3}%`}</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Нийгмийн чадавхи</td>
-                      <td>
-                        <Progress
-                          percent={`${r4}` }
-                          strokeColor={{
-                            "0%": "#108ee9",
-                            "100%": "#87d068",
-                          }}
-                        />
-                      </td>
-                      <td>
-                        <span className="badge bg-danger">{`${r4}%`}</span>
-                      </td>
-                    </tr>
+            <br/>
+            <div className="row">
+              <div className="col-md-12 col-xs-12">
+                <div className="card">
+                  <div className="card-header">
+                    <h6 className="card-title">ЕРӨНХИЙ БҮЛГИЙН ХҮРЭЭНД</h6>
+                  </div>
+                  <div className="card-body">
+                    <table className="table table-bordered">
+                      <thead>
+                        <tr>
+                          <th style={{ width: 250 }}>Гүйцэтгэл</th>
+                          <th style={{ width: 250 }}>Явц</th>
+                          <th style={{ width: 40 }}>Хувь</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>Нийгмийн хамгаалал</td>
+                          <td>
+                            <Progress
+                              percent={r1}
+                              strokeColor={{
+                                "0%": "#108ee9",
+                                "100%": "#87d068",
+                              }}
+                            />
+                          </td>
+                          <td>
+                            <span className="badge bg-danger">{`${r1}%`}</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>Амьжиргаа</td>
+                          <td>
+                            <Progress
+                              percent={r2}
+                              strokeColor={{
+                                "0%": "#108ee9",
+                                "100%": "#87d068",
+                              }}
+                            />
+                          </td>
+                          <td>
+                            <span className="badge bg-danger">{`${r2}%`}</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>Санхүүгийн оролцоо</td>
+                          <td>
+                            <Progress
+                              percent={r3}
+                              strokeColor={{
+                                "0%": "#108ee9",
+                                "100%": "#87d068",
+                              }}
+                            />
+                          </td>
+                          <td>
+                            <span className="badge bg-danger">{`${r3}%`}</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>Нийгмийн чадавхи</td>
+                          <td>
+                            <Progress
+                              percent={`${r4}`}
+                              strokeColor={{
+                                "0%": "#108ee9",
+                                "100%": "#87d068",
+                              }}
+                            />
+                          </td>
+                          <td>
+                            <span className="badge bg-danger">{`${r4}%`}</span>
+                          </td>
+                        </tr>
 
-                    <tr>
-                      <td><b>ЕРӨНХИЙ ҮР ДҮН</b></td>
-                      <td>
-                        <Progress
-                          percent={r5}
-                          strokeColor={{
-                            "0%": "#108ee9",
-                            "100%": "#87d068",
-                          }}
-                        />
-                      </td>
-                      <td>
-                        <span className="badge bg-danger">{`${r5}%`}</span>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+                        <tr>
+                          <td>
+                            <b>ЕРӨНХИЙ ҮР ДҮН</b>
+                          </td>
+                          <td>
+                            <Progress
+                              percent={r5}
+                              strokeColor={{
+                                "0%": "#108ee9",
+                                "100%": "#87d068",
+                              }}
+                            />
+                          </td>
+                          <td>
+                            <span className="badge bg-danger">{`${r5}%`}</span>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-        }
+          </>
+        )}
       </Spin>
     </>
   );
