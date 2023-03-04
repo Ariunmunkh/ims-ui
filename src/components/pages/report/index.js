@@ -532,7 +532,7 @@ export default function Report() {
                 </div>
               </div>
             </div>
-            <br/>
+            <br />
             <div className="row">
               <div className="col-md-12 col-xs-12">
                 <div className="card">
@@ -543,22 +543,36 @@ export default function Report() {
                     <table className="table table-bordered">
                       <thead>
                         <tr>
-                          <th style={{ width: 250 }}>Гүйцэтгэл</th>
-                          <th style={{ width: 250 }}>Явц</th>
-                          <th style={{ width: 40 }}>Хувь</th>
+                          <th>Гүйцэтгэл</th>
+                          <th style={{width:350}}>Явц</th>
+                          <th>Хувь</th>
                         </tr>
                       </thead>
                       <tbody>
                         <tr>
                           <td>Нийгмийн хамгаалал</td>
                           <td>
-                            <Progress
-                              percent={r1}
-                              strokeColor={{
-                                "0%": "#108ee9",
-                                "100%": "#87d068",
-                              }}
-                            />
+                            <div style={{ width: 200}}>
+                              <Progress
+                                percent={`Үнэлгээ 1: ${r1}`}
+                                size="large"
+                                strokeColor={{
+                                  "0%": "#108ee9",
+                                  "100%": "#87d068",
+                                }}
+                              />
+                            </div>
+                            <div style={{ width: 200 }}>
+                              <Progress
+                                percent={r1}
+                                size="large"
+                                strokeColor={{
+                                  "0%": "#108ee9",
+                                  "100%": "#87d068",
+                                }}
+                                format={() => "Үнэлгээ 2"}
+                              />
+                            </div>
                           </td>
                           <td>
                             <span className="badge bg-danger">{`${r1}%`}</span>
@@ -567,6 +581,7 @@ export default function Report() {
                         <tr>
                           <td>Амьжиргаа</td>
                           <td>
+                          <div style={{ width: 200 }}>
                             <Progress
                               percent={r2}
                               strokeColor={{
@@ -574,6 +589,7 @@ export default function Report() {
                                 "100%": "#87d068",
                               }}
                             />
+                            </div>
                           </td>
                           <td>
                             <span className="badge bg-danger">{`${r2}%`}</span>
@@ -582,6 +598,7 @@ export default function Report() {
                         <tr>
                           <td>Санхүүгийн оролцоо</td>
                           <td>
+                          <div style={{ width: 200 }}>
                             <Progress
                               percent={r3}
                               strokeColor={{
@@ -589,6 +606,7 @@ export default function Report() {
                                 "100%": "#87d068",
                               }}
                             />
+                            </div>
                           </td>
                           <td>
                             <span className="badge bg-danger">{`${r3}%`}</span>
@@ -597,13 +615,15 @@ export default function Report() {
                         <tr>
                           <td>Нийгмийн чадавхи</td>
                           <td>
+                          <div style={{ width: 200 }}>
                             <Progress
-                              percent={`${r4}`}
+                              percent={r4}
                               strokeColor={{
                                 "0%": "#108ee9",
                                 "100%": "#87d068",
                               }}
                             />
+                            </div>
                           </td>
                           <td>
                             <span className="badge bg-danger">{`${r4}%`}</span>
@@ -615,6 +635,7 @@ export default function Report() {
                             <b>ЕРӨНХИЙ ҮР ДҮН</b>
                           </td>
                           <td>
+                          <div style={{ width: 200 }}>
                             <Progress
                               percent={r5}
                               strokeColor={{
@@ -622,6 +643,7 @@ export default function Report() {
                                 "100%": "#87d068",
                               }}
                             />
+                            </div>
                           </td>
                           <td>
                             <span className="badge bg-danger">{`${r5}%`}</span>
