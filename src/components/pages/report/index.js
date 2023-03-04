@@ -128,7 +128,9 @@ export default function Report() {
 
     return (
         <>
-            <Spin spinning={loading}>
+        <div className="row">
+      <div className="col-md-12">
+      <Spin spinning={loading}>
                 <h2>Үр дүн</h2>
                 <hr />
                 <div className="card card-default">
@@ -533,6 +535,9 @@ export default function Report() {
                     </>
                 )}
             </Spin>
+      </div>
+      </div>
+           
         </>
     );
 }
