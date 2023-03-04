@@ -367,17 +367,6 @@ export default function HouseHoldListPage() {
                     </Select>
                 </Col>
 
-                <Col>
-                    <CSVLink
-                        data={exceldata}
-                        filename={"householdlist.csv"}
-                        onClick={() => {
-                            console.log("clicked")
-                        }}
-                    >
-                        Хүснэгтийг татах
-                    </CSVLink>
-                </Col>
             </Row>
             <Drawer
                 forceRender
@@ -451,6 +440,8 @@ export default function HouseHoldListPage() {
                 </Form>
             </Drawer>
             <Table
+
+                title={() => <>{exceldata.length}  <CSVLink data={exceldata} filename={"householdlist.csv"}>Хүснэгтийг татах</CSVLink> </>}
                 onChange={(pagination, filters, sorter, extra) => setexceldata(extra.currentDataSource)}
                 loading={loading}
                 columns={gridcolumns}
