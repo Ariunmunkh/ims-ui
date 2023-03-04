@@ -294,7 +294,7 @@ export default function Report() {
                       </thead>
                       <tbody>
                         <tr>
-                          <td>Шалгуур 1</td>
+                          <td>Тэжээллэг хоол хүнс</td>
                           <td>
                             <span className="badge bg-danger">{`${(data?.h1).toFixed(
                               1
@@ -322,7 +322,7 @@ export default function Report() {
                           </td>
                         </tr>
                         <tr>
-                          <td>Шалгуур 2</td>
+                          <td>Эрүүл мэндийн үйлчилгээ</td>
                           <td>
                             <span className="badge bg-danger">{`${(data?.h2).toFixed(
                               1
@@ -350,7 +350,7 @@ export default function Report() {
                           </td>
                         </tr>
                         <tr>
-                          <td>Шалгуур 3</td>
+                          <td>Үндсэн хэрэглээ</td>
                           <td>
                             <div className="progress progress-xs">
                               <div
@@ -366,7 +366,7 @@ export default function Report() {
                           </td>
                         </tr>
                         <tr>
-                          <td>Шалгуур 4</td>
+                          <td>Өрхийн бизнес</td>
                           <td>
                             <div className="progress progress-xs">
                               <div
@@ -383,7 +383,7 @@ export default function Report() {
                         </tr>
 
                         <tr>
-                          <td>Шалгуур 5</td>
+                          <td>Тогтмол орлогын эх үүсвэр</td>
                           <td>
                             <div className="progress progress-xs">
                               <div
@@ -399,7 +399,7 @@ export default function Report() {
                           </td>
                         </tr>
                         <tr>
-                          <td>Шалгуур 6</td>
+                          <td>Хадгаламж</td>
                           <td>
                             <div className="progress progress-xs">
                               <div
@@ -415,7 +415,7 @@ export default function Report() {
                           </td>
                         </tr>
                         <tr>
-                          <td>Шалгуур 7</td>
+                          <td>Зээлийн үйлчилгээ</td>
                           <td>
                             <div className="progress progress-xs">
                               <div
@@ -431,7 +431,7 @@ export default function Report() {
                           </td>
                         </tr>
                         <tr>
-                          <td>Шалгуур 8</td>
+                          <td>Идэвхи, оролцоо</td>
                           <td>
                             <div className="progress progress-xs">
                               <div
@@ -447,7 +447,7 @@ export default function Report() {
                           </td>
                         </tr>
                         <tr>
-                          <td>Шалгуур 9</td>
+                          <td>Өрхийн алсын хараа, төлөвлөгөө</td>
                           <td>
                             <div className="progress progress-xs">
                               <div
@@ -463,7 +463,7 @@ export default function Report() {
                           </td>
                         </tr>
                         <tr>
-                          <td>Шалгуур 10</td>
+                          <td>Гэр бүлийн харилцаа</td>
                           <td>
                             <div className="progress progress-xs">
                               <div
@@ -479,7 +479,7 @@ export default function Report() {
                           </td>
                         </tr>
                         <tr>
-                          <td>Шалгуур 11</td>
+                          <td>Эрүүл ахуй</td>
                           <td>
                             <div className="progress progress-xs">
                               <div
@@ -495,7 +495,7 @@ export default function Report() {
                           </td>
                         </tr>
                         <tr>
-                          <td>Шалгуур 12</td>
+                          <td>Сургууль цэцэрлэгт хамрагдалт</td>
                           <td>
                             <div className="progress progress-xs">
                               <div
@@ -511,7 +511,7 @@ export default function Report() {
                           </td>
                         </tr>
                         <tr>
-                          <td>Шалгуур 13</td>
+                          <td>Өрхийн гишүүдийн тэгш оролцоо</td>
                           <td>
                             <div className="progress progress-xs">
                               <div

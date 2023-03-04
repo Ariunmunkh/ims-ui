@@ -29,6 +29,7 @@ export default function HouseHoldListPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formdata] = Form.useForm();
   const [districtlist, setdistrictlist] = useState([]);
+  const [districtFilter, setdistrictlistFilter] = useState([]);
   const [coachlist, setcoachlist] = useState([]);
   const [householdstatus, sethouseholdstatus] = useState([]);
   const [householdgroup, sethouseholdgroup] = useState([]);
@@ -57,6 +58,12 @@ export default function HouseHoldListPage() {
     api.get(`/api/record/base/get_district_list`).then((res) => {
       if (res?.status === 200 && res?.data?.rettype === 0) {
         setdistrictlist(res?.data?.retdata);
+        let tdata = [];
+        for (let i = 0; i < res?.data?.retdata.length; i++) {
+            tdata.push({ text: res?.data?.retdata[i].name, value: res?.data?.retdata[i].name });
+        }
+        setdistrictlistFilter(tdata);
+        console.log(tdata);
       }
     });
     api.get(`/api/record/coach/get_coach_list`).then((res) => {
@@ -256,20 +263,7 @@ export default function HouseHoldListPage() {
     {
       title: "Дүүрэг",
       dataIndex: "districtname",
-      filters:[
-        {
-            text: 'Чингэлтэй дүүрэг',
-            value: 'Чингэлтэй дүүрэг'
-        },
-        {
-            text: 'Баянзүрх дүүрэг',
-            value: 'Баянзүрх дүүрэг'
-        },
-        {
-            text: 'Сонгинохайрхан дүүрэг',
-            value: 'Сонгинохайрхан дүүрэг'
-        }
-      ],
+      filters:districtFilter,
       onFilter: (value, record) => record.districtname.indexOf(value) === 0,
     },
     {
