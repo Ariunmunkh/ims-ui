@@ -16,7 +16,7 @@ import {
 import { SearchOutlined, DownloadOutlined } from "@ant-design/icons";
 import useUserInfo from "../../system/useUserInfo";
 import Highlighter from "react-highlight-words";
-import { Excel } from "antd-table-saveas-excel";
+import { CSVLink } from "react-csv";
 const { Text } = Typography;
 
 export default function HouseHoldListPage() {
@@ -47,6 +47,7 @@ export default function HouseHoldListPage() {
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setGridData(res?.data?.retdata);
+                    setexceldata(res?.data?.retdata);
                 }
             })
             .finally(() => {
@@ -325,19 +326,6 @@ export default function HouseHoldListPage() {
         setgroup(value);
     };
 
-    const handleClick = () => {
-        const excel = new Excel();
-        excel
-            .addSheet("test")
-            .addColumns(gridcolumns)
-            .addDataSource(userinfo.roleid === "1" ? exceldata : content, {
-                str2Percent: true,
-            })
-            .saveAs("Excel.xlsx");
-    };
-
-
-
     return (
         <div>
             <Row gutter={16} style={{ marginTop: 16, marginBottom: 16 }}>
@@ -380,13 +368,14 @@ export default function HouseHoldListPage() {
                 </Col>
 
                 <Col>
-                    <Button
-                        type="primary"
-                        onClick={handleClick}
-                        icon={<DownloadOutlined />}
+                    <CSVLink
+                        data={exceldata}
+                        onClick={() => {
+                            console.log("clicked")
+                        }}
                     >
                         Хүснэгтийг татах
-                    </Button>
+                    </CSVLink>
                 </Col>
             </Row>
             <Drawer
