@@ -16,7 +16,6 @@ import {
     ApiOutlined,
 } from "@ant-design/icons";
 import { Layout, Menu, theme, Space, Button, Typography } from "antd";
-import logo from "../../../assets/images/logo.png";
 
 import AdminPage from "./AdminPage";
 import HouseHoldListPage from "../household/HouseHoldListPage";
