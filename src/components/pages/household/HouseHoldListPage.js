@@ -370,6 +370,7 @@ export default function HouseHoldListPage() {
                 <Col>
                     <CSVLink
                         data={exceldata}
+                        filename={"householdlist.csv"}
                         onClick={() => {
                             console.log("clicked")
                         }}
