@@ -9,6 +9,7 @@ import {
 import { api } from "../../system/api";
 import { SearchOutlined, UserOutlined } from "@ant-design/icons";
 import { Progress } from "antd";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 
 export default function Report() {
     const [data, setdata] = useState([]);
@@ -38,7 +39,7 @@ export default function Report() {
             .finally(() => {
                 setLoading(false);
             });
-    },[]);
+    }, []);
 
     const getData = async (_status, _district, _section, _group, _coach, _dugaar) => {
         setLoading(true);
@@ -532,6 +533,32 @@ export default function Report() {
                         </div>
                     </>
                 )}
+
+                <LineChart
+                    width={900}
+                    height={400}
+                    data={data}
+                    margin={{
+                        top: 50,
+                        right: 30,
+                        left: 20,
+                        bottom: 5,
+                    }}
+                >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis yAxisId="1" />
+                    <Tooltip />
+                    <Legend />
+                    <Line yAxisId="1" type="monotone" name="Нийгмийн хамгаалал" dataKey="r1" stroke="#cc9900" activeDot={{ r: 8 }} />
+                    <Line yAxisId="1" type="monotone" name="Амьжиргаа" dataKey="r2" stroke="#cc00cc" />
+                    <Line yAxisId="1" type="monotone" name="Санхүүгийн оролцоо" dataKey="r3" stroke="#3333ff" />
+                    <Line yAxisId="1" type="monotone" name="Нийгмийн чадавхи" dataKey="r4" stroke="#006699" />
+                    <Line yAxisId="1" type="monotone" name="Ерөнхий үр дүн" dataKey="r5" stroke="#009933" />
+                    <Line yAxisId="1" type="monotone" name="Босго" dataKey="r0" stroke="#ff3300" strokeDasharray="3 4 5 2" />
+
+                </LineChart>
+
             </Spin>
         </>
     );
