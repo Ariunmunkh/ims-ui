@@ -201,8 +201,9 @@ export default function MasterPage() {
 
     return (
         <Layout>
-            <Sider trigger={null} collapsible collapsed={collapsed}>
-                <img className="logo" src={logo} alt="logo"></img>
+            <Sider trigger={null} collapsible collapsed={collapsed}><br/>
+                <h5 className="text-white text-center">DMS систем</h5>
+                <hr className="text-white"/>
                 <Menu
                     style={{ position: "sticky", top: 0, zIndex: 1 }}
                     theme="dark"
@@ -232,9 +233,7 @@ export default function MasterPage() {
 
                     <Space direction="vertical">
                         <Space>
-                            <Text code>Нэвтэрсэн хэрэглэгч: <b>{userinfo?.username}</b></Text>
-                            <Text code>Харьяа дүүрэг: <b>БЗД</b></Text>
-                            <Text code>Өрхийн тоо: <b>50</b></Text>
+                            <Text code>Хэрэглэгч: <b>{userinfo?.username}</b></Text>
                         </Space>
                     </Space>
 
