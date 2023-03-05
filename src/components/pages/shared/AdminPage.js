@@ -2,6 +2,7 @@ import React from "react";
 import { Tabs } from "antd";
 import UserListPage from "../user/UserListPage";
 import CoachListPage from "../coach/CoachListPage";
+import ProjectListPage from "../coach/ProjectListPage";
 import AssetReceived from "../baseinfo/AssetReceived";
 import AssetReceivedType from "../baseinfo/AssetReceivedType";
 import District from "../baseinfo/District";
@@ -37,103 +38,108 @@ export default function AdminPage() {
                         children: <UserListPage />,
                     },
                     {
+                        label: `Төслийн жагсаалт`,
+                        key: "2",
+                        children: <ProjectListPage />,
+                    },
+                    {
                         label: `Коучийн жагсаалт`,
-                        key: "20",
+                        key: "3",
                         children: <CoachListPage />,
                     },
                     {
                         label: `Сум, Дүүрэг`,
-                        key: "18",
+                        key: "4",
                         children: <District />,
                     },
                     {
                         label: `Өрхийн статус`,
-                        key: "17",
+                        key: "5",
                         children: <HouseholdStatus />,
                     },
                     {
                         label: `Бүлэг /Өрх/`,
-                        key: "21",
+                        key: "6",
                         children: <HouseholdGroup />,
                     },
                     {
                         label: `Ураг төрлийн нэршил`,
-                        key: "19",
+                        key: "7",
                         children: <Relationship />,
                     },
                     {
                         label: `Боловсролын зэрэг`,
-                        key: "4",
+                        key: "8",
                         children: <EducationDegree />,
                     },
                     {
                         label: `Хөдөлмөр эрхлэлтийн байдал`,
-                        key: "5",
+                        key: "9",
                         children: <EmploymentStatus />,
                     },
                     {
                         label: `Эрүүл мэндийн байдал`,
-                        key: "6",
+                        key: "10",
                         children: <HealthCondition />,
                     },
                     {
                         label: `Зээлийн зориулалт`,
-                        key: "8",
+                        key: "11",
                         children: <LoanPurpose />,
                     },
                     {
                         label: `Сургалтын төрөл`,
-                        key: "16",
+                        key: "12",
                         children: <TrainingType />,
                     },
                     {
                         label: `Сургалт, үйл ажиллагааны нэр`,
-                        key: "15",
+                        key: "13",
                         children: <TrainingAndActivity />,
                     },
                     {
                         label: `Сургалт, үйл ажиллагаа зохиох байгууллагын нэр`,
-                        key: "10",
+                        key: "14",
                         children: <Organization />,
                     },
                     {
                         label: `Харьяалагдах дэд салбар`,
-                        key: "13",
+                        key: "15",
                         children: <SubBranch />,
                     },
                     {
                         label: `Хүлээн авсан хөрөнгийн төрөл`,
-                        key: "3",
+                        key: "16",
                         children: <AssetReceivedType />,
                     },
                     {
                         label: `Хүлээн авсан хөрөнгийн нэр`,
-                        key: "2",
+                        key: "17",
                         children: <AssetReceived />,
                     },
                     {
                         label: `Хүлээн авсан дэмжлэгийн төрөл`,
-                        key: "14",
+                        key: "18",
                         children: <SupportReceivedType />,
                     },
                     {
                         label: `Дэмжлэг олгосон байгууллагын нэр`,
-                        key: "12",
+                        key: "19",
                         children: <SponsoringOrganization />,
                     },
                     {
                         label: `Холбон зуучилсан үйлчилгээний төрөл`,
-                        key: "9",
+                        key: "20",
                         children: <MediatedServiceType />,
                     },
                     {
                         label: `Холбон зуучилсан байгууллагын нэр`,
-                        key: "7",
+                        key: "21",
                         children: <IntermediaryOrganization />,
                     },
                     {
                         label: `Холбон зуучилсан үйлчилгээний нэр`,
-                        key: "11",
+                        key: "22",
                         children: <ProxyService />,
                     },
                 ]}

@@ -1,22 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { api } from "../../system/api";
-import { Table, Modal, Drawer, Form, Space, Button, Input, InputNumber, Select } from "antd";
+import { Table, Modal, Drawer, Form, Space, Button, Input, InputNumber } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { PlusOutlined } from "@ant-design/icons";
 const { confirm } = Modal;
-export default function CoachListPage() {
+export default function ProjectListPage() {
 
     const [griddata, setGridData] = useState();
     const [loading, setLoading] = useState(true);
     const [formdata] = Form.useForm();
-    const [project, setproject] = useState([]);
-    const [district, setdistrict] = useState([]);
 
     const fetchData = async () => {
         setLoading(true);
-       
         await api
-            .get(`/api/record/coach/get_coach_list`)
+            .get(`/api/record/coach/get_project_list`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setGridData(res?.data?.retdata);
@@ -36,40 +33,37 @@ export default function CoachListPage() {
     };
 
     useEffect(() => {
-        api.get(`/api/record/coach/get_project_list`)
-            .then((res) => {
-                if (res?.status === 200 && res?.data?.rettype === 0) {
-                    setproject(res?.data?.retdata);
-                }
-            });
-        api.get(`/api/record/base/get_district_list`)
-            .then((res) => {
-                if (res?.status === 200 && res?.data?.rettype === 0) {
-                    setdistrict(res?.data?.retdata);
-                }
-            });
         fetchData();
     }, []);
+
     const gridcolumns = [
         {
-            title: "Коучийн дугаар",
-            dataIndex: "coachid",
+            title: "Төслийн дугаар",
+            dataIndex: "id",
         },
         {
-            title: "Коучийн нэр",
+            title: "Төслийн нэр",
             dataIndex: "name",
         },
         {
+            title: "Төслийн удирдагчийн нэр",
+            dataIndex: "leadername",
+        },
+        {
             title: "Утас",
-            dataIndex: "phone",
+            dataIndex: "leaderphone",
         },
         {
             title: "Төслийн нэр",
             dataIndex: "projectname",
         },
         {
-            title: "Дүүрэг",
-            dataIndex: "districtname",
+            title: "Төслийн байршил",
+            dataIndex: "location",
+        },
+        {
+            title: "Төсөл хэрэгжих хороо/сум",
+            dataIndex: "implementation",
         },
     ];
 
@@ -95,7 +89,7 @@ export default function CoachListPage() {
     };
 
     const onDelete = async () => {
-        await api.delete(`/api/record/coach/delete_coach?id=${formdata.getFieldValue("coachid")}`)
+        await api.delete(`/api/record/coach/delete_project?id=${formdata.getFieldValue("id")}`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setIsModalOpen(false);
@@ -106,7 +100,7 @@ export default function CoachListPage() {
 
     const onFinish = async (values) => {
         await api
-            .post(`/api/record/coach/set_coach`, formdata.getFieldsValue())
+            .post(`/api/record/coach/set_project`, formdata.getFieldsValue())
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setIsModalOpen(false);
@@ -115,8 +109,8 @@ export default function CoachListPage() {
             });
     };
 
-    const getFormData = async (coachid) => {
-        await api.get(`/api/record/coach/get_coach?id=${coachid}`).then((res) => {
+    const getFormData = async (id) => {
+        await api.get(`/api/record/coach/get_project?id=${id}`).then((res) => {
             if (res?.status === 200 && res?.data?.rettype === 0) {
                 formdata.setFieldsValue(res?.data?.retdata[0]);
                 showModal();
@@ -125,7 +119,14 @@ export default function CoachListPage() {
     };
 
     const newFormData = async () => {
-        formdata.setFieldsValue({ coachid: 0, name: null, phone: null, projectid: 0, districtid: 0, });
+        formdata.setFieldsValue({
+            id: 0,
+            name: null,
+            leadername: null,
+            leaderphone: null,
+            location: null,
+            implementation: null
+        });
         showModal();
     };
 
@@ -137,7 +138,7 @@ export default function CoachListPage() {
                 type="primary"
                 onClick={(e) => newFormData()}
             >
-                Коуч нэмэх
+                Төсөл нэмэх
             </Button>
 
             <Table
@@ -153,7 +154,7 @@ export default function CoachListPage() {
 
             <Drawer
                 forceRender
-                title="Коучийн бүртгэл"
+                title="Төслийн бүртгэл"
                 width={720}
                 onClose={handleCancel}
                 open={isModalOpen}
@@ -182,25 +183,25 @@ export default function CoachListPage() {
                     labelCol={{ span: 8 }}
                     wrapperCol={{ span: 14 }}
                 >
-                    <Form.Item name="coachid" label="Дугаар" >
+                    <Form.Item name="id" label="Төслийн дугаар" >
                         <InputNumber min={0} />
                     </Form.Item>
-                    <Form.Item name="name" label="Коучийн нэр">
+                    <Form.Item name="name" label="Төслийн нэр">
                         <Input />
                     </Form.Item>
-                    <Form.Item name="phone" label="Утас">
+                    <Form.Item name="leadername" label="Төслийн удирдагчийн нэр">
                         <Input />
                     </Form.Item>
-                    <Form.Item name="projectid" label="Төслийн нэр">
-                        <Select style={{ width: "100%" }}>
-                            {project?.map((t, i) => (<Select.Option key={i} value={t.id}>{t.name}</Select.Option>))}
-                        </Select>
+                    <Form.Item name="leaderphone" label="Утас">
+                        <Input />
                     </Form.Item>
-                    <Form.Item name="districtid" label="Дүүрэг">
-                        <Select style={{ width: "100%" }}>
-                            {district?.map((t, i) => (<Select.Option key={i} value={t.districtid}>{t.name}</Select.Option>))}
-                        </Select>
+                    <Form.Item name="location" label="Төслийн байршил">
+                        <Input />
                     </Form.Item>
+                    <Form.Item name="implementation" label="Төсөл хэрэгжих хороо/сум">
+                        <Input />
+                    </Form.Item>
+
                 </Form>
             </Drawer>
         </div>

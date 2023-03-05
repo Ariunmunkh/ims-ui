@@ -110,7 +110,9 @@ export default function HouseHold() {
                     labelAlign="left"
                     labelWrap
                 >
-                    <Form.Item name="householdid" label="Өрхийн дугаар" hidden={true} />
+                    <Form.Item name="householdid" label="Өрхийн дугаар" >
+                        <InputNumber min={0} />
+                    </Form.Item>
                     <Form.Item name="numberof" label="Ам бүлийн тоо" hidden={true} />
                     <Form.Item name="name" label="Өрхийн тэргүүний нэр" hidden={true} />
                     <Form.Item name="status" label="Өрхийн статус">
