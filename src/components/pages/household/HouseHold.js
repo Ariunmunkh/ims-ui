@@ -111,7 +111,7 @@ export default function HouseHold() {
                     labelWrap
                 >
                     <Form.Item name="householdid" label="Өрхийн дугаар" >
-                        <InputNumber min={0} />
+                        <InputNumber min={0} readOnly />
                     </Form.Item>
                     <Form.Item name="numberof" label="Ам бүлийн тоо" hidden={true} />
                     <Form.Item name="name" label="Өрхийн тэргүүний нэр" hidden={true} />
