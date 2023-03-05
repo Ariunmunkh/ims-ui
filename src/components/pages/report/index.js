@@ -1,8 +1,8 @@
 import React, { useRef, useEffect, useState } from "react";
 import { Space, Select, Spin, Button, Slider, Tag } from "antd";
 import { api } from "../../system/api";
-import { SearchOutlined, UserOutlined, FormOutlined, FilePdfOutlined } from "@ant-design/icons";
-import { Progress } from "antd";
+import { SearchOutlined, UserOutlined, FormOutlined, FilePdfOutlined, CloudDownloadOutlined } from "@ant-design/icons";
+import { Progress, Row, Col, message } from "antd";
 import {
     LineChart,
     Line,
@@ -31,6 +31,7 @@ export default function Report() {
     const [dugaar, setdugaar] = useState([1, 5]);
     const [loading, setLoading] = useState(true);
     const [show, setShow] = useState(false);
+    const [messageApi, contextHolder] = message.useMessage();
 
     useEffect(() => {
         api
@@ -148,10 +149,33 @@ export default function Report() {
     const handlePrint = useReactToPrint({
         content: () => componentRef.current,
     });
-
+    const getkobodata = async () => {
+        setLoading(true);
+        await api
+            .get(`/api/record/base/download_survey`)
+            .then((res) => {
+                if (res?.status === 200 && res?.data?.rettype === 0) {
+                    messageApi.success('Амжилттай татлаа');
+                }
+                else {
+                    messageApi.error('Амжилтгүй');
+                }
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+    };
     return (
         <>
-            <Button onClick={handlePrint} type="primary" danger><FilePdfOutlined /> Export to PDF </Button>
+            {contextHolder}
+            <Row gutter={16} style={{ marginTop: 16, marginBottom: 16 }}>
+                <Col>
+                    <Button onClick={handlePrint} type="primary" danger><FilePdfOutlined /> Export to PDF </Button>
+                </Col>
+                <Col>
+                    <Button onClick={getkobodata} type="primary" ><CloudDownloadOutlined /> Kobo системээс мэдээлэл татах </Button>
+                </Col>
+            </Row>
             <div className="row">
                 <div className="col-md-12">
                     <Spin spinning={loading}>
@@ -250,7 +274,7 @@ export default function Report() {
                                                 ))}
                                             </Select>
                                         </div>
-                                        
+
                                         <div className="form-group">
                                             <label>Өрх</label>
                                             <Select
