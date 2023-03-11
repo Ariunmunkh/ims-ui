@@ -15,7 +15,6 @@
     "react-highlight-words": "^0.18.0",
     "react-router-dom": "^6.4.5",
     "react-scripts": "5.0.1",
-    "react-to-print": "^2.14.12",
     "recharts": "^2.4.3"
   },
   "scripts": {

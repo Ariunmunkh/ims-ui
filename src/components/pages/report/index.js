@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Space, Select, Spin, Button, Slider, Tag } from "antd";
 import { api } from "../../system/api";
 import { SearchOutlined, UserOutlined, FormOutlined, FilePdfOutlined, CloudDownloadOutlined } from "@ant-design/icons";
@@ -12,7 +12,6 @@ import {
     Tooltip,
     Legend,
 } from "recharts";
-import { useReactToPrint } from 'react-to-print';
 
 export default function Report() {
     const [data, setdata] = useState([]);
@@ -145,10 +144,11 @@ export default function Report() {
         getData(status, district, section, group, coach, household, dugaar);
         setShow(true);
     };
-    const componentRef = useRef();
-    const handlePrint = useReactToPrint({
-        content: () => componentRef.current,
-    });
+
+    const handleGeneratePdf = () => {
+        window.print();
+    };
+
     const getkobodata = async () => {
         setLoading(true);
         await api
@@ -170,7 +170,7 @@ export default function Report() {
             {contextHolder}
             <Row gutter={16} style={{ marginTop: 16, marginBottom: 16 }}>
                 <Col>
-                    <Button onClick={handlePrint} type="primary" danger><FilePdfOutlined /> Export to PDF </Button>
+                    <Button onClick={handleGeneratePdf} type="primary" danger><FilePdfOutlined /> Export to PDF </Button>
                 </Col>
                 <Col>
                     <Button onClick={getkobodata} type="primary" ><CloudDownloadOutlined /> Kobo системээс мэдээлэл татах </Button>
