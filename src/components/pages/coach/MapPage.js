@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import BingMapsReact from "bingmaps-react";
 import { api } from "../../system/api";
 import useUserInfo from "../../system/useUserInfo";
-import { Spin, Select, Typography, Row, Col } from "antd";
+import { SearchOutlined } from '@ant-design/icons';
+import { Spin, Select, Typography, Row, Col, Button } from "antd";
 import _ from "lodash";
 const { Text } = Typography;
 
@@ -13,21 +14,19 @@ export default function MapPage() {
     const [coachlist, setcoachlist] = useState([
         { coachid: 0, coachname: "хоосон" },
     ]);
-    const [coachid, setcoachid] = useState(0);
+    const [coachid, setcoachid] = useState(userinfo.coachid * 1);
     const [districtlist, setdistrictlist] = useState([
         { districtid: 0, districtname: "хоосон" },
     ]);
     const [districtid, setdistrictid] = useState(0);
 
-    const fetchData = useCallback(async () => {
+    const fetchData = async () => {
+
         setloading(true);
-        let tcoachid = userinfo.coachid;
-        tcoachid = tcoachid || tcoachid === "" ? "0" : tcoachid;
-        if (coachid) tcoachid = coachid;
 
         await api
             .get(
-                `/api/record/households/get_household_location?coachid=${tcoachid}&districtid=${districtid}`
+                `/api/record/households/get_household_location?coachid=${coachid}&districtid=${districtid}`
             )
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
@@ -36,22 +35,24 @@ export default function MapPage() {
                     var tcoach = _.uniqBy(res?.data?.retdata, "coachid");
                     tcoach.push({ coachid: 0, coachname: "хоосон" });
                     tcoach.sort((a, b) => a.coachid - b.coachid);
+                    tcoach = tcoach.filter(x => x.coachid != null);
                     setcoachlist(tcoach);
 
                     var tdistrict = _.uniqBy(res?.data?.retdata, "districtid");
                     tdistrict.push({ districtid: 0, districtname: "хоосон" });
                     tdistrict.sort((a, b) => a.districtid - b.districtid);
+                    tdistrict = tdistrict.filter(x => x.districtid != null);
                     setdistrictlist(tdistrict);
                 }
             })
             .finally(() => {
                 setloading(false);
             });
-    }, [userinfo, districtid, coachid]);
+    };
 
     useEffect(() => {
         fetchData();
-    }, [fetchData]);
+    }, []);
 
     return (
         <div>
@@ -91,6 +92,11 @@ export default function MapPage() {
                                 </Select.Option>
                             ))}
                         </Select>
+                    </Col>
+                    <Col>
+                        <Button type="primary" onClick={() => fetchData()} icon={<SearchOutlined />}>
+                            Хайх
+                        </Button>
                     </Col>
                 </Row>
             </Spin>

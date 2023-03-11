@@ -41,8 +41,7 @@ export default function HouseHoldListPage() {
 
     const fetchData = useCallback(async () => {
         setLoading(true);
-        let coachid = userinfo.coachid;
-        coachid = coachid || coachid === "" ? "0" : coachid;
+        let coachid = userinfo.coachid * 1;
         await api
             .get(
                 `/api/record/households/get_household_list?coachid=${coachid}&status=${status}&group=${group === undefined ? 0 : group
@@ -305,7 +304,6 @@ export default function HouseHoldListPage() {
         });
         showModal();
     };
-    let content = [];
 
     const showModal = () => {
         setIsModalOpen(true);
@@ -473,7 +471,7 @@ export default function HouseHoldListPage() {
                         }
                         loading={loading}
                         columns={gridcolumns}
-                        dataSource={userinfo.roleid === "1" ? griddata : content}
+                        dataSource={griddata}
                         pagination={true}
                         rowKey={(record) => record.householdid}
                     ></Table>
