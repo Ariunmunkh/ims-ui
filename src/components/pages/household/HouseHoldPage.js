@@ -67,7 +67,7 @@ export default function HouseHoldPage() {
                         children: <HouseHold />,
                     },
                     {
-                        label: `Өрхийн айчлал`,
+                        label: `Өрхийн айлчлал`,
                         key: "2",
                         children: <Visit />,
                     },
