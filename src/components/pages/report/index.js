@@ -323,7 +323,7 @@ export default function Report() {
                                                             <th>Шалгуур</th>
                                                             {data?.map((row) => (
                                                                 <th>
-                                                                    <Tag color="geekblue" icon={<FormOutlined />}>Асуумж: <b>{row?.dugaar}</b></Tag>  <Tag icon={<UserOutlined />}>Өрх тоо:<b>{row?.householdcount}</b></Tag>
+                                                                    <Tag color="geekblue" icon={<FormOutlined />}>Үнэлгээ: <b>{row?.dugaar}</b></Tag>  <Tag icon={<UserOutlined />}>Өрх тоо:<b>{row?.householdcount}</b></Tag>
                                                                 </th>
                                                             ))}
                                                         </tr>
