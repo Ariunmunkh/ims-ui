@@ -156,7 +156,7 @@ export default function Meeting() {
                 columns={gridcolumns}
                 dataSource={griddata}
                 onRow={tableOnRow}
-                pagination={false}
+                pagination={true}
                 rowKey={(record) => record.entryid}
                 summary={(pageData) => {
 

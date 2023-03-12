@@ -201,7 +201,7 @@ export default function Investment() {
                 columns={gridcolumns}
                 dataSource={griddata}
                 onRow={tableOnRow}
-                pagination={false}
+                pagination
                 rowKey={(record) => record.entryid}
                 summary={(pageData) => {
                     let totalamount = 0;

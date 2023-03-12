@@ -186,8 +186,8 @@ export default function UserListPage() {
                 columns={gridcolumns}
                 dataSource={griddata}
                 onRow={tableOnRow}
-                pagination={false}
-                scroll={{ y: '70vh' }}
+                pagination={true}
+                scroll={{ y: '50vh' }}
                 rowKey={(record) => record.userid}
             ></Table>
 

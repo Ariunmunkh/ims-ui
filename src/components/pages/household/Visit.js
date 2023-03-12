@@ -166,11 +166,12 @@ export default function Visit() {
 
             <Table
                 loading={loading}
+                bordered
                 columns={gridcolumns}
                 dataSource={griddata}
                 onRow={tableOnRow}
-                pagination={false}
                 rowKey={(record) => record.visitid}
+                pagination={true}
             ></Table>
             <Drawer
                 forceRender

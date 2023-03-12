@@ -202,7 +202,7 @@ export default function Support() {
                 columns={gridcolumns}
                 dataSource={griddata}
                 onRow={tableOnRow}
-                pagination={false}
+                pagination={true}
                 rowKey={(record) => record.entryid}
                 summary={(pageData) => {
                     let totalamount = 0;

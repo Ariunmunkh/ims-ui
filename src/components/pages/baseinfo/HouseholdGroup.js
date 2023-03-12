@@ -134,7 +134,9 @@ export default function HouseholdGroup() {
                 columns={gridcolumns}
                 dataSource={griddata}
                 onRow={tableOnRow}
-                pagination={false}
+                scroll={{ y: '50vh' }}
+                pagination={true}
+
                 rowKey={(record) => record.id}
             ></Table>
 

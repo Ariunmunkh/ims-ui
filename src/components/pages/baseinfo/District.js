@@ -129,7 +129,8 @@ export default function District() {
                 columns={gridcolumns}
                 dataSource={griddata}
                 onRow={tableOnRow}
-                pagination={false}
+                pagination={true}
+                scroll={{ y: '50vh' }}
                 rowKey={(record) => record.id}
             ></Table>
 

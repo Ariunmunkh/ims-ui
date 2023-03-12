@@ -195,7 +195,7 @@ export default function Training() {
                 columns={gridcolumns}
                 dataSource={griddata}
                 onRow={tableOnRow}
-                pagination={false}
+                pagination={true}
                 rowKey={(record) => record.entryid}
             ></Table>
             <Drawer

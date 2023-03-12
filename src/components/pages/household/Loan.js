@@ -154,7 +154,7 @@ export default function Loan() {
                 columns={gridcolumns}
                 dataSource={griddata}
                 onRow={tableOnRow}
-                pagination={false}
+                pagination={true}
                 rowKey={(record) => record.entryid}
                 summary={(pageData) => {
 
