@@ -1,9 +1,9 @@
 version: '3.7'
 
 services:
-  ul:
-    image: ul:latest
-    container_name: ul
+  dms:
+    image: dms:latest
+    container_name: dms
     build:
       context: .
       dockerfile: Dockerfile
