@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { api } from "../../system/api";
-import { Table, Modal, Drawer, Space, Form, Button, Input, Select, Switch, Divider } from "antd";
+import { Table, Modal, Drawer, Space, Form, Button, DatePicker, Input, Select, Switch, Divider } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { PlusOutlined } from "@ant-design/icons";
+import dayjs from 'dayjs';
 const { confirm } = Modal;
 export default function HouseHoldMember() {
     const { householdid } = useParams();
@@ -151,8 +152,11 @@ export default function HouseHoldMember() {
     };
 
     const onFinish = async (values) => {
+        debugger;
+        let fdata = formdata.getFieldsValue();
+        fdata.birthdate = fdata.birthdate.format('YYYY.MM.DD');
         await api
-            .post(`/api/record/households/set_householdmember`, formdata.getFieldsValue())
+            .post(`/api/record/households/set_householdmember`, fdata)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setIsModalOpen(false);
@@ -166,7 +170,9 @@ export default function HouseHoldMember() {
             .get(`/api/record/households/get_householdmember?id=${memberid}`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
-                    formdata.setFieldsValue(res?.data?.retdata[0]);
+                    let fdata = res?.data?.retdata[0];
+                    fdata.birthdate = dayjs(fdata.birthdate, 'YYYY.MM.DD');
+                    formdata.setFieldsValue(fdata);
                     showModal();
                 }
             });
@@ -244,7 +250,7 @@ export default function HouseHoldMember() {
                         </Select>
                     </Form.Item>
                     <Form.Item name="birthdate" label="Төрсөн огноо">
-                        <Input />
+                        <DatePicker style={{ width: "100%" }} placeholder="Өдөр сонгох" />
                     </Form.Item>
                     <Form.Item name="gender" label="Хүйс">
                         <Select

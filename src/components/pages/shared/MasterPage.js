@@ -31,6 +31,7 @@ import Training from "../coach/Training";
 import Investment from "../coach/Investment";
 import Contact from "../coach/Contact";
 import MapPage from "../coach/MapPage";
+import Dashboard from "../coach/Dashboard";
 import Report from "../report";
 
 const { Header, Sider, Content } = Layout;
@@ -91,6 +92,11 @@ export default function MasterPage() {
                         icon: <StockOutlined />,
                         label: "Үр дүн",
                     },
+                    {
+                        key: "dashboard",
+                        icon: <Dashboard />,
+                        label: "Хянах самбар",
+                    },
                 ];
             case "2":
                 return [
@@ -139,6 +145,11 @@ export default function MasterPage() {
                         icon: <StockOutlined />,
                         label: "Үр дүн",
                     },
+                    {
+                        key: "dashboard",
+                        icon: <Dashboard />,
+                        label: "Хянах самбар",
+                    },
                 ];
             case "3":
                 return [
@@ -182,6 +193,11 @@ export default function MasterPage() {
                         icon: <StockOutlined />,
                         label: "Үр дүн",
                     },
+                    {
+                        key: "dashboard",
+                        icon: <StockOutlined />,
+                        label: "Хянах самбар",
+                    },
                 ];
             default:
                 return [];
@@ -192,7 +208,6 @@ export default function MasterPage() {
     const onClick = async (item, key, keyPath, domEvent) => {
         navigate(item?.key);
     };
-
     const onLogoutClick = async (event) => {
         setToken({ access_token: null });
         window.location.reload();
@@ -200,9 +215,9 @@ export default function MasterPage() {
 
     return (
         <Layout>
-            <Sider trigger={null} collapsible collapsed={collapsed}><br/>
-                <h5 className="text-white text-center">DMS систем</h5>
-                <hr className="text-white"/>
+            <Sider trigger={null} collapsible collapsed={collapsed}><br />
+                <h5 className="text-white text-center" onClick={() => navigate("/")}>DMS систем</h5>
+                <hr className="text-white" />
                 <Menu
                     style={{ position: "sticky", top: 0, zIndex: 1 }}
                     theme="dark"
@@ -298,6 +313,10 @@ export default function MasterPage() {
                         <Route
                             path="/report"
                             element={userinfo?.roleid ? <Report /> : <AccessDenied />}
+                        />
+                        <Route
+                            path="/dashboard"
+                            element={userinfo?.roleid ? <Dashboard /> : <AccessDenied />}
                         />
                         <Route path="*" element={<NotFound />} />
                     </Routes>

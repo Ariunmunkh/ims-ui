@@ -277,9 +277,10 @@ export default function HouseHoldListPage() {
             districtid: null,
             section: null,
             address: null,
-            latitude:null,
-            longitude:null,
+            latitude: null,
+            longitude: null,
             phone: null,
+            isnew: true,
             coachid: userinfo.coachid,
         });
         showModal();
@@ -299,7 +300,8 @@ export default function HouseHoldListPage() {
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setIsModalOpen(false);
-                    fetchData();
+
+                    navigate(`/household/${res?.data?.retdata}`)
                 }
             });
     };
@@ -413,6 +415,9 @@ export default function HouseHoldListPage() {
                         <Input />
                     </Form.Item>
                     <Form.Item name="phone" label="Утас">
+                        <Input />
+                    </Form.Item>
+                    <Form.Item name="isnew" label="Шинэ" hidden={true}>
                         <Input />
                     </Form.Item>
 
