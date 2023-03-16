@@ -14,6 +14,7 @@ import {
     StockOutlined,
     SketchOutlined,
     ApiOutlined,
+    DashboardOutlined,
 } from "@ant-design/icons";
 import { Layout, Menu, theme, Space, Button, Typography } from "antd";
 
@@ -31,7 +32,7 @@ import Training from "../coach/Training";
 import Investment from "../coach/Investment";
 import Contact from "../coach/Contact";
 import MapPage from "../coach/MapPage";
-import Dashboard from "../coach/Dashboard";
+import Monitor from "./Monitor";
 import Report from "../report";
 
 const { Header, Sider, Content } = Layout;
@@ -93,8 +94,8 @@ export default function MasterPage() {
                         label: "Үр дүн",
                     },
                     {
-                        key: "dashboard",
-                        icon: <Dashboard />,
+                        key: "monitor",
+                        icon: <DashboardOutlined />,
                         label: "Хянах самбар",
                     },
                 ];
@@ -146,8 +147,8 @@ export default function MasterPage() {
                         label: "Үр дүн",
                     },
                     {
-                        key: "dashboard",
-                        icon: <Dashboard />,
+                        key: "monitor",
+                        icon: <DashboardOutlined />,
                         label: "Хянах самбар",
                     },
                 ];
@@ -194,8 +195,8 @@ export default function MasterPage() {
                         label: "Үр дүн",
                     },
                     {
-                        key: "dashboard",
-                        icon: <StockOutlined />,
+                        key: "monitor",
+                        icon: <DashboardOutlined />,
                         label: "Хянах самбар",
                     },
                 ];
@@ -265,7 +266,7 @@ export default function MasterPage() {
                     style={{
                         margin: "24px 16px",
                         padding: 24,
-                        minHeight: "90vh",
+                        minHeight: "200vh",
                         background: colorBgContainer,
                     }}
                 >
@@ -315,8 +316,8 @@ export default function MasterPage() {
                             element={userinfo?.roleid ? <Report /> : <AccessDenied />}
                         />
                         <Route
-                            path="/dashboard"
-                            element={userinfo?.roleid ? <Dashboard /> : <AccessDenied />}
+                            path="/monitor"
+                            element={userinfo?.roleid ? <Monitor /> : <AccessDenied />}
                         />
                         <Route path="*" element={<NotFound />} />
                     </Routes>

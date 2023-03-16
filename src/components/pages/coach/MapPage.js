@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import BingMapsReact from "bingmaps-react";
+import React, { useState, useEffect, useCallback } from "react";
 import { api } from "../../system/api";
 import useUserInfo from "../../system/useUserInfo";
 import { SearchOutlined } from '@ant-design/icons';
@@ -20,7 +19,7 @@ export default function MapPage() {
     ]);
     const [districtid, setdistrictid] = useState(0);
 
-    const fetchData = async () => {
+    const fetchData = useCallback(async () => {
 
         setloading(true);
 
@@ -48,11 +47,11 @@ export default function MapPage() {
             .finally(() => {
                 setloading(false);
             });
-    };
+    }, [coachid, districtid]);
 
     useEffect(() => {
         fetchData();
-    }, []);
+    }, [fetchData]);
 
     return (
         <div>
@@ -114,11 +113,8 @@ export default function MapPage() {
                                         id="world-map-markers"
                                         style={{ height: 700 }}
                                     >
-                                        <BingMapsReact
-                                            bingMapsKey="Al5_dVdiKO78I00m1mkAwVz7EmrK9ylIMTqI7qzQvwo2LSruRN2OkQFeRAsIaI24"
-                                            pushPins={pushPins}
-                                        />
-                                        <div className="map" />
+
+
                                     </div>
                                 </div>
                                 <div className="card-pane-right bg-success pt-2 pb-2 pl-4 pr-4 text-white text-center">
