@@ -139,6 +139,12 @@ export default function HouseHold() {
                     <Form.Item name="phone" label="Утас" >
                         <Input />
                     </Form.Item>
+                    <Form.Item name="latitude" label="Өргөрөг/Latitude/" >
+                        <Input />
+                    </Form.Item>
+                    <Form.Item name="longitude" label="Уртраг/longitude/" >
+                        <Input />
+                    </Form.Item>
 
                     <Form.Item name="coachid" label="Хариуцсан коучийн нэр" hidden={userinfo.coachid !== ''} >
                         <Select style={{ width: "100%" }}>

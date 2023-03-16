@@ -1,11 +1,13 @@
-import React, {useRef, useState, useEffect, useCallback } from "react";
+import React, { useRef, useState, useEffect, useCallback } from "react";
 import { api } from "../../system/api";
 import useUserInfo from "../../system/useUserInfo";
-import { Table, Modal, Drawer,Input, Space, Form, Tag, Button, DatePicker, Select, Divider, InputNumber, Switch, } from "antd";
+import { Table, Modal, Drawer, Input, Space, Form, Tag, Button, DatePicker, Select, Divider, InputNumber, Switch, } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
-import { PlusOutlined,  SearchOutlined,
+import {
+    PlusOutlined, SearchOutlined,
     DownloadOutlined,
-    UserOutlined, } from "@ant-design/icons";
+    UserOutlined,
+} from "@ant-design/icons";
 import dayjs from 'dayjs';
 import { CSVLink } from "react-csv";
 import Highlighter from "react-highlight-words";
@@ -23,7 +25,7 @@ export default function Training() {
     const [organization, setorganization] = useState([]);
 
     const fetchData = useCallback(() => {
-        setLoading(true); 
+        setLoading(true);
         let coachid = userinfo.coachid;
         coachid = coachid || coachid === '' ? '0' : coachid;
         api.get(`/api/record/coach/get_training_list?coachid=${coachid}`)
@@ -76,126 +78,134 @@ export default function Training() {
 
 
     const [searchText, setSearchText] = useState("");
-  const [searchedColumn, setSearchedColumn] = useState("");
-  const searchInput = useRef(null);
-  const handleSearch = (selectedKeys, confirm, dataIndex) => {
-    confirm();
-    setSearchText(selectedKeys[0]);
-    setSearchedColumn(dataIndex);
-  };
-  const handleReset = (clearFilters) => {
-    clearFilters();
-    setSearchText("");
-  };
+    const [searchedColumn, setSearchedColumn] = useState("");
+    const searchInput = useRef(null);
+    const handleSearch = (selectedKeys, confirm, dataIndex) => {
+        confirm();
+        setSearchText(selectedKeys[0]);
+        setSearchedColumn(dataIndex);
+    };
+    const handleReset = (clearFilters) => {
+        clearFilters();
+        setSearchText("");
+    };
 
-  const getColumnSearchProps = (dataIndex) => ({
-    filterDropdown: ({
-      setSelectedKeys,
-      selectedKeys,
-      confirm,
-      clearFilters,
-      close,
-    }) => (
-      <div
-        style={{
-          padding: 8,
-        }}
-        onKeyDown={(e) => e.stopPropagation()}
-      >
-        <Input
-          ref={searchInput}
-          placeholder={`Search ${dataIndex}`}
-          value={selectedKeys[0]}
-          onChange={(e) =>
-            setSelectedKeys(e.target.value ? [e.target.value] : [])
-          }
-          onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
-          style={{
-            marginBottom: 8,
-            display: "block",
-          }}
-        />
-        <Space>
-          <Button
-            type="primary"
-            onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
-            icon={<SearchOutlined />}
-            size="small"
-            style={{
-              width: 90,
-            }}
-          >
-            Search
-          </Button>
-          <Button
-            onClick={() => clearFilters && handleReset(clearFilters)}
-            size="small"
-            style={{
-              width: 90,
-            }}
-          >
-            Reset
-          </Button>
-          <Button
-            type="link"
-            size="small"
-            onClick={() => {
-              confirm({
-                closeDropdown: false,
-              });
-              setSearchText(selectedKeys[0]);
-              setSearchedColumn(dataIndex);
-            }}
-          >
-            Filter
-          </Button>
-          <Button
-            type="link"
-            size="small"
-            onClick={() => {
-              close();
-            }}
-          >
-            close
-          </Button>
-        </Space>
-      </div>
-    ),
-    filterIcon: (filtered) => (
-      <SearchOutlined
-        style={{
-          color: filtered ? "#1890ff" : undefined,
-        }}
-      />
-    ),
-    onFilter: (value, record) =>
-      record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
-    onFilterDropdownOpenChange: (visible) => {
-      if (visible) {
-        setTimeout(() => searchInput.current?.select(), 100);
-      }
-    },
-    render: (text) =>
-      searchedColumn === dataIndex ? (
-        <Highlighter
-          highlightStyle={{
-            backgroundColor: "#ffc069",
-            padding: 0,
-          }}
-          searchWords={[searchText]}
-          autoEscape
-          textToHighlight={text ? text.toString() : ""}
-        />
-      ) : (
-        text
-      ),
-  });
+    const getColumnSearchProps = (dataIndex) => ({
+        filterDropdown: ({
+            setSelectedKeys,
+            selectedKeys,
+            confirm,
+            clearFilters,
+            close,
+        }) => (
+            <div
+                style={{
+                    padding: 8,
+                }}
+                onKeyDown={(e) => e.stopPropagation()}
+            >
+                <Input
+                    ref={searchInput}
+                    placeholder={`Search ${dataIndex}`}
+                    value={selectedKeys[0]}
+                    onChange={(e) =>
+                        setSelectedKeys(e.target.value ? [e.target.value] : [])
+                    }
+                    onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+                    style={{
+                        marginBottom: 8,
+                        display: "block",
+                    }}
+                />
+                <Space>
+                    <Button
+                        type="primary"
+                        onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+                        icon={<SearchOutlined />}
+                        size="small"
+                        style={{
+                            width: 90,
+                        }}
+                    >
+                        Search
+                    </Button>
+                    <Button
+                        onClick={() => clearFilters && handleReset(clearFilters)}
+                        size="small"
+                        style={{
+                            width: 90,
+                        }}
+                    >
+                        Reset
+                    </Button>
+                    <Button
+                        type="link"
+                        size="small"
+                        onClick={() => {
+                            confirm({
+                                closeDropdown: false,
+                            });
+                            setSearchText(selectedKeys[0]);
+                            setSearchedColumn(dataIndex);
+                        }}
+                    >
+                        Filter
+                    </Button>
+                    <Button
+                        type="link"
+                        size="small"
+                        onClick={() => {
+                            close();
+                        }}
+                    >
+                        close
+                    </Button>
+                </Space>
+            </div>
+        ),
+        filterIcon: (filtered) => (
+            <SearchOutlined
+                style={{
+                    color: filtered ? "#1890ff" : undefined,
+                }}
+            />
+        ),
+        onFilter: (value, record) =>
+            record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+        onFilterDropdownOpenChange: (visible) => {
+            if (visible) {
+                setTimeout(() => searchInput.current?.select(), 100);
+            }
+        },
+        render: (text) =>
+            searchedColumn === dataIndex ? (
+                <Highlighter
+                    highlightStyle={{
+                        backgroundColor: "#ffc069",
+                        padding: 0,
+                    }}
+                    searchWords={[searchText]}
+                    autoEscape
+                    textToHighlight={text ? text.toString() : ""}
+                />
+            ) : (
+                text
+            ),
+    });
 
 
     const gridcolumns = [
         {
             title: "Огноо",
             dataIndex: "trainingdate",
+        },
+        {
+            title: "Дүүрэг",
+            dataIndex: "districtname",
+        },
+        {
+            title: "Хороо",
+            dataIndex: "section",
         },
         {
             title: "Сургалтын төрөл",
@@ -321,27 +331,27 @@ export default function Training() {
             </Button>
 
             <Table
-            bordered
-            title={() => (
-              <>
-                <Tag icon={<UserOutlined />} color="magenta">
-                  Сургалт, үйл ажиллагааны мэдээлэл <b>{exceldata.length}</b> харагдаж байна.
-                </Tag>
+                bordered
+                title={() => (
+                    <>
+                        <Tag icon={<UserOutlined />} color="magenta">
+                            Сургалт, үйл ажиллагааны мэдээлэл <b>{exceldata.length}</b> харагдаж байна.
+                        </Tag>
 
-                <CSVLink data={exceldata} filename={"Сургалт, үйл ажиллагааны жагсаалт.csv"}>
-                  <Button
-                    type="primary"
-                    icon={<DownloadOutlined />}
-                    size="small"
-                  >
-                    Татах
-                  </Button>
-                </CSVLink>
-              </>
-            )}
-            onChange={(pagination, filters, sorter, extra) =>
-              setexceldata(extra.currentDataSource)
-            }
+                        <CSVLink data={exceldata} filename={"Сургалт, үйл ажиллагааны жагсаалт.csv"}>
+                            <Button
+                                type="primary"
+                                icon={<DownloadOutlined />}
+                                size="small"
+                            >
+                                Татах
+                            </Button>
+                        </CSVLink>
+                    </>
+                )}
+                onChange={(pagination, filters, sorter, extra) =>
+                    setexceldata(extra.currentDataSource)
+                }
                 loading={loading}
                 columns={gridcolumns}
                 dataSource={griddata}

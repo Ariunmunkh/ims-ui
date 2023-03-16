@@ -95,18 +95,6 @@ export default function HouseHoldListPage() {
         fetchData();
     }, [fetchData]);
 
-    const groupchange = (householdgroupid, householdid) => {
-        const tdata = [...griddata];
-        const found = tdata.find((a) => a.householdid === householdid);
-        if (found) found.householdgroupid = householdgroupid;
-
-        setGridData(tdata);
-
-        api.post(
-            `/api/record/households/set_household_group?householdid=${householdid}&householdgroupid=${householdgroupid}`
-        );
-    };
-
     const [searchText, setSearchText] = useState("");
     const [searchedColumn, setSearchedColumn] = useState("");
     const searchInput = useRef(null);
@@ -240,23 +228,7 @@ export default function HouseHoldListPage() {
         },
         {
             title: "Бүлэг",
-            dataIndex: "householdgroupid",
-            render: (text, record, index) => {
-                return (
-                    <Select
-                        style={{ width: 275 }}
-                        bordered={false}
-                        value={record?.householdgroupid}
-                        onChange={(value) => groupchange(value, record.householdid)}
-                    >
-                        {householdgroup?.map((t, i) => (
-                            <Select.Option key={i} value={t.id}>
-                                {t.name}
-                            </Select.Option>
-                        ))}
-                    </Select>
-                );
-            },
+            dataIndex: "householdgroupname",
         },
         {
             title: "Ам бүлийн тоо",
@@ -266,6 +238,12 @@ export default function HouseHoldListPage() {
             title: "Өрхийн тэргүүний нэр",
             dataIndex: "name",
             ...getColumnSearchProps("name"),
+        },
+        {
+            title: "Хүйс",
+            dataIndex: "gender",
+            filters: [{ text: "Эрэгтэй", value: "Эрэгтэй" }, { text: "Эмэгтэй", value: "Эмэгтэй" }],
+            onFilter: (value, record) => record.gender.indexOf(value) === 0,
         },
         {
             title: "Дүүрэг",
@@ -299,6 +277,8 @@ export default function HouseHoldListPage() {
             districtid: null,
             section: null,
             address: null,
+            latitude:null,
+            longitude:null,
             phone: null,
             coachid: userinfo.coachid,
         });
@@ -425,6 +405,12 @@ export default function HouseHoldListPage() {
                     </Form.Item>
                     <Form.Item name="address" label="Хаяг">
                         <Input.TextArea style={{ width: "100%" }} placeholder="Хаяг" />
+                    </Form.Item>
+                    <Form.Item name="latitude" label="Өргөрөг/Latitude/" >
+                        <Input />
+                    </Form.Item>
+                    <Form.Item name="longitude" label="Уртраг/longitude/" >
+                        <Input />
                     </Form.Item>
                     <Form.Item name="phone" label="Утас">
                         <Input />
