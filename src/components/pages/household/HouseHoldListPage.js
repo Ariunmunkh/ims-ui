@@ -211,20 +211,19 @@ export default function HouseHoldListPage() {
             ),
     });
 
+    const tableOnRow = (record, rowIndex) => {
+        return {
+            onClick: (event) => {
+                navigate(`/household/${record.householdid}`)
+            },
+        };
+    };
+
     const gridcolumns = [
         {
-            title: "Өрхийн статус",
-            dataIndex: "householdstatus",
-            render: (text, record, index) => {
-                return (
-                    <Button
-                        type="link"
-                        onClick={() => navigate(`/household/${record.householdid}`)}
-                    >
-                        {text}
-                    </Button>
-                );
-            },
+            title: "Өрхийн дугаар",
+            dataIndex: "householdid",
+            ...getColumnSearchProps("householdid"),
         },
         {
             title: "Бүлэг",
@@ -233,6 +232,7 @@ export default function HouseHoldListPage() {
         {
             title: "Ам бүлийн тоо",
             dataIndex: "numberof",
+            ...getColumnSearchProps("numberof"),
         },
         {
             title: "Өрхийн тэргүүний нэр",
@@ -462,6 +462,7 @@ export default function HouseHoldListPage() {
                         }
                         loading={loading}
                         columns={gridcolumns}
+                        onRow={tableOnRow}
                         dataSource={griddata}
                         pagination={true}
                         rowKey={(record) => record.householdid}
