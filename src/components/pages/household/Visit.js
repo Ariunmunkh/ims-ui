@@ -1,10 +1,12 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useRef, useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { api } from "../../system/api";
 import useUserInfo from "../../system/useUserInfo";
 import { Table, Modal, Drawer, Space, Form, Button, Input, DatePicker, Select, Divider, } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { PlusOutlined } from "@ant-design/icons";
+import { SearchOutlined } from "@ant-design/icons";
+import Highlighter from "react-highlight-words";
 import dayjs from 'dayjs';
 const { confirm } = Modal;
 
@@ -12,6 +14,7 @@ export default function Visit() {
     const { userinfo } = useUserInfo();
     const { householdid } = useParams();
     const [relationship, setrelationship] = useState([]);
+    const [mediatedservicetype, setmediatedservicetype] = useState([]);
     const [coachlist, setcoachlist] = useState([]);
     const [griddata, setGridData] = useState();
     const [loading, setLoading] = useState(true);
@@ -52,25 +55,155 @@ export default function Visit() {
                     setcoachlist(res?.data?.retdata);
                 }
             });
+        api.get(`/api/record/base/get_dropdown_item_list?type=mediatedservicetype`)
+            .then((res) => {
+                if (res?.status === 200 && res?.data?.rettype === 0) {
+                    setmediatedservicetype(res?.data?.retdata);
+                }
+            });
         fetchData();
     }, [fetchData, householdid]);
+
+    const [searchText, setSearchText] = useState("");
+    const [searchedColumn, setSearchedColumn] = useState("");
+    const searchInput = useRef(null);
+    const handleSearch = (selectedKeys, confirm, dataIndex) => {
+        confirm();
+        setSearchText(selectedKeys[0]);
+        setSearchedColumn(dataIndex);
+    };
+    const handleReset = (clearFilters) => {
+        clearFilters();
+        setSearchText("");
+    };
+    const getColumnSearchProps = (dataIndex) => ({
+        filterDropdown: ({
+            setSelectedKeys,
+            selectedKeys,
+            confirm,
+            clearFilters,
+            close,
+        }) => (
+            <div
+                style={{
+                    padding: 8,
+                }}
+                onKeyDown={(e) => e.stopPropagation()}
+            >
+                <Input
+                    ref={searchInput}
+                    placeholder={`Search ${dataIndex}`}
+                    value={selectedKeys[0]}
+                    onChange={(e) =>
+                        setSelectedKeys(e.target.value ? [e.target.value] : [])
+                    }
+                    onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+                    style={{
+                        marginBottom: 8,
+                        display: "block",
+                    }}
+                />
+                <Space>
+                    <Button
+                        type="primary"
+                        onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+                        icon={<SearchOutlined />}
+                        size="small"
+                        style={{
+                            width: 90,
+                        }}
+                    >
+                        Search
+                    </Button>
+                    <Button
+                        onClick={() => clearFilters && handleReset(clearFilters)}
+                        size="small"
+                        style={{
+                            width: 90,
+                        }}
+                    >
+                        Reset
+                    </Button>
+                    <Button
+                        type="link"
+                        size="small"
+                        onClick={() => {
+                            confirm({
+                                closeDropdown: false,
+                            });
+                            setSearchText(selectedKeys[0]);
+                            setSearchedColumn(dataIndex);
+                        }}
+                    >
+                        Filter
+                    </Button>
+                    <Button
+                        type="link"
+                        size="small"
+                        onClick={() => {
+                            close();
+                        }}
+                    >
+                        close
+                    </Button>
+                </Space>
+            </div>
+        ),
+        filterIcon: (filtered) => (
+            <SearchOutlined
+                style={{
+                    color: filtered ? "#1890ff" : undefined,
+                }}
+            />
+        ),
+        onFilter: (value, record) =>
+            record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+        onFilterDropdownOpenChange: (visible) => {
+            if (visible) {
+                setTimeout(() => searchInput.current?.select(), 100);
+            }
+        },
+        render: (text) =>
+            searchedColumn === dataIndex ? (
+                <Highlighter
+                    highlightStyle={{
+                        backgroundColor: "#ffc069",
+                        padding: 0,
+                    }}
+                    searchWords={[searchText]}
+                    autoEscape
+                    textToHighlight={text ? text.toString() : ""}
+                />
+            ) : (
+                text
+            ),
+    });
 
     const gridcolumns = [
         {
             title: "Айлчилсан огноо",
             dataIndex: "visitdate",
+            ...getColumnSearchProps("visitdate"),
         },
         {
             title: "Айлчлалаар уулзсан өрхийн гишүүд",
             dataIndex: "membername",
+            ...getColumnSearchProps("membername"),
         },
         {
             title: "Тайлбар",
             dataIndex: "note",
+            ...getColumnSearchProps("note"),
+        },
+        {
+            title: "Холбон зуучилсан үйлчилгээний төрөл",
+            dataIndex: "mediatedservicetypename",
+            ...getColumnSearchProps("mediatedservicetypename"),
         },
         {
             title: "Айлчилсан хүний нэр",
             dataIndex: "coachname",
+            ...getColumnSearchProps("coachname"),
         },
     ];
 
@@ -149,6 +282,7 @@ export default function Visit() {
             memberid: null,
             householdid: householdid,
             visitdate: null,
+            mediatedservicetypeid: null,
             note: null,
         });
         showModal();
@@ -221,6 +355,15 @@ export default function Visit() {
                     </Form.Item>
                     <Form.Item name="visitdate" label="Айлчилсан огноо">
                         <DatePicker style={{ width: "100%" }} placeholder="Өдөр сонгох" />
+                    </Form.Item>
+                    <Form.Item name="mediatedservicetypeid" label="Холбон зуучилсан үйлчилгээний төрөл">
+                        <Select style={{ width: "100%" }}>
+                            {mediatedservicetype?.map((t, i) => (
+                                <Select.Option key={i} value={t.id}>
+                                    {t.name}
+                                </Select.Option>
+                            ))}
+                        </Select>
                     </Form.Item>
                     <Form.Item name="memberid" label="Айлчлалаар уулзсан өрхийн гишүүн">
                         <Select style={{ width: "100%" }}>

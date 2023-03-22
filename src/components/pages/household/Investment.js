@@ -264,6 +264,11 @@ export default function Investment() {
                     wrapperCol={{ span: 14 }}
                     labelAlign="left"
                     labelWrap
+                    onFieldsChange={(changedFields, allFields) => {
+                        if (changedFields[0]?.name[0] === 'quantity' || changedFields[0]?.name[0] === 'unitprice') {
+                            formdata.setFieldValue('totalprice', formdata.getFieldValue('quantity') * formdata.getFieldValue('unitprice'));
+                        }
+                    }}
                 >
                     <Form.Item name="entryid" hidden={true} />
                     <Form.Item name="householdid" hidden={true} />
