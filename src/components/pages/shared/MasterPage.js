@@ -266,7 +266,7 @@ export default function MasterPage() {
                     style={{
                         margin: "24px 16px",
                         padding: 24,
-                        minHeight: "200vh",
+                        minHeight: "89vh",
                         background: colorBgContainer,
                     }}
                 >

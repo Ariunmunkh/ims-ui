@@ -10,6 +10,7 @@ const { confirm } = Modal;
 export default function Livelihood() {
     const { householdid } = useParams();
     const [subbranch, setsubbranch] = useState([]);
+    const [business, setbusiness] = useState([]);
     const [griddata, setGridData] = useState();
     const [loading, setLoading] = useState(true);
     const [formdata] = Form.useForm();
@@ -43,6 +44,12 @@ export default function Livelihood() {
                     setsubbranch(res?.data?.retdata);
                 }
             });
+        api.get(`/api/record/base/get_dropdown_item_list?type=business`)
+            .then((res) => {
+                if (res?.status === 200 && res?.data?.rettype === 0) {
+                    setbusiness(res?.data?.retdata);
+                }
+            });
         fetchData();
     }, [fetchData]);
 
@@ -53,7 +60,7 @@ export default function Livelihood() {
         },
         {
             title: "Өрхийн сонгосон аж ахуй",
-            dataIndex: "selectedfarm",
+            dataIndex: "businessname",
         },
         {
             title: "Харьяалагдах дэд салбар",
@@ -134,7 +141,7 @@ export default function Livelihood() {
             entryid: 0,
             householdid: householdid,
             plandate: null,
-            selectedfarm: null,
+            businessid: null,
             subbranchid: null,
         });
         showModal();
@@ -198,8 +205,10 @@ export default function Livelihood() {
                     <Form.Item name="plandate" label="Амьжиргаа сайжруулах төлөвлөгөө боловсруулсан огноо">
                         <DatePicker style={{ width: "100%" }} placeholder="Өдөр сонгох" />
                     </Form.Item>
-                    <Form.Item name="selectedfarm" label="Өрхийн сонгосон аж ахуй">
-                        <Input />
+                    <Form.Item name="businessid" label="Өрхийн сонгосон аж ахуй">
+                        <Select style={{ width: '100%' }}>
+                            {business?.map((t, i) => (<Select.Option key={i} value={t.id}>{t.name}</Select.Option>))}
+                        </Select>
                     </Form.Item>
                     <Form.Item name="subbranchid" label="Харьяалагдах дэд салбар">
                         <Select style={{ width: '100%' }}>

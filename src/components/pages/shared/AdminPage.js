@@ -22,6 +22,7 @@ import SupportReceivedType from "../baseinfo/SupportReceivedType";
 import TrainingAndActivity from "../baseinfo/TrainingAndActivity";
 import HouseholdGroup from "../baseinfo/HouseholdGroup";
 import TrainingType from "../baseinfo/TrainingType";
+import Business from "../baseinfo/Business";
 
 export default function AdminPage() {
 
@@ -101,6 +102,11 @@ export default function AdminPage() {
                         label: `Сургалт, үйл ажиллагаа зохиох байгууллагын нэр`,
                         key: "14",
                         children: <Organization />,
+                    },
+                    {
+                        label: `Бизнес`,
+                        key: "23",
+                        children: <Business />,
                     },
                     {
                         label: `Харьяалагдах дэд салбар`,
