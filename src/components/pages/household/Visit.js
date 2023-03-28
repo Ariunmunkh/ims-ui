@@ -196,7 +196,7 @@ export default function Visit() {
             ...getColumnSearchProps("note"),
         },
         {
-            title: "Холбон зуучилсан үйлчилгээний төрөл",
+            title: "Хэрэгцээний нэр",
             dataIndex: "mediatedservicetypename",
             ...getColumnSearchProps("mediatedservicetypename"),
         },
@@ -356,7 +356,7 @@ export default function Visit() {
                     <Form.Item name="visitdate" label="Айлчилсан огноо">
                         <DatePicker style={{ width: "100%" }} placeholder="Өдөр сонгох" />
                     </Form.Item>
-                    <Form.Item name="mediatedservicetypeid" label="Холбон зуучилсан үйлчилгээний төрөл">
+                    <Form.Item name="mediatedservicetypeid" label="Хэрэгцээний нэр">
                         <Select style={{ width: "100%" }}>
                             {mediatedservicetype?.map((t, i) => (
                                 <Select.Option key={i} value={t.id}>
