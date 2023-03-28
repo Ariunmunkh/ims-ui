@@ -59,7 +59,7 @@ export default function AdminPage() {
                         children: <HouseholdStatus />,
                     },
                     {
-                        label: `Бүлэг /Өрх/`,
+                        label: `Дундын хадгаламжийн бүлэг`,
                         key: "6",
                         children: <HouseholdGroup />,
                     },

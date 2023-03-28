@@ -1,22 +1,25 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { api } from "../../system/api";
-import useUserInfo from "../../system/useUserInfo";
-import { Drawer, Space, Form, Button, Input, Select, InputNumber, Descriptions, Divider } from "antd";
+import { Drawer, Space, Spin, Form, Button, Input, Select, InputNumber, Descriptions, Divider } from "antd";
 import HouseHoldMember from "./HouseHoldMember";
 
 export default function HouseHold() {
     const { householdid } = useParams();
-    const { userinfo } = useUserInfo();
     const [formdata] = Form.useForm();
     const [districtlist, setdistrictlist] = useState([]);
     const [coachlist, setcoachlist] = useState([]);
     const [householdstatus, sethouseholdstatus] = useState([]);
+    const [householdgroup, sethouseholdgroup] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     const fetchData = useCallback(() => {
+        setLoading(true);
         api.get(`/api/record/households/get_household?id=${householdid}`)
             .then((response) => {
                 formdata.setFieldsValue(response.data.retdata[0]);
+            }).finally(() => {
+                setLoading(false);
             });
     }, [householdid, formdata]);
 
@@ -40,6 +43,12 @@ export default function HouseHold() {
                     sethouseholdstatus(res?.data?.retdata);
                 }
             });
+        api.get(`/api/record/base/get_dropdown_item_list?type=householdgroup`)
+            .then((res) => {
+                if (res?.status === 200 && res?.data?.rettype === 0) {
+                    sethouseholdgroup(res?.data?.retdata);
+                }
+            });
     }, [fetchData]);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -54,7 +63,6 @@ export default function HouseHold() {
 
     const onFinish = async (values) => {
         await api.post(`/api/record/households/set_household`, formdata.getFieldsValue()).then((res) => {
-            debugger;
             if (res?.status === 200 && res?.data?.rettype === 0) {
                 setIsModalOpen(false);
                 fetchData();
@@ -67,24 +75,27 @@ export default function HouseHold() {
 
     return (
         <div>
-            <Descriptions
-                title="ӨРХИЙН МЭДЭЭЛЭЛ"
-                bordered
-                style={{ paddingBottom: 30 }}
-            >
-                <Descriptions.Item label="Өрхийн дугаар">
-                    {formdata.getFieldValue('householdid')}
-                </Descriptions.Item>
-                <Descriptions.Item label="Өрхийн тэргүүн нэр">
-                    {formdata.getFieldValue('name')}
-                </Descriptions.Item>
-                <Descriptions.Item label="Ам бүл">{formdata.getFieldValue('numberof')}</Descriptions.Item>
-                <Descriptions.Item label="Дүүрэг">{formdata.getFieldValue('districtname')}</Descriptions.Item>
-                <Descriptions.Item label="Хороо">{formdata.getFieldValue('section')}</Descriptions.Item>
-                <Descriptions.Item label="Утас">{formdata.getFieldValue('phone')}</Descriptions.Item>
-                <Descriptions.Item label="Хаяг">{formdata.getFieldValue('address')}</Descriptions.Item>
-            </Descriptions>
-            <Button type="link" onClick={() => { showModal(); }}>Засах</Button>
+            <Spin spinning={loading}>
+                <Descriptions
+                    title="ӨРХИЙН МЭДЭЭЛЭЛ"
+                    bordered
+                    style={{ paddingBottom: 30 }}
+                >
+                    <Descriptions.Item label="Өрхийн дугаар">
+                        {formdata.getFieldValue('householdid')}
+                    </Descriptions.Item>
+                    <Descriptions.Item label="Өрхийн тэргүүн нэр">
+                        {formdata.getFieldValue('name')}
+                    </Descriptions.Item>
+                    <Descriptions.Item label="Ам бүл">{formdata.getFieldValue('numberof')}</Descriptions.Item>
+                    <Descriptions.Item label="Дүүрэг">{formdata.getFieldValue('districtname')}</Descriptions.Item>
+                    <Descriptions.Item label="Хороо">{formdata.getFieldValue('section')}</Descriptions.Item>
+                    <Descriptions.Item label="Утас">{formdata.getFieldValue('phone')}</Descriptions.Item>
+                    <Descriptions.Item label="Хаяг">{formdata.getFieldValue('address')}</Descriptions.Item>
+                    <Descriptions.Item label="Дундын хадгаламжийн бүлэг">{formdata.getFieldValue('householdgroupname')}</Descriptions.Item>
+                </Descriptions>
+                <Button type="link" onClick={() => { showModal(); }}>Засах</Button>
+            </Spin>
             <Drawer
                 forceRender
                 title="Өрхийн мэдээлэл засах"
@@ -146,10 +157,22 @@ export default function HouseHold() {
                         <Input />
                     </Form.Item>
 
-                    <Form.Item name="coachid" label="Хариуцсан коучийн нэр" hidden={userinfo.coachid !== ''} >
+                    <Form.Item name="coachid" label="Хариуцсан коучийн нэр" >
                         <Select style={{ width: "100%" }}>
                             {coachlist?.map((t, i) => (
                                 <Select.Option key={i} value={t.coachid}>
+                                    {t.name}
+                                </Select.Option>
+                            ))}
+                        </Select>
+                    </Form.Item>
+                    <Form.Item
+                        name="householdgroupid"
+                        label="Дундын хадгаламжийн бүлэг"
+                    >
+                        <Select style={{ width: "100%" }}>
+                            {householdgroup?.map((t, i) => (
+                                <Select.Option key={i} value={t.id}>
                                     {t.name}
                                 </Select.Option>
                             ))}

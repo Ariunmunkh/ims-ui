@@ -189,7 +189,7 @@ export default function HouseHoldListPage() {
             />
         ),
         onFilter: (value, record) =>
-            record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+            record[dataIndex]?.toString().toLowerCase().includes(value.toLowerCase()),
         onFilterDropdownOpenChange: (visible) => {
             if (visible) {
                 setTimeout(() => searchInput.current?.select(), 100);
@@ -226,8 +226,9 @@ export default function HouseHoldListPage() {
             ...getColumnSearchProps("householdid"),
         },
         {
-            title: "Бүлэг",
+            title: "Дундын хадгаламжийн бүлэг",
             dataIndex: "householdgroupname",
+            ...getColumnSearchProps("householdgroupname"),
         },
         {
             title: "Ам бүлийн тоо",
@@ -281,6 +282,7 @@ export default function HouseHoldListPage() {
             longitude: null,
             phone: null,
             isnew: true,
+            householdgroupid: null,
             coachid: userinfo.coachid,
         });
         showModal();
@@ -429,6 +431,18 @@ export default function HouseHoldListPage() {
                         <Select style={{ width: "100%" }}>
                             {coachlist?.map((t, i) => (
                                 <Select.Option key={i} value={t.coachid}>
+                                    {t.name}
+                                </Select.Option>
+                            ))}
+                        </Select>
+                    </Form.Item>
+                    <Form.Item
+                        name="householdgroupid"
+                        label="Дундын хадгаламжийн бүлэг"
+                    >
+                        <Select style={{ width: "100%" }}>
+                            {householdgroup?.map((t, i) => (
+                                <Select.Option key={i} value={t.id}>
                                     {t.name}
                                 </Select.Option>
                             ))}

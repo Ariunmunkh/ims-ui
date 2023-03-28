@@ -152,7 +152,6 @@ export default function HouseHoldMember() {
     };
 
     const onFinish = async (values) => {
-        debugger;
         let fdata = formdata.getFieldsValue();
         fdata.birthdate = fdata.birthdate.format('YYYY.MM.DD');
         await api

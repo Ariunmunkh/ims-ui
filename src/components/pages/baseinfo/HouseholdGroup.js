@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect, useCallback } from "react";
 import { api } from "../../system/api";
-import { Table, Modal, Drawer, Form, Space, Button, Input } from "antd";
+import { Table, Modal, Drawer, Form, Space, Button, Input, InputNumber, Select } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { PlusOutlined } from "@ant-design/icons";
 import { SearchOutlined } from "@ant-design/icons";
@@ -10,14 +10,14 @@ export default function HouseholdGroup() {
 
     const [griddata, setGridData] = useState();
     const [loading, setLoading] = useState(true);
-    const [formtitle] = useState('Бүлэг /Өрх/');
-    const [formtype] = useState('householdgroup');
+    const [coachlist, setcoachlist] = useState([]);
+    const [formtitle] = useState('Дундын хадгаламжийн бүлэг');
     const [formdata] = Form.useForm();
 
     const fetchData = useCallback(async () => {
         setLoading(true);
         await api
-            .get(`/api/record/base/get_dropdown_item_list?type=${formtype}`)
+            .get(`/api/record/base/get_householdgroup_list`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setGridData(res?.data?.retdata);
@@ -26,7 +26,7 @@ export default function HouseholdGroup() {
             .finally(() => {
                 setLoading(false);
             });
-    }, [formtype]);
+    }, []);
 
     const tableOnRow = (record, rowIndex) => {
         return {
@@ -37,6 +37,12 @@ export default function HouseholdGroup() {
     };
 
     useEffect(() => {
+        api.get(`/api/record/coach/get_coach_list`)
+            .then((res) => {
+                if (res?.status === 200 && res?.data?.rettype === 0) {
+                    setcoachlist(res?.data?.retdata);
+                }
+            });
         fetchData();
     }, [fetchData]);
 
@@ -133,7 +139,7 @@ export default function HouseholdGroup() {
             />
         ),
         onFilter: (value, record) =>
-            record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+            record[dataIndex]?.toString().toLowerCase().includes(value.toLowerCase()),
         onFilterDropdownOpenChange: (visible) => {
             if (visible) {
                 setTimeout(() => searchInput.current?.select(), 100);
@@ -162,10 +168,15 @@ export default function HouseholdGroup() {
             ...getColumnSearchProps("name"),
         },
         {
-            title: "Огноо",
-            dataIndex: "updated",
-            width: 160,
+            title: "Коуч",
+            dataIndex: "coachname",
+            ...getColumnSearchProps("coachname"),
         },
+        {
+            title: "Нэгж хувьцааны үнэ",
+            dataIndex: "unitprice",
+            ...getColumnSearchProps("unitprice"),
+        }
     ];
 
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -198,7 +209,7 @@ export default function HouseholdGroup() {
     const onDelete = async () => {
         await api
             .delete(
-                `/api/record/base/delete_dropdown_item?id=${formdata.getFieldValue("id")}&type=${formtype}`
+                `/api/record/base/delete_householdgroup?id=${formdata.getFieldValue("id")}`
             )
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
@@ -210,7 +221,7 @@ export default function HouseholdGroup() {
 
     const onFinish = async (values) => {
         await api
-            .post(`/api/record/base/set_dropdown_item`, formdata.getFieldsValue())
+            .post(`/api/record/base/set_householdgroup`, formdata.getFieldsValue())
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setIsModalOpen(false);
@@ -220,7 +231,7 @@ export default function HouseholdGroup() {
     };
 
     const getFormData = async (id) => {
-        await api.get(`/api/record/base/get_dropdown_item?id=${id}&type=${formtype}`).then((res) => {
+        await api.get(`/api/record/base/get_householdgroup?id=${id}`).then((res) => {
             if (res?.status === 200 && res?.data?.rettype === 0) {
                 formdata.setFieldsValue(res?.data?.retdata[0]);
                 showModal();
@@ -229,7 +240,7 @@ export default function HouseholdGroup() {
     };
 
     const newFormData = async () => {
-        formdata.setFieldsValue({ id: 0, name: null, type: formtype });
+        formdata.setFieldsValue({ id: 0, name: null, coachid: null, unitprice: null });
         showModal();
     };
 
@@ -293,12 +304,30 @@ export default function HouseholdGroup() {
                         <Input />
                     </Form.Item>
 
-                    <Form.Item name="type" label="Төрөл" hidden={true} >
+                    <Form.Item name="name" label="Нэр" >
                         <Input />
                     </Form.Item>
 
-                    <Form.Item name="name" label="Нэр" >
-                        <Input />
+                    <Form.Item name="coachid" label="Коуч" >
+                        <Select style={{ width: "100%" }}>
+                            {coachlist?.map((t, i) => (
+                                <Select.Option key={i} value={t.coachid}>
+                                    {t.name}
+                                </Select.Option>
+                            ))}
+                        </Select>
+                    </Form.Item>
+
+                    <Form.Item name="unitprice" label="Нэгж хувьцааны үнэ" >
+                        <InputNumber
+                            placeholder="Нийт үнэ"
+                            min={0}
+                            style={{ width: "100%" }}
+                            formatter={(value) =>
+                                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                            }
+                            parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
+                        />
                     </Form.Item>
 
                 </Form>
