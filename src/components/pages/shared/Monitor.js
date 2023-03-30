@@ -7,7 +7,7 @@ export default function Dashboard() {
         title="dASHBOARD"
         width="100%"
         height="800"
-        src="https://app.powerbi.com/view?r=eyJrIjoiMTM1NjcwZmYtOWM3Yy00MTQwLTg5ZGEtYmFmNjdhYjM4ZTE3IiwidCI6IjJlNjdjZjFhLTJmYmItNDcxYS04ZjM3LWJlYjViNjg1ZTE5YSIsImMiOjEwfQ%3D%3D"
+        src="https://app.powerbi.com/view?r=eyJrIjoiZjc0NWRkYmEtZTBkNi00ZjRjLWE1YjYtZjlhNDBkMjhhYmE3IiwidCI6IjJlNjdjZjFhLTJmYmItNDcxYS04ZjM3LWJlYjViNjg1ZTE5YSIsImMiOjEwfQ%3D%3D&fbclid=IwAR1hD0yB71rp7tga1_NiXNqk1o632BPxDJq6vL0-EZmQMtUsOlBn1QZFwAs"
         frameborder="0"
         allowFullScreen="true"
       ></iframe>

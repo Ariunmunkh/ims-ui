@@ -183,7 +183,7 @@ export default function Visit() {
             ...getColumnSearchProps("note"),
         },
         {
-            title: "Холбон зуучилсан үйлчилгээний төрөл",
+            title: "Хэрэгцээний нэр",
             dataIndex: "mediatedservicetypename",
             ...getColumnSearchProps("mediatedservicetypename"),
         },
