@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { api } from "../../system/api";
 import useUserInfo from "../../system/useUserInfo";
-import { Table, Modal, Drawer, Space, Form, Button, Input, DatePicker, Select, Divider, } from "antd";
+import { Table, Modal, Drawer, Space, Form, Button, Input, DatePicker, Select, Switch, Divider, } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { PlusOutlined } from "@ant-design/icons";
 import { SearchOutlined } from "@ant-design/icons";
@@ -201,6 +201,12 @@ export default function Visit() {
             ...getColumnSearchProps("mediatedservicetypename"),
         },
         {
+            title: "Орлого, зарлагын бүртгэлээ тогтмол хөтөлсөн",
+            dataIndex: "incomeexpenditurerecord",
+            filters: [{ text: "Тийм", value: "Тийм" }, { text: "Үгүй", value: "Үгүй" }],
+            onFilter: (value, record) => record.incomeexpenditurerecord.indexOf(value) === 0,
+        },
+        {
             title: "Айлчилсан хүний нэр",
             dataIndex: "coachname",
             ...getColumnSearchProps("coachname"),
@@ -282,7 +288,8 @@ export default function Visit() {
             memberid: null,
             householdid: householdid,
             visitdate: null,
-            mediatedservicetypeid: null,
+            mediatedservicetypeid: [],
+            incomeexpenditurerecord: false,
             note: null,
         });
         showModal();
@@ -357,13 +364,22 @@ export default function Visit() {
                         <DatePicker style={{ width: "100%" }} placeholder="Өдөр сонгох" />
                     </Form.Item>
                     <Form.Item name="mediatedservicetypeid" label="Хэрэгцээний нэр">
-                        <Select style={{ width: "100%" }}>
+                        <Select
+                            mode="multiple"
+                            style={{ width: "100%" }}>
                             {mediatedservicetype?.map((t, i) => (
                                 <Select.Option key={i} value={t.id}>
                                     {t.name}
                                 </Select.Option>
                             ))}
                         </Select>
+                    </Form.Item>
+                    <Form.Item
+                        name="incomeexpenditurerecord"
+                        label="Орлого, зарлагын бүртгэлээ тогтмол хөтөлсөн эсэх?"
+                        valuePropName="checked"
+                    >
+                        <Switch checkedChildren="Тийм" unCheckedChildren="Үгүй" style={{ width: '100%' }} />
                     </Form.Item>
                     <Form.Item name="memberid" label="Айлчлалаар уулзсан өрхийн гишүүн">
                         <Select style={{ width: "100%" }}>

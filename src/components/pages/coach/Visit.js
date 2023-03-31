@@ -188,6 +188,12 @@ export default function Visit() {
             ...getColumnSearchProps("mediatedservicetypename"),
         },
         {
+            title: "Орлого, зарлагын бүртгэлээ тогтмол хөтөлсөн",
+            dataIndex: "incomeexpenditurerecord",
+            filters: [{ text: "Тийм", value: "Тийм" }, { text: "Үгүй", value: "Үгүй" }, { text: "Хоосон", value: "Хоосон" }],
+            onFilter: (value, record) => record.incomeexpenditurerecord.indexOf(value) === 0,
+        },
+        {
             title: "Айлчилсан хүний нэр",
             dataIndex: "coachname",
             ...getColumnSearchProps("coachname"),
