@@ -41,10 +41,10 @@ export default function HouseHoldListPage() {
 
     const fetchData = useCallback(async () => {
         setLoading(true);
-        let coachid = userinfo.coachid * 1;
+        let coachid = (isNaN(userinfo.coachid) ? 0 : userinfo.coachid) * 1;
         await api
             .get(
-                `/api/record/households/get_household_list?coachid=${coachid}&status=${status}&group=${group === undefined ? 0 : group
+                `/api/record/households/get_household_list?coachid=${coachid}&status=${status}&group=${isNaN(group) ? 0 : group
                 }`
             )
             .then((res) => {

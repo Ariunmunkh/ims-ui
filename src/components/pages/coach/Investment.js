@@ -40,8 +40,7 @@ export default function Investment() {
 
     const fetchData = useCallback(() => {
         setLoading(true);
-        let coachid = userinfo.coachid;
-        coachid = coachid || coachid === "" ? "0" : coachid;
+        let coachid = (isNaN(userinfo.coachid) ? 0 : userinfo.coachid) * 1;
         api
             .get(`/api/record/coach/get_investment_list?coachid=${coachid}`)
             .then((res) => {
