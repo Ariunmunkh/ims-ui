@@ -142,7 +142,7 @@ export default function ProjectListPage() {
             </Button>
 
             <Table
-                title={() => `Коучийн жагсаалт:`}
+                title={() => `Төслийн мэдээлэл:`}
                 bordered
                 loading={loading}
                 columns={gridcolumns}

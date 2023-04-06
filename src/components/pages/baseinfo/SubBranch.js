@@ -10,7 +10,7 @@ export default function SubBranch() {
 
     const [griddata, setGridData] = useState();
     const [loading, setLoading] = useState(true);
-    const [formtitle] = useState('Харьяалагдах дэд салбар');
+    const [formtitle] = useState('Бизнесийн төрөл');
     const [formtype] = useState('subbranch');
     const [formdata] = Form.useForm();
 

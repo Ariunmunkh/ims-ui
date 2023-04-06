@@ -191,12 +191,17 @@ export default function Visit() {
             ...getColumnSearchProps("membername"),
         },
         {
-            title: "Тайлбар",
+            title: "Хэлэлцсэн асуудал",
             dataIndex: "note",
             ...getColumnSearchProps("note"),
         },
         {
-            title: "Хэрэгцээний нэр",
+            title: "Шийдвэрлэсэн байдал, авах арга хэмжээ",
+            dataIndex: "decisionandaction",
+            ...getColumnSearchProps("decisionandaction"),
+        },
+        {
+            title: "Үндсэн хэрэгцээ",
             dataIndex: "mediatedservicetypename",
             ...getColumnSearchProps("mediatedservicetypename"),
         },
@@ -205,6 +210,12 @@ export default function Visit() {
             dataIndex: "incomeexpenditurerecord",
             filters: [{ text: "Тийм", value: "Тийм" }, { text: "Үгүй", value: "Үгүй" }],
             onFilter: (value, record) => record.incomeexpenditurerecord.indexOf(value) === 0,
+        },
+        {
+            title: "Өрхийн хөгжлийн төлөвлөгөө боловсруулсан эсэх",
+            dataIndex: "developmentplan",
+            filters: [{ text: "Тийм", value: "Тийм" }, { text: "Үгүй", value: "Үгүй" }, { text: "Хоосон", value: "Хоосон" }],
+            onFilter: (value, record) => record.developmentplan.indexOf(value) === 0,
         },
         {
             title: "Айлчилсан хүний нэр",
@@ -290,7 +301,9 @@ export default function Visit() {
             visitdate: null,
             mediatedservicetypeid: [],
             incomeexpenditurerecord: false,
+            developmentplan: false,
             note: null,
+            decisionandaction: null,
         });
         showModal();
     };
@@ -363,7 +376,7 @@ export default function Visit() {
                     <Form.Item name="visitdate" label="Айлчилсан огноо">
                         <DatePicker style={{ width: "100%" }} placeholder="Өдөр сонгох" />
                     </Form.Item>
-                    <Form.Item name="mediatedservicetypeid" label="Хэрэгцээний нэр">
+                    <Form.Item name="mediatedservicetypeid" label="Үндсэн хэрэгцээ">
                         <Select
                             mode="multiple"
                             style={{ width: "100%" }}>
@@ -381,6 +394,13 @@ export default function Visit() {
                     >
                         <Switch checkedChildren="Тийм" unCheckedChildren="Үгүй" style={{ width: '100%' }} />
                     </Form.Item>
+                    <Form.Item
+                        name="developmentplan"
+                        label="Өрхийн хөгжлийн төлөвлөгөө боловсруулсан эсэх?"
+                        valuePropName="checked"
+                    >
+                        <Switch checkedChildren="Тийм" unCheckedChildren="Үгүй" style={{ width: '100%' }} />
+                    </Form.Item>
                     <Form.Item name="memberid" label="Айлчлалаар уулзсан өрхийн гишүүн">
                         <Select style={{ width: "100%" }}>
                             {relationship?.map((t, i) => (
@@ -390,7 +410,10 @@ export default function Visit() {
                             ))}
                         </Select>
                     </Form.Item>
-                    <Form.Item name="note" label="Тайлбар">
+                    <Form.Item name="note" label="Хэлэлцсэн асуудал">
+                        <Input.TextArea />
+                    </Form.Item>
+                    <Form.Item name="decisionandaction" label="Шийдвэрлэсэн байдал, авах арга хэмжээ">
                         <Input.TextArea />
                     </Form.Item>
                 </Form>

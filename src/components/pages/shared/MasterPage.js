@@ -33,7 +33,8 @@ import Investment from "../coach/Investment";
 import Contact from "../coach/Contact";
 import MapPage from "../coach/MapPage";
 import Monitor from "./Monitor";
-import Report from "../report";
+import Report from "../report/Report";
+import ProgressReport from "../report/ProgressReport";
 
 const { Header, Sider, Content } = Layout;
 const { Text } = Typography;
@@ -91,7 +92,12 @@ export default function MasterPage() {
                     {
                         key: "report",
                         icon: <StockOutlined />,
-                        label: "Үр дүн",
+                        label: "Төгсөлтийн үр дүн",
+                    },
+                    {
+                        key: "progressreport",
+                        icon: <StockOutlined />,
+                        label: "Явцын үр дүн",
                     },
                     {
                         key: "monitor",
@@ -144,7 +150,12 @@ export default function MasterPage() {
                     {
                         key: "report",
                         icon: <StockOutlined />,
-                        label: "Үр дүн",
+                        label: "Төгсөлтийн үр дүн",
+                    },
+                    {
+                        key: "progressreport",
+                        icon: <StockOutlined />,
+                        label: "Явцын үр дүн",
                     },
                     {
                         key: "monitor",
@@ -192,7 +203,12 @@ export default function MasterPage() {
                     {
                         key: "report",
                         icon: <StockOutlined />,
-                        label: "Үр дүн",
+                        label: "Төгсөлтийн үр дүн",
+                    },
+                    {
+                        key: "progressreport",
+                        icon: <StockOutlined />,
+                        label: "Явцын үр дүн",
                     },
                     {
                         key: "monitor",
@@ -314,6 +330,10 @@ export default function MasterPage() {
                         <Route
                             path="/report"
                             element={userinfo?.roleid ? <Report /> : <AccessDenied />}
+                        />
+                        <Route
+                            path="/progressreport"
+                            element={userinfo?.roleid ? <ProgressReport /> : <AccessDenied />}
                         />
                         <Route
                             path="/monitor"

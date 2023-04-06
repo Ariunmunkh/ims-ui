@@ -44,7 +44,7 @@ export default function AdminPage() {
                         children: <ProjectListPage />,
                     },
                     {
-                        label: `Коучийн жагсаалт`,
+                        label: `Коучийн мэдээлэл`,
                         key: "3",
                         children: <CoachListPage />,
                     },
@@ -109,7 +109,7 @@ export default function AdminPage() {
                         children: <Business />,
                     },
                     {
-                        label: `Харьяалагдах дэд салбар`,
+                        label: `Бизнесийн төрөл`,
                         key: "15",
                         children: <SubBranch />,
                     },

@@ -55,16 +55,16 @@ export default function Livelihood() {
 
     const gridcolumns = [
         {
-            title: "Амьжиргаа сайжруулах төлөвлөгөө боловсруулсан огноо",
+            title: "Бизнес төлөвлөгөө боловсруулсан огноо",
             dataIndex: "plandate",
         },
         {
-            title: "Өрхийн сонгосон аж ахуй",
-            dataIndex: "businessname",
+            title: "Бизнесийн төрөл",
+            dataIndex: "subbranch",
         },
         {
-            title: "Харьяалагдах дэд салбар",
-            dataIndex: "subbranch",
+            title: "Өрхийн сонгосон бизнес",
+            dataIndex: "businessname",
         },
     ];
 
@@ -202,17 +202,17 @@ export default function Livelihood() {
                 >
                     <Form.Item name="entryid" hidden={true} />
                     <Form.Item name="householdid" hidden={true} />
-                    <Form.Item name="plandate" label="Амьжиргаа сайжруулах төлөвлөгөө боловсруулсан огноо">
+                    <Form.Item name="plandate" label="Бизнес төлөвлөгөө боловсруулсан огноо">
                         <DatePicker style={{ width: "100%" }} placeholder="Өдөр сонгох" />
                     </Form.Item>
-                    <Form.Item name="businessid" label="Өрхийн сонгосон аж ахуй">
-                        <Select style={{ width: '100%' }}>
-                            {business?.map((t, i) => (<Select.Option key={i} value={t.id}>{t.name}</Select.Option>))}
-                        </Select>
-                    </Form.Item>
-                    <Form.Item name="subbranchid" label="Харьяалагдах дэд салбар">
+                    <Form.Item name="subbranchid" label="Бизнесийн төрөл">
                         <Select style={{ width: '100%' }}>
                             {subbranch?.map((t, i) => (<Select.Option key={i} value={t.id}>{t.name}</Select.Option>))}
+                        </Select>
+                    </Form.Item>
+                    <Form.Item name="businessid" label="Өрхийн сонгосон бизнес">
+                        <Select style={{ width: '100%' }}>
+                            {business?.map((t, i) => (<Select.Option key={i} value={t.id}>{t.name}</Select.Option>))}
                         </Select>
                     </Form.Item>
                 </Form>

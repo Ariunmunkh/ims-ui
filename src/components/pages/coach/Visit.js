@@ -177,12 +177,17 @@ export default function Visit() {
             ...getColumnSearchProps("membername"),
         },
         {
-            title: "Тайлбар",
+            title: "Хэлэлцсэн асуудал",
             dataIndex: "note",
             ...getColumnSearchProps("note"),
         },
         {
-            title: "Хэрэгцээний нэр",
+            title: "Шийдвэрлэсэн байдал, авах арга хэмжээ",
+            dataIndex: "decisionandaction",
+            ...getColumnSearchProps("decisionandaction"),
+        },
+        {
+            title: "Үндсэн хэрэгцээ",
             dataIndex: "mediatedservicetypename",
             ...getColumnSearchProps("mediatedservicetypename"),
         },
@@ -191,6 +196,12 @@ export default function Visit() {
             dataIndex: "incomeexpenditurerecord",
             filters: [{ text: "Тийм", value: "Тийм" }, { text: "Үгүй", value: "Үгүй" }, { text: "Хоосон", value: "Хоосон" }],
             onFilter: (value, record) => record.incomeexpenditurerecord.indexOf(value) === 0,
+        },
+        {
+            title: "Өрхийн хөгжлийн төлөвлөгөө боловсруулсан эсэх",
+            dataIndex: "developmentplan",
+            filters: [{ text: "Тийм", value: "Тийм" }, { text: "Үгүй", value: "Үгүй" }, { text: "Хоосон", value: "Хоосон" }],
+            onFilter: (value, record) => record.developmentplan.indexOf(value) === 0,
         },
         {
             title: "Айлчилсан хүний нэр",

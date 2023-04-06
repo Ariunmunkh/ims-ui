@@ -11,10 +11,17 @@ export default function CoachListPage() {
     const [formdata] = Form.useForm();
     const [project, setproject] = useState([]);
     const [district, setdistrict] = useState([]);
+    const sections = [];
+    for (let i = 1; i < 50; i++) {
+        sections.push({
+            label: i.toString(),
+            value: i.toString(),
+        });
+    }
 
     const fetchData = async () => {
         setLoading(true);
-       
+
         await api
             .get(`/api/record/coach/get_coach_list`)
             .then((res) => {
@@ -64,12 +71,16 @@ export default function CoachListPage() {
             dataIndex: "phone",
         },
         {
-            title: "Төслийн нэр",
-            dataIndex: "projectname",
-        },
-        {
             title: "Дүүрэг",
             dataIndex: "districtname",
+        },
+        {
+            title: "Хороо",
+            dataIndex: "section",
+        },
+        {
+            title: "Хариуцсан өрхийн тоо",
+            dataIndex: "householdcount",
         },
     ];
 
@@ -125,7 +136,7 @@ export default function CoachListPage() {
     };
 
     const newFormData = async () => {
-        formdata.setFieldsValue({ coachid: 0, name: null, phone: null, projectid: 0, districtid: 0, });
+        formdata.setFieldsValue({ coachid: 0, name: null, phone: null, projectid: 0, districtid: 0, section: null });
         showModal();
     };
 
@@ -141,7 +152,7 @@ export default function CoachListPage() {
             </Button>
 
             <Table
-                title={() => `Коучийн жагсаалт:`}
+                title={() => `Коучийн мэдээлэл:`}
                 bordered
                 loading={loading}
                 columns={gridcolumns}
@@ -192,7 +203,7 @@ export default function CoachListPage() {
                     <Form.Item name="phone" label="Утас">
                         <Input />
                     </Form.Item>
-                    <Form.Item name="projectid" label="Төслийн нэр">
+                    <Form.Item name="projectid" label="Төслийн нэр" hidden={true}>
                         <Select style={{ width: "100%" }}>
                             {project?.map((t, i) => (<Select.Option key={i} value={t.id}>{t.name}</Select.Option>))}
                         </Select>
@@ -200,6 +211,14 @@ export default function CoachListPage() {
                     <Form.Item name="districtid" label="Дүүрэг">
                         <Select style={{ width: "100%" }}>
                             {district?.map((t, i) => (<Select.Option key={i} value={t.districtid}>{t.name}</Select.Option>))}
+                        </Select>
+                    </Form.Item>
+                    <Form.Item name="section" label="Хороо">
+                        <Select
+                            mode="multiple"
+                            style={{ width: "100%" }}
+                            options={sections}
+                        >
                         </Select>
                     </Form.Item>
                 </Form>

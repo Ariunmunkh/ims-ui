@@ -474,38 +474,7 @@ export default function Report() {
                                                                 </td>
                                                             ))}
                                                         </tr>
-                                                        <tr>
-                                                            <td>Гэр бүлийн харилцаа</td>
-                                                            {data.map((row) => (
-                                                                <td>
-                                                                    <span
-                                                                        className={
-                                                                            row?.h10 <= 60
-                                                                                ? "badge bg-danger"
-                                                                                : row?.h10 > 60 && row?.h10 < 80
-                                                                                    ? "badge bg-warning"
-                                                                                    : "badge bg-success"
-                                                                        }
-                                                                    >{`${(row?.h10).toFixed(1)}%`}</span>
-                                                                </td>
-                                                            ))}
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Эрүүл ахуй</td>
-                                                            {data.map((row) => (
-                                                                <td>
-                                                                    <span
-                                                                        className={
-                                                                            row?.h11 <= 60
-                                                                                ? "badge bg-danger"
-                                                                                : row?.h11 > 60 && row?.h11 < 80
-                                                                                    ? "badge bg-warning"
-                                                                                    : "badge bg-success"
-                                                                        }
-                                                                    >{`${(row?.h11).toFixed(1)}%`}</span>
-                                                                </td>
-                                                            ))}
-                                                        </tr>
+
                                                         <tr>
                                                             <td>Сургууль цэцэрлэгт хамрагдалт</td>
                                                             {data.map((row) => (
@@ -513,12 +482,15 @@ export default function Report() {
                                                                     <span
                                                                         className={
                                                                             row?.h12 <= 60
-                                                                                ? "badge bg-danger"
+                                                                                ? "card bg-danger text-white"
                                                                                 : row?.h12 > 60 && row?.h12 < 80
-                                                                                    ? "badge bg-warning"
-                                                                                    : "badge bg-success"
+                                                                                    ? "card bg-warning text-white"
+                                                                                    : "card bg-success text-white"
                                                                         }
-                                                                    >{`${(row?.h12).toFixed(1)}%`}</span>
+                                                                    >
+                                                                        <div className={"card-body"}>{`${(row?.h12).toFixed(1)}%`}</div>
+
+                                                                    </span>
                                                                 </td>
                                                             ))}
                                                         </tr>
@@ -529,12 +501,12 @@ export default function Report() {
                                                                     <span
                                                                         className={
                                                                             row?.h13 <= 60
-                                                                                ? "badge bg-danger"
+                                                                                ? "card bg-danger text-white"
                                                                                 : row?.h13 > 60 && row?.h13 < 80
-                                                                                    ? "badge bg-warning"
-                                                                                    : "badge bg-success"
+                                                                                    ? "card bg-warning text-white"
+                                                                                    : "card bg-success text-white"
                                                                         }
-                                                                    >{`${(row?.h13).toFixed(1)}%`}</span>
+                                                                    ><div className={"card-body"}>{`${(row?.h13).toFixed(1)}%`}</div></span>
                                                                 </td>
                                                             ))}
                                                         </tr>
