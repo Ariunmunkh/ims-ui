@@ -77,7 +77,7 @@ export default function MasterPage() {
                     {
                         key: "training",
                         icon: <FileSearchOutlined />,
-                        label: "Сургалт, үйл ажиллагааны бүртгэл",
+                        label: "Сургалтны бүртгэл",
                     },
                     {
                         key: "investment",
@@ -135,7 +135,7 @@ export default function MasterPage() {
                     {
                         key: "training",
                         icon: <FileSearchOutlined />,
-                        label: "Сургалт, үйл ажиллагааны бүртгэл",
+                        label: "Сургалтны бүртгэл",
                     },
                     {
                         key: "investment",
@@ -188,7 +188,7 @@ export default function MasterPage() {
                     {
                         key: "training",
                         icon: <FileSearchOutlined />,
-                        label: "Сургалт, үйл ажиллагааны бүртгэл",
+                        label: "Сургалтны бүртгэл",
                     },
                     {
                         key: "investment",

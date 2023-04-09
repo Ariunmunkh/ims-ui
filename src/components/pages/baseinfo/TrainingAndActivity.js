@@ -10,7 +10,7 @@ export default function TrainingAndActivity() {
 
     const [griddata, setGridData] = useState();
     const [loading, setLoading] = useState(true);
-    const [formtitle] = useState('Сургалт, үйл ажиллагааны нэр');
+    const [formtitle] = useState('Сургалтын нэр');
     const [formtype] = useState('trainingandactivity');
     const [formdata] = Form.useForm();
 

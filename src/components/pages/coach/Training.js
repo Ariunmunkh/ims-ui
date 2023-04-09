@@ -187,6 +187,7 @@ export default function Training() {
         {
             title: "Сургалтын явагдсан хэлбэр",
             dataIndex: "formoftrainingname",
+            ...getColumnSearchProps("formoftrainingname"),
         },
         {
             title: "Сургалт өгсөн байгууллага / ажилтан",
@@ -223,10 +224,10 @@ export default function Training() {
                 title={() => (
                     <>
                         <Tag icon={<UserOutlined />} color="magenta">
-                            Сургалт, үйл ажиллагааны мэдээлэл <b>{exceldata.length}</b> харагдаж байна.
+                            Сургалтны мэдээлэл <b>{exceldata.length}</b> харагдаж байна.
                         </Tag>
 
-                        <CSVLink data={exceldata} filename={"Сургалт, үйл ажиллагааны жагсаалт.csv"}>
+                        <CSVLink data={exceldata} filename={"Сургалтны жагсаалт.csv"}>
                             <Button
                                 type="primary"
                                 icon={<DownloadOutlined />}

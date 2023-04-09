@@ -25,6 +25,7 @@ export default function Contact() {
     const [mediatedservicetype, setmediatedservicetype] = useState([]);
     const [intermediaryorganization, setintermediaryorganization] = useState([]);
     const [proxyservice, setproxyservice] = useState([]);
+    const [proxyservicecopy, setproxyservicecopy] = useState([]);
 
     const fetchData = useCallback(() => {
         setLoading(true);
@@ -78,23 +79,23 @@ export default function Contact() {
 
     const gridcolumns = [
         {
-            title: "Огноо",
-            dataIndex: "mediateddate",
-        },
-        {
-            title: "Холбон зуучилсан үйлчилгээний төрөл",
+            title: "Үйлчилгээний төрөл",
             dataIndex: "mediatedservicetype",
         },
         {
-            title: "Холбон зуучилсан байгууллагын нэр",
-            dataIndex: "intermediaryorganization",
-        },
-        {
-            title: "Холбон зуучилсан үйлчилгээний нэр",
+            title: "Үйлчилгээний нэр",
             dataIndex: "proxyservice",
         },
         {
-            title: "Үйлчилгээнд холбогдсон өрхийн гишүүний нэр",
+            title: "Үйлчилгээ үзүүлсэн байгууллага / ажилтан",
+            dataIndex: "intermediaryorganization",
+        },
+        {
+            title: "Үйлчилгээ авсан огноо",
+            dataIndex: "mediateddate",
+        },
+        {
+            title: "Үйлчилгээ авсан өрхийн гишүүний нэр",
             dataIndex: "membername",
         },
     ];
@@ -228,29 +229,37 @@ export default function Contact() {
                     wrapperCol={{ span: 14 }}
                     labelAlign="left"
                     labelWrap
+                    onFieldsChange={(changedFields, allFields) => {
+
+                        if (changedFields[0]?.name[0] === 'mediatedservicetypeid') {
+                            formdata.setFieldValue('proxyserviceid', null);
+                            setproxyservicecopy(proxyservice?.filter(row => row?.mediatedservicetypeid === formdata?.getFieldValue("mediatedservicetypeid")))
+                        }
+
+                    }}
                 >
                     <Form.Item name="entryid" hidden={true} />
                     <Form.Item name="householdid" hidden={true} />
-                    <Form.Item name="mediateddate" label="Огноо">
-                        <DatePicker style={{ width: "100%" }} placeholder="Өдөр сонгох" />
-                    </Form.Item>
-                    <Form.Item name="mediatedservicetypeid" label="Холбон зуучилсан үйлчилгээний төрөл">
+                    <Form.Item name="mediatedservicetypeid" label="Үйлчилгээний төрөл">
                         <Select style={{ width: '100%' }}>
                             {mediatedservicetype?.map((t, i) => (<Select.Option key={i} value={t.id}>{t.name}</Select.Option>))}
                         </Select>
                     </Form.Item>
-                    <Form.Item name="intermediaryorganizationid" label="Холбон зуучилсан  байгууллагын нэр">
+                    <Form.Item name="proxyserviceid" label="Үйлчилгээний нэр">
+                        <Select style={{ width: '100%' }}>
+                            {proxyservicecopy?.map((t, i) => (<Select.Option key={i} value={t.id}>{t.name}</Select.Option>))}
+                        </Select>
+                    </Form.Item>
+                    <Form.Item name="intermediaryorganizationid" label="Үйлчилгээ үзүүлсэн байгууллага / ажилтан ">
                         <Select style={{ width: '100%' }}>
                             {intermediaryorganization?.map((t, i) => (<Select.Option key={i} value={t.id}>{t.name}</Select.Option>))}
                         </Select>
                     </Form.Item>
-                    <Form.Item name="proxyserviceid" label="Холбон зуучилсан үйлчилгээний нэр">
-                        <Select style={{ width: '100%' }}>
-                            {proxyservice?.map((t, i) => (<Select.Option key={i} value={t.id}>{t.name}</Select.Option>))}
-                        </Select>
+                    <Form.Item name="mediateddate" label="Үйлчилгээ авсан огноо">
+                        <DatePicker style={{ width: "100%" }} placeholder="Өдөр сонгох" />
                     </Form.Item>
 
-                    <Form.Item name="memberid" label="Үйлчилгээнд холбогдсон өрхийн гишүүний нэр">
+                    <Form.Item name="memberid" label="Үйлчилгээ авсан өрхийн гишүүний нэр">
                         <Select style={{ width: "100%" }}>
                             {household?.map((t, i) => (<Select.Option key={i} value={t.memberid}>{t.name}</Select.Option>))}
                         </Select>

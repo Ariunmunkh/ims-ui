@@ -214,7 +214,7 @@ export default function Training() {
                 icon={<PlusOutlined />}
                 onClick={(e) => newFormData()}
             >
-                Сургалт, үйл ажиллагааны мэдээлэл нэмэх
+                Сургалтны мэдээлэл нэмэх
             </Button>
 
             <Table
@@ -227,7 +227,7 @@ export default function Training() {
             ></Table>
             <Drawer
                 forceRender
-                title="Сургалт, үйл ажиллагааны мэдээлэл нэмэх"
+                title="Сургалтны мэдээлэл нэмэх"
                 open={isModalOpen}
                 width={720}
                 onClose={handleCancel}
@@ -317,7 +317,7 @@ export default function Training() {
                             style={{ width: "100%" }}
                         />
                     </Form.Item>
-                    <Form.Item name="memberid" label="Сургалт, үйл ажиллагаанд хамрагдсан өрхийн гишүүний нэр">
+                    <Form.Item name="memberid" label="Сургалтанд хамрагдсан өрхийн гишүүний нэр">
                         <Select style={{ width: "100%" }}>
                             {relationship?.map((t, i) => (
                                 <Select.Option key={i} value={t.memberid}>

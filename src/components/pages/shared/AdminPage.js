@@ -94,12 +94,12 @@ export default function AdminPage() {
                         children: <TrainingType />,
                     },
                     {
-                        label: `Сургалт, үйл ажиллагааны нэр`,
+                        label: `Сургалтын нэр`,
                         key: "13",
                         children: <TrainingAndActivity />,
                     },
                     {
-                        label: `Сургалт, үйл ажиллагаа зохиох байгууллагын нэр`,
+                        label: `Сургалт өгсөн байгууллага / ажилтан`,
                         key: "14",
                         children: <Organization />,
                     },
@@ -139,14 +139,14 @@ export default function AdminPage() {
                         children: <MediatedServiceType />,
                     },
                     {
-                        label: `Холбон зуучилсан байгууллагын нэр`,
-                        key: "21",
-                        children: <IntermediaryOrganization />,
-                    },
-                    {
                         label: `Холбон зуучилсан үйлчилгээний нэр`,
                         key: "22",
                         children: <ProxyService />,
+                    },
+                    {
+                        label: `Холбон зуучилсан байгууллагын нэр`,
+                        key: "21",
+                        children: <IntermediaryOrganization />,
                     },
                 ]}
             />
