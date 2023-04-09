@@ -15,6 +15,7 @@ export default function HouseHoldMember() {
         relationshipid: null,
         birthdate: null,
         gender: null,
+        regno: null,
         educationlevel: null,
         employment: null,
         health: null,
@@ -87,6 +88,10 @@ export default function HouseHoldMember() {
         {
             title: "Өрхийн тэргүүнтэй ямар хамааралтай болох",
             dataIndex: "relationshipname",
+        },
+        {
+            title: "Регистрийн дугаар",
+            dataIndex: "regno",
         },
         {
             title: "Төрсөн огноо",
@@ -238,6 +243,9 @@ export default function HouseHoldMember() {
                         <Input />
                     </Form.Item>
                     <Form.Item name="name" label="Өрхийн гишүүний нэр">
+                        <Input />
+                    </Form.Item>
+                    <Form.Item name="regno" label="Регистрийн дугаар">
                         <Input />
                     </Form.Item>
                     <Form.Item

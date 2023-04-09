@@ -62,6 +62,10 @@ export default function Loan() {
             title: "Зээлийн зориулалт",
             dataIndex: "loanpurpose",
         },
+        {
+            title: "Зээлийн зориулалтын тайлбар",
+            dataIndex: "loanpurposenote",
+        },
     ];
 
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -135,6 +139,7 @@ export default function Loan() {
             loandate: null,
             amount: null,
             loanpurposeid: null,
+            loanpurposenote: null,
         });
         showModal();
     };
@@ -229,6 +234,9 @@ export default function Loan() {
                         <Select style={{ width: '100%' }}>
                             {loanpurpose?.map((t, i) => (<Select.Option key={i} value={t.id}>{t.name}</Select.Option>))}
                         </Select>
+                    </Form.Item>
+                    <Form.Item name="loanpurposenote" label="Зээлийн зориулалтын тайлбар">
+                        <Input.TextArea />
                     </Form.Item>
                 </Form>
             </Drawer>

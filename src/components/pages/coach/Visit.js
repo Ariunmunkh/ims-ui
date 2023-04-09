@@ -172,24 +172,29 @@ export default function Visit() {
             ...getColumnSearchProps("section"),
         },
         {
-            title: "Айлчлалаар уулзсан өрхийн гишүүд",
+            title: "Айлчлалаар уулзсан өрхийн гишүүн",
             dataIndex: "membername",
             ...getColumnSearchProps("membername"),
         },
         {
-            title: "Хэлэлцсэн асуудал",
+            title: "Өрхийн айлчлалаар хэлэлцсэн асуудал",
             dataIndex: "note",
             ...getColumnSearchProps("note"),
         },
         {
-            title: "Шийдвэрлэсэн байдал, авах арга хэмжээ",
+            title: "Шийдвэрлэсэн байдал / авах арга хэмжээ",
             dataIndex: "decisionandaction",
             ...getColumnSearchProps("decisionandaction"),
         },
         {
-            title: "Үндсэн хэрэгцээ",
-            dataIndex: "mediatedservicetypename",
-            ...getColumnSearchProps("mediatedservicetypename"),
+            title: "Өрхийн үндсэн хэрэгцээ",
+            dataIndex: "basicneedsname",
+            ...getColumnSearchProps("basicneedsname"),
+        },
+        {
+            title: "Үндсэн хэрэгцээний тайлбар",
+            dataIndex: "basicneedsnote",
+            ...getColumnSearchProps("basicneedsnote"),
         },
         {
             title: "Орлого, зарлагын бүртгэлээ тогтмол хөтөлсөн",
@@ -236,7 +241,8 @@ export default function Visit() {
                         loading={loading}
                         columns={gridcolumns}
                         dataSource={griddata}
-                        pagination={false}
+                        pagination={true}
+                        scroll={{ y: '50vh' }}
                         rowKey={(record) => record.visitid}
                     ></Table>
                 </div>

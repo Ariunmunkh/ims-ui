@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { api } from "../../system/api";
-import { Table, Modal, Drawer, Space, Form, Button, DatePicker, Select, Divider, InputNumber, Switch, } from "antd";
+import { Table, Modal, Drawer, Space, Form, Button, DatePicker, Select, Divider, InputNumber, Switch, Typography } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { PlusOutlined } from "@ant-design/icons";
 import dayjs from 'dayjs';
 const { confirm } = Modal;
+const { Text } = Typography;
 
 export default function Training() {
     const { householdid } = useParams();
@@ -13,9 +14,13 @@ export default function Training() {
     const [griddata, setGridData] = useState();
     const [loading, setLoading] = useState(true);
     const [formdata] = Form.useForm();
+    const [trainingcategory, settrainingcategory] = useState([]);
+    const [trainingtypecopy, settrainingtypecopy] = useState([]);
     const [trainingtype, settrainingtype] = useState([]);
+    const [trainingandactivitycopy, settrainingandactivitycopy] = useState([]);
     const [trainingandactivity, settrainingandactivity] = useState([]);
     const [organization, setorganization] = useState([]);
+    const [formoftraining, setformoftraining] = useState([]);
 
     const fetchData = useCallback(() => {
         setLoading(true);
@@ -45,6 +50,12 @@ export default function Training() {
                     setrelationship(res?.data?.retdata);
                 }
             });
+        api.get(`/api/record/base/get_dropdown_item_list?type=trainingcategory`)
+            .then((res) => {
+                if (res?.status === 200 && res?.data?.rettype === 0) {
+                    settrainingcategory(res?.data?.retdata);
+                }
+            });
         api.get(`/api/record/base/get_dropdown_item_list?type=trainingtype`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
@@ -63,6 +74,12 @@ export default function Training() {
                     setorganization(res?.data?.retdata);
                 }
             });
+        api.get(`/api/record/base/get_dropdown_item_list?type=formoftraining`)
+            .then((res) => {
+                if (res?.status === 200 && res?.data?.rettype === 0) {
+                    setformoftraining(res?.data?.retdata);
+                }
+            });
         fetchData();
     }, [fetchData, householdid]);
 
@@ -72,28 +89,40 @@ export default function Training() {
             dataIndex: "trainingdate",
         },
         {
+            title: "Сургалтын үндсэн чиглэл",
+            dataIndex: "trainingcategoryname",
+        },
+        {
             title: "Сургалтын төрөл",
             dataIndex: "trainingtype",
         },
         {
-            title: "Зохион байгуулагдсан сургалт, үйл ажиллагааны нэр",
+            title: "Сургалтын нэр",
             dataIndex: "trainingandactivity",
         },
         {
-            title: "Сургалт, үйл ажиллагаа зохион байгуулсан байгууллагын нэр",
-            dataIndex: "organization",
+            title: "Сургалтын явагдсан хэлбэр",
+            dataIndex: "formoftrainingname",
         },
         {
-            title: "Сургалтын үргэжилсэн хугацаа",
-            dataIndex: "duration",
+            title: "Сургалт өгсөн байгууллага / ажилтан",
+            dataIndex: "organization",
         },
         {
             title: "Өрхөөс уг сургалтад хамрагдсан эсэх",
             dataIndex: "isjoin",
         },
         {
-            title: "Сургалт, үйл ажиллагаанд хамрагдсан өрхийн гишүүний нэр",
+            title: "Сургалтанд хамрагдсан өрхийн гишүүний нэр",
             dataIndex: "membername",
+        },
+        {
+            title: "Оролцогчийн хүйс",
+            dataIndex: "gender",
+        },
+        {
+            title: "Оролцогч нь өрхийн гол гишүүн мөн эсэх",
+            dataIndex: "isparticipant",
         },
     ];
 
@@ -111,15 +140,11 @@ export default function Training() {
         confirm({
             title: "Устгах уу?",
             icon: <ExclamationCircleFilled />,
-            //content: 'Some descriptions',
             okText: "Тийм",
             okType: "danger",
             cancelText: "Үгүй",
             onOk() {
                 onDelete();
-            },
-            onCancel() {
-                //console.log('Cancel');
             },
         });
     };
@@ -170,8 +195,10 @@ export default function Training() {
             entryid: 0,
             householdid: householdid,
             trainingdate: null,
+            trainingcategoryid: null,
             trainingtypeid: null,
             trainingandactivityid: null,
+            formoftrainingid: null,
             organizationid: null,
             duration: null,
             isjoin: null,
@@ -232,23 +259,46 @@ export default function Training() {
                     wrapperCol={{ span: 14 }}
                     labelAlign="left"
                     labelWrap
+                    onFieldsChange={(changedFields, allFields) => {
+
+                        if (changedFields[0]?.name[0] === 'trainingcategoryid') {
+                            formdata.setFieldValue('trainingtypeid', null);
+                            formdata.setFieldValue('trainingandactivityid', null);
+                            settrainingtypecopy(trainingtype?.filter(row => row?.trainingcategoryid === formdata?.getFieldValue("trainingcategoryid")))
+                        }
+                        else if (changedFields[0]?.name[0] === 'trainingtypeid') {
+                            formdata.setFieldValue('trainingandactivityid', null);
+                            settrainingandactivitycopy(trainingandactivity?.filter(row => row?.trainingtypeid === formdata?.getFieldValue("trainingtypeid")))
+                        }
+
+                    }}
                 >
                     <Form.Item name="entryid" hidden={true} />
                     <Form.Item name="householdid" hidden={true} />
                     <Form.Item name="trainingdate" label="Огноо">
                         <DatePicker style={{ width: "100%" }} placeholder="Өдөр сонгох" />
                     </Form.Item>
+                    <Form.Item name="trainingcategoryid" label="Сургалтын үндсэн чиглэл">
+                        <Select style={{ width: '100%' }}>
+                            {trainingcategory?.map((t, i) => (<Select.Option key={i} value={t.id}>{t.name}</Select.Option>))}
+                        </Select>
+                    </Form.Item>
                     <Form.Item name="trainingtypeid" label="Сургалтын төрөл">
                         <Select style={{ width: '100%' }}>
-                            {trainingtype?.map((t, i) => (<Select.Option key={i} value={t.id}>{t.name}</Select.Option>))}
+                            {trainingtypecopy.map((t, i) => (<Select.Option key={i} value={t.id}>{t.name}</Select.Option>))}
                         </Select>
                     </Form.Item>
-                    <Form.Item name="trainingandactivityid" label="Зохион байгуулагдсан сургалт, үйл ажиллагааны нэр">
+                    <Form.Item name="trainingandactivityid" label="Сургалтын нэр">
                         <Select style={{ width: '100%' }}>
-                            {trainingandactivity?.map((t, i) => (<Select.Option key={i} value={t.id}>{t.name}</Select.Option>))}
+                            {trainingandactivitycopy?.map((t, i) => (<Select.Option key={i} value={t.id}>{t.name}</Select.Option>))}
                         </Select>
                     </Form.Item>
-                    <Form.Item name="organizationid" label="Сургалт, үйл ажиллагаа зохион байгуулсан байгууллагын нэр">
+                    <Form.Item name="formoftrainingid" label="Сургалтын явагдсан хэлбэр">
+                        <Select style={{ width: '100%' }}>
+                            {formoftraining?.map((t, i) => (<Select.Option key={i} value={t.id}>{t.name}</Select.Option>))}
+                        </Select>
+                    </Form.Item>
+                    <Form.Item name="organizationid" label="Сургалт өгсөн байгууллага / ажилтан">
                         <Select style={{ width: '100%' }}>
                             {organization?.map((t, i) => (<Select.Option key={i} value={t.id}>{t.name}</Select.Option>))}
                         </Select>
@@ -271,7 +321,7 @@ export default function Training() {
                         <Select style={{ width: "100%" }}>
                             {relationship?.map((t, i) => (
                                 <Select.Option key={i} value={t.memberid}>
-                                    {t.name}
+                                    {t.isparticipant === 'Тийм' ? <Text type="success">{t.name}</Text> : <Text>{t.name}</Text>}
                                 </Select.Option>
                             ))}
                         </Select>

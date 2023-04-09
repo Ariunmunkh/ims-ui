@@ -1,6 +1,6 @@
 {
   "name": "dms-ui",
-  "version": "23.3.22",
+  "version": "23.4.8",
   "private": true,
   "dependencies": {
     "antd": "^5.0.5",

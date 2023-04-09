@@ -14,7 +14,7 @@ export default function Visit() {
     const { userinfo } = useUserInfo();
     const { householdid } = useParams();
     const [relationship, setrelationship] = useState([]);
-    const [mediatedservicetype, setmediatedservicetype] = useState([]);
+    const [basicneeds, setbasicneeds] = useState([]);
     const [coachlist, setcoachlist] = useState([]);
     const [griddata, setGridData] = useState();
     const [loading, setLoading] = useState(true);
@@ -55,10 +55,10 @@ export default function Visit() {
                     setcoachlist(res?.data?.retdata);
                 }
             });
-        api.get(`/api/record/base/get_dropdown_item_list?type=mediatedservicetype`)
+        api.get(`/api/record/base/get_dropdown_item_list?type=basicneeds`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
-                    setmediatedservicetype(res?.data?.retdata);
+                    setbasicneeds(res?.data?.retdata);
                 }
             });
         fetchData();
@@ -186,24 +186,29 @@ export default function Visit() {
             ...getColumnSearchProps("visitdate"),
         },
         {
-            title: "Айлчлалаар уулзсан өрхийн гишүүд",
+            title: "Айлчлалаар уулзсан өрхийн гишүүн",
             dataIndex: "membername",
             ...getColumnSearchProps("membername"),
         },
         {
-            title: "Хэлэлцсэн асуудал",
+            title: "Өрхийн айлчлалаар хэлэлцсэн асуудал",
             dataIndex: "note",
             ...getColumnSearchProps("note"),
         },
         {
-            title: "Шийдвэрлэсэн байдал, авах арга хэмжээ",
+            title: "Шийдвэрлэсэн байдал / авах арга хэмжээ",
             dataIndex: "decisionandaction",
             ...getColumnSearchProps("decisionandaction"),
         },
         {
-            title: "Үндсэн хэрэгцээ",
-            dataIndex: "mediatedservicetypename",
-            ...getColumnSearchProps("mediatedservicetypename"),
+            title: "Өрхийн үндсэн хэрэгцээ",
+            dataIndex: "basicneedsname",
+            ...getColumnSearchProps("basicneedsname"),
+        },
+        {
+            title: "Үндсэн хэрэгцээний тайлбар",
+            dataIndex: "basicneedsnote",
+            ...getColumnSearchProps("basicneedsnote"),
         },
         {
             title: "Орлого, зарлагын бүртгэлээ тогтмол хөтөлсөн",
@@ -299,7 +304,7 @@ export default function Visit() {
             memberid: null,
             householdid: householdid,
             visitdate: null,
-            mediatedservicetypeid: [],
+            basicneedsid: [],
             incomeexpenditurerecord: false,
             developmentplan: false,
             note: null,
@@ -376,16 +381,19 @@ export default function Visit() {
                     <Form.Item name="visitdate" label="Айлчилсан огноо">
                         <DatePicker style={{ width: "100%" }} placeholder="Өдөр сонгох" />
                     </Form.Item>
-                    <Form.Item name="mediatedservicetypeid" label="Үндсэн хэрэгцээ">
+                    <Form.Item name="basicneedsid" label="Өрхийн үндсэн хэрэгцээ">
                         <Select
                             mode="multiple"
                             style={{ width: "100%" }}>
-                            {mediatedservicetype?.map((t, i) => (
+                            {basicneeds?.map((t, i) => (
                                 <Select.Option key={i} value={t.id}>
                                     {t.name}
                                 </Select.Option>
                             ))}
                         </Select>
+                    </Form.Item>
+                    <Form.Item name="basicneedsnote" label="Үндсэн хэрэгцээний тайлбар">
+                        <Input.TextArea />
                     </Form.Item>
                     <Form.Item
                         name="incomeexpenditurerecord"
@@ -410,10 +418,10 @@ export default function Visit() {
                             ))}
                         </Select>
                     </Form.Item>
-                    <Form.Item name="note" label="Хэлэлцсэн асуудал">
+                    <Form.Item name="note" label="Өрхийн айлчлалаар хэлэлцсэн асуудал">
                         <Input.TextArea />
                     </Form.Item>
-                    <Form.Item name="decisionandaction" label="Шийдвэрлэсэн байдал, авах арга хэмжээ">
+                    <Form.Item name="decisionandaction" label="Шийдвэрлэсэн байдал / авах арга хэмжээ">
                         <Input.TextArea />
                     </Form.Item>
                 </Form>

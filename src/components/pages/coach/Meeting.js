@@ -181,7 +181,7 @@ export default function Meeting() {
 
     const gridcolumns = [
         {
-            title: "Бүлгийн хурал зохион байгуулагдсан огноо",
+            title: "Бүлгийн хурлын огноо",
             dataIndex: "meetingdate",
         },
         {
@@ -193,7 +193,7 @@ export default function Meeting() {
             dataIndex: "section",
         },
         {
-            title: "Гол оролцогч",
+            title: "Өрхийн гол оролцогч гишүүний нэр",
             dataIndex: "householdname",
         },
         {
@@ -396,7 +396,7 @@ export default function Meeting() {
                     <Form.Item name="householdid" hidden={true} />
                     <Form.Item
                         name="meetingdate"
-                        label="Бүлгийн хурал зохион байгуулагдсан огноо"
+                        label="Бүлгийн хурлын огноо"
                     >
                         <DatePicker style={{ width: "100%" }} placeholder="Өдөр сонгох" />
                     </Form.Item>

@@ -10,7 +10,7 @@ export default function Organization() {
 
     const [griddata, setGridData] = useState();
     const [loading, setLoading] = useState(true);
-    const [formtitle] = useState('Сургалт, үйл ажиллагаа зохион байгуулсан байгууллагын нэр');
+    const [formtitle] = useState('Сургалт өгсөн байгууллага / ажилтан');
     const [formtype] = useState('organization');
     const [formdata] = Form.useForm();
 

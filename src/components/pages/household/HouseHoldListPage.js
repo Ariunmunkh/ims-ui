@@ -10,6 +10,7 @@ import {
     Select,
     InputNumber,
     Typography,
+    Switch,
     Row,
     Col,
 } from "antd";
@@ -28,6 +29,7 @@ export default function HouseHoldListPage() {
     const [griddata, setGridData] = useState();
     const [exceldata, setexceldata] = useState([]);
     const [status, setstatus] = useState(1);
+    const [isactive, setisactive] = useState(0);
     const [group, setgroup] = useState(0);
     const [loading, setLoading] = useState(false);
     const { userinfo } = useUserInfo();
@@ -44,8 +46,7 @@ export default function HouseHoldListPage() {
         let coachid = (isNaN(userinfo.coachid) ? 0 : userinfo.coachid) * 1;
         await api
             .get(
-                `/api/record/households/get_household_list?coachid=${coachid}&status=${status}&group=${isNaN(group) ? 0 : group
-                }`
+                `/api/record/households/get_household_list?coachid=${coachid}&status=${status}&group=${isNaN(group) ? 0 : group}&isactive=${isNaN(isactive) ? 0 : isactive}`
             )
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
@@ -56,7 +57,7 @@ export default function HouseHoldListPage() {
             .finally(() => {
                 setLoading(false);
             });
-    }, [userinfo, status, group]);
+    }, [userinfo, status, group, isactive]);
 
     useEffect(() => {
         api.get(`/api/record/base/get_district_list`).then((res) => {
@@ -237,14 +238,33 @@ export default function HouseHoldListPage() {
         },
         {
             title: "Өрхийн тэргүүний нэр",
+            dataIndex: "headname",
+            ...getColumnSearchProps("headname"),
+        },
+        {
+            title: "Өрхийн тэргүүний нас",
+            dataIndex: "headage",
+            ...getColumnSearchProps("headage"),
+        },
+        {
+            title: "Өрхийн тэргүүний регистр",
+            dataIndex: "headregno",
+            ...getColumnSearchProps("headregno"),
+        },
+        {
+            title: "Гол оролцогч гишүүний нэр",
             dataIndex: "name",
             ...getColumnSearchProps("name"),
         },
         {
-            title: "Хүйс",
-            dataIndex: "gender",
-            filters: [{ text: "Эрэгтэй", value: "Эрэгтэй" }, { text: "Эмэгтэй", value: "Эмэгтэй" }],
-            onFilter: (value, record) => record.gender.indexOf(value) === 0,
+            title: "Гол оролцогч гишүүний нас",
+            dataIndex: "age",
+            ...getColumnSearchProps("age"),
+        },
+        {
+            title: "Гол оролцогч гишүүний регистр",
+            dataIndex: "regno",
+            ...getColumnSearchProps("regno"),
         },
         {
             title: "Дүүрэг",
@@ -273,6 +293,7 @@ export default function HouseHoldListPage() {
         formdata.setFieldsValue({
             householdid: 0,
             status: null,
+            isactive: true,
             numberof: 0,
             name: null,
             districtid: null,
@@ -308,8 +329,11 @@ export default function HouseHoldListPage() {
             });
     };
 
-    const changeStatus = async (value) => {
-        setstatus(value);
+    const changeStatus = async (value, type) => {
+        if (type === 'status')
+            setstatus(value);
+        else
+            setisactive(value)
     };
     const changeGroup = async (value) => {
         setgroup(value);
@@ -329,7 +353,7 @@ export default function HouseHoldListPage() {
                 <Col>
                     <Select
                         defaultValue={1}
-                        onChange={(value) => changeStatus(value)}
+                        onChange={(value) => changeStatus(value, 'status')}
                         style={{ width: "200px" }}
                     >
                         {householdstatus?.map((t, i) => (
@@ -337,6 +361,21 @@ export default function HouseHoldListPage() {
                                 {t.name}
                             </Select.Option>
                         ))}
+                    </Select>
+                    <Select
+                        defaultValue={1}
+                        onChange={(value) => changeStatus(value, 'isactive')}
+                        style={{ width: "200px" }}
+                    >
+                        <Select.Option key={0} value={0}>
+                            {"Бүгд"}
+                        </Select.Option>
+                        <Select.Option key={1} value={1}>
+                            {"Идэвхитэй"}
+                        </Select.Option>
+                        <Select.Option key={2} value={2}>
+                            {"Идэвхигүй/хасагдах шалтгаантай өрх"}
+                        </Select.Option>
                     </Select>
                 </Col>
                 <Col>
@@ -394,6 +433,13 @@ export default function HouseHoldListPage() {
                                 </Select.Option>
                             ))}
                         </Select>
+                    </Form.Item>
+                    <Form.Item
+                        name="isactive"
+                        label="Идэвхитэй эсэх?"
+                        valuePropName="checked"
+                    >
+                        <Switch checkedChildren="Тийм" unCheckedChildren="Үгүй" style={{ width: '100%' }} />
                     </Form.Item>
                     <Form.Item name="districtid" label="Дүүрэг">
                         <Select style={{ width: "100%" }}>
