@@ -93,6 +93,7 @@ export default function HouseHold() {
                     <Descriptions.Item label="Утас">{formdata.getFieldValue('phone')}</Descriptions.Item>
                     <Descriptions.Item label="Хаяг">{formdata.getFieldValue('address')}</Descriptions.Item>
                     <Descriptions.Item label="Дундын хадгаламжийн бүлэг">{formdata.getFieldValue('householdgroupname')}</Descriptions.Item>
+                    <Descriptions.Item label="Идэвхитэй эсэх?">{formdata.getFieldValue('isactive') === true ? "Идэвхитэй" : "Идэвхигүй/хасагдах шалтгаантай өрх"}</Descriptions.Item>
                 </Descriptions>
                 <Button type="link" onClick={() => { showModal(); }}>Засах</Button>
             </Spin>
@@ -130,6 +131,13 @@ export default function HouseHold() {
                         <Select style={{ width: '100%' }}>
                             {householdstatus?.map((t, i) => (<Select.Option key={i} value={t.id}>{t.name}</Select.Option>))}
                         </Select>
+                    </Form.Item>
+                    <Form.Item
+                        name="isactive"
+                        label="Идэвхитэй эсэх?"
+                        valuePropName="checked"
+                    >
+                        <Switch checkedChildren="Тийм" unCheckedChildren="Үгүй" style={{ width: '100%' }} />
                     </Form.Item>
                     <Form.Item name="districtname" hidden={true} />
                     <Form.Item name="districtid" label="Дүүрэг">

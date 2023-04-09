@@ -227,14 +227,14 @@ export default function HouseHoldListPage() {
             ...getColumnSearchProps("householdid"),
         },
         {
-            title: "Дундын хадгаламжийн бүлэг",
-            dataIndex: "householdgroupname",
-            ...getColumnSearchProps("householdgroupname"),
-        },
-        {
             title: "Ам бүлийн тоо",
             dataIndex: "numberof",
             ...getColumnSearchProps("numberof"),
+        },
+        {
+            title: "Өрхийн тэргүүний регистр",
+            dataIndex: "headregno",
+            ...getColumnSearchProps("headregno"),
         },
         {
             title: "Өрхийн тэргүүний нэр",
@@ -247,9 +247,9 @@ export default function HouseHoldListPage() {
             ...getColumnSearchProps("headage"),
         },
         {
-            title: "Өрхийн тэргүүний регистр",
-            dataIndex: "headregno",
-            ...getColumnSearchProps("headregno"),
+            title: "Гол оролцогч гишүүний регистр",
+            dataIndex: "regno",
+            ...getColumnSearchProps("regno"),
         },
         {
             title: "Гол оролцогч гишүүний нэр",
@@ -260,11 +260,6 @@ export default function HouseHoldListPage() {
             title: "Гол оролцогч гишүүний нас",
             dataIndex: "age",
             ...getColumnSearchProps("age"),
-        },
-        {
-            title: "Гол оролцогч гишүүний регистр",
-            dataIndex: "regno",
-            ...getColumnSearchProps("regno"),
         },
         {
             title: "Дүүрэг",
