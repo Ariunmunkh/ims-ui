@@ -42,7 +42,7 @@ export default function MasterPage() {
     const navigate = useNavigate();
     const { setToken } = useToken();
     const { userinfo } = useUserInfo();
-    const [collapsed, setCollapsed] = useState(false);
+    const [collapsed, setCollapsed] = useState(true);
     const { token: { colorBgContainer } } = theme.useToken();
 
     const getMenu = () => {
@@ -107,11 +107,6 @@ export default function MasterPage() {
                 ];
             case "2":
                 return [
-                    {
-                        key: "adminpage",
-                        icon: <SettingOutlined />,
-                        label: "Суурь бүртгэл",
-                    },
                     {
                         key: "householdlist",
                         icon: <HomeOutlined />,

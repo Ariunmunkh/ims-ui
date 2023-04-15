@@ -253,7 +253,6 @@ export default function Business() {
                 dataSource={griddata}
                 onRow={tableOnRow}
                 pagination={true}
-                scroll={{ y: '50vh' }}
                 rowKey={(record) => record.id}
             ></Table>
 

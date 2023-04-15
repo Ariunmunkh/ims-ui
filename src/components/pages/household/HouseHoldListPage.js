@@ -44,9 +44,10 @@ export default function HouseHoldListPage() {
     const fetchData = useCallback(async () => {
         setLoading(true);
         let coachid = (isNaN(userinfo.coachid) ? 0 : userinfo.coachid) * 1;
+        let districtid = (isNaN(userinfo.districtid) ? 0 : userinfo.districtid) * 1;
         await api
             .get(
-                `/api/record/households/get_household_list?coachid=${coachid}&status=${status}&group=${isNaN(group) ? 0 : group}&isactive=${isNaN(isactive) ? 0 : isactive}`
+                `/api/record/households/get_household_list?coachid=${coachid}&districtid=${districtid}&status=${status}&group=${isNaN(group) ? 0 : group}&isactive=${isNaN(isactive) ? 0 : isactive}`
             )
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {

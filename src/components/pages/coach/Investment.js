@@ -41,8 +41,9 @@ export default function Investment() {
     const fetchData = useCallback(() => {
         setLoading(true);
         let coachid = (isNaN(userinfo.coachid) ? 0 : userinfo.coachid) * 1;
+        let districtid = (isNaN(userinfo.districtid) ? 0 : userinfo.districtid) * 1;
         api
-            .get(`/api/record/coach/get_investment_list?coachid=${coachid}`)
+            .get(`/api/record/coach/get_investment_list?coachid=${coachid}&districtid=${districtid}`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setGridData(res?.data?.retdata);
@@ -365,7 +366,7 @@ export default function Investment() {
                 columns={gridcolumns}
                 dataSource={griddata}
                 onRow={tableOnRow}
-                pagination={false}
+                pagination={true}
                 rowKey={(record) => record.entryid}
                 summary={(pageData) => {
                     let totalamount = 0;

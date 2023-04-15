@@ -13,12 +13,14 @@ export default function UserListPage() {
         username: null,
         email: null,
         password: null,
+        coach: null,
+        districtid: null,
     };
     const [griddata, setGridData] = useState();
     const [loading, setLoading] = useState(true);
-    const [iscoach, setiscoach] = useState(true);
     const [formdata] = Form.useForm();
     const [coachlist, setcoachlist] = useState([]);
+    const [districtlist, setdistrictlist] = useState([]);
 
     const fetchData = async () => {
         setLoading(true);
@@ -47,6 +49,12 @@ export default function UserListPage() {
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setcoachlist(res?.data?.retdata);
+                }
+            });
+        api.get(`/api/record/base/get_district_list`)
+            .then((res) => {
+                if (res?.status === 200 && res?.data?.rettype === 0) {
+                    setdistrictlist(res?.data?.retdata);
                 }
             });
         fetchData();
@@ -209,9 +217,9 @@ export default function UserListPage() {
             ...getColumnSearchProps("email"),
         },
         {
-            title: "Коуч",
-            dataIndex: "coachname",
-            ...getColumnSearchProps("coachname"),
+            title: "Коуч / Хариуцсан дүүрэг",
+            dataIndex: "rolename",
+            ...getColumnSearchProps("rolename"),
         },
         {
             title: "Огноо",
@@ -276,7 +284,7 @@ export default function UserListPage() {
         await api.get(`/api/systems/User/get_user?userid=${userid}`).then((res) => {
             if (res?.status === 200 && res?.data?.rettype === 0) {
                 formdata.setFieldsValue(res?.data?.retdata[0]);
-                setiscoach(res?.data?.retdata[0].roleid !== 3);
+                formdata.setFieldValue('password', null);
                 showModal();
             }
         });
@@ -288,7 +296,6 @@ export default function UserListPage() {
     };
 
     const roleidChange = (value) => {
-        setiscoach(value !== 3);
         formdata.setFieldValue("coachid", null);
     };
 
@@ -311,7 +318,6 @@ export default function UserListPage() {
                 dataSource={griddata}
                 onRow={tableOnRow}
                 pagination={true}
-                scroll={{ y: '50vh' }}
                 rowKey={(record) => record.userid}
             ></Table>
 
@@ -369,7 +375,16 @@ export default function UserListPage() {
                             ]}
                         />
                     </Form.Item>
-                    <Form.Item name="coachid" label="Коучийн нэр" hidden={iscoach}>
+                    <Form.Item name="districtid" label="Хариуцсан дүүрэг" hidden={formdata.getFieldValue("roleid") !== 2}>
+                        <Select style={{ width: "100%" }}>
+                            {districtlist?.map((t, i) => (
+                                <Select.Option key={i} value={t.districtid}>
+                                    {t.name}
+                                </Select.Option>
+                            ))}
+                        </Select>
+                    </Form.Item>
+                    <Form.Item name="coachid" label="Коучийн нэр" hidden={formdata.getFieldValue("roleid") !== 3}>
                         <Select style={{ width: "100%" }}>
                             {coachlist?.map((t, i) => (
                                 <Select.Option key={i} value={t.coachid}>

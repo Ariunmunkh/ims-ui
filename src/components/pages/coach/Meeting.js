@@ -27,8 +27,9 @@ export default function Meeting() {
     const fetchData = useCallback(() => {
         setLoading(true);
         let coachid = (isNaN(userinfo.coachid) ? 0 : userinfo.coachid) * 1;
+        let districtid = (isNaN(userinfo.districtid) ? 0 : userinfo.districtid) * 1;
         api
-            .get(`/api/record/coach/get_meetingattendance_list?coachid=${coachid}`)
+            .get(`/api/record/coach/get_meetingattendance_list?coachid=${coachid}&districtid=${districtid}`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setGridData(res?.data?.retdata);
@@ -167,7 +168,7 @@ export default function Meeting() {
             ...getColumnSearchProps("meetingdate"),
         },
         {
-            title: "Дундын хадгаламжийн бүлэг",
+            title: "Дундын хадгаламжийн бүлгийн нэр",
             dataIndex: "householdgroupname",
             ...getColumnSearchProps("householdgroupname"),
         },
@@ -234,7 +235,6 @@ export default function Meeting() {
                 columns={gridcolumns}
                 dataSource={griddata}
                 pagination={true}
-                scroll={{ y: '50vh' }}
                 rowKey={(record) => record.entryid}
                 summary={(pageData) => {
                     let totalamount = 0;
@@ -254,10 +254,12 @@ export default function Meeting() {
                                 <Table.Summary.Cell index={2} />
                                 <Table.Summary.Cell index={3} />
                                 <Table.Summary.Cell index={4} />
-                                <Table.Summary.Cell index={5}>
+                                <Table.Summary.Cell index={5} />
+                                <Table.Summary.Cell index={6} />
+                                <Table.Summary.Cell index={7}>
                                     <Text>{totalquantity}</Text>
                                 </Table.Summary.Cell>
-                                <Table.Summary.Cell index={6} align="right">
+                                <Table.Summary.Cell index={8} align="right">
                                     <Text>{totalamount}</Text>
                                 </Table.Summary.Cell>
                             </Table.Summary.Row>

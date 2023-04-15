@@ -19,7 +19,8 @@ export default function Training() {
     const fetchData = useCallback(() => {
         setLoading(true);
         let coachid = (isNaN(userinfo.coachid) ? 0 : userinfo.coachid) * 1;
-        api.get(`/api/record/coach/get_training_list?coachid=${coachid}`)
+        let districtid = (isNaN(userinfo.districtid) ? 0 : userinfo.districtid) * 1;
+        api.get(`/api/record/coach/get_training_list?coachid=${coachid}&districtid=${districtid}`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setGridData(res?.data?.retdata);
@@ -157,6 +158,7 @@ export default function Training() {
         {
             title: "Огноо",
             dataIndex: "trainingdate",
+            width:120,
             ...getColumnSearchProps("trainingdate"),
         },
         {
@@ -245,7 +247,6 @@ export default function Training() {
                 columns={gridcolumns}
                 dataSource={griddata}
                 pagination={true}
-                scroll={{ y: '50vh' }}
                 rowKey={(record) => record.entryid}
             ></Table>
         </div>

@@ -204,7 +204,6 @@ export default function HouseHoldMember() {
                 dataSource={griddata}
                 onRow={tableOnRow}
                 pagination={true}
-                scroll={{ y: '50vh' }}
                 rowKey={(record) => record.memberid}
             ></Table>
             <Drawer

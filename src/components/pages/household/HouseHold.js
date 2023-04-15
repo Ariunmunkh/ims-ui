@@ -192,9 +192,9 @@ export default function HouseHold() {
             <Divider />
             <Descriptions title="ӨРХИЙН ГИШҮҮДИЙН МЭДЭЭЛЭЛ " bordered>
                 <Descriptions.Item >
-                    <HouseHoldMember />
                 </Descriptions.Item>
             </Descriptions>
+            <HouseHoldMember />
         </div>
     );
 }
