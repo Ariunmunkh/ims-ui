@@ -94,9 +94,6 @@ export default function HouseHoldPage() {
                         children: (
                             <div>
                                 <Training />
-                                <br />
-                                <Divider />
-                                <Livelihood />
                             </div>
                         ),
                     },
@@ -114,8 +111,13 @@ export default function HouseHoldPage() {
                         ),
                     },
                     {
-                        label: `Холбон зуучилсан үйл ажиллагаа`,
+                        label: `Амьжиргаа сайжруулах үйл ажиллагаа`,
                         key: "7",
+                        children: <Livelihood />,
+                    },
+                    {
+                        label: `Холбон зуучилсан үйл ажиллагаа`,
+                        key: "8",
                         children: <Contact />,
                     },
                 ]}

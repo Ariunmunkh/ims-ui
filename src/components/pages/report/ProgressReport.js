@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Space, Select, Button, Slider, Tag } from "antd";
+import { Space, Select, Button, Slider, } from "antd";
 import { api } from "../../system/api";
-import { SearchOutlined, FormOutlined, FilePdfOutlined, CloudDownloadOutlined } from "@ant-design/icons";
+import { SearchOutlined, FilePdfOutlined, CloudDownloadOutlined } from "@ant-design/icons";
 import { Spin, Row, Col, message } from "antd";
 
 

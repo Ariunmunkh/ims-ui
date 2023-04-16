@@ -10,12 +10,19 @@ const { Text } = Typography;
 
 export default function Meeting() {
     const { householdid } = useParams();
+    const [household, sethousehold] = useState();
     const [griddata, setGridData] = useState();
     const [loading, setLoading] = useState(true);
     const [formdata] = Form.useForm();
 
     const fetchData = useCallback(() => {
         setLoading(true);
+        api.get(`/api/record/households/get_household?id=${householdid}`)
+            .then((res) => {
+                if (res?.status === 200 && res?.data?.rettype === 0) {
+                    sethousehold(res?.data?.retdata[0]);
+                }
+            });
         api
             .get(`/api/record/coach/get_meetingattendance_list?id=${householdid}`)
             .then((res) => {
@@ -48,6 +55,10 @@ export default function Meeting() {
         {
             title: "Бүлгийн хуралд оролцсон эсэх",
             dataIndex: "isjoin",
+        },
+        {
+            title: "Нэгж хувьцааны үнэ",
+            dataIndex: "quantity",
         },
         {
             title: "Худалдан авсан хувьцааны тоо",
@@ -136,6 +147,7 @@ export default function Meeting() {
             meetingdate: null,
             isjoin: true,
             quantity: null,
+            unitprice: household?.unitprice,
             amount: null,
         });
         showModal();
@@ -215,6 +227,11 @@ export default function Meeting() {
                     wrapperCol={{ span: 14 }}
                     labelAlign="left"
                     labelWrap
+                    onFieldsChange={(changedFields, allFields) => {
+                        if (changedFields[0]?.name[0] === 'quantity' || changedFields[0]?.name[0] === 'unitprice') {
+                            formdata.setFieldValue('amount', formdata.getFieldValue('quantity') * formdata.getFieldValue('unitprice'));
+                        }
+                    }}
                 >
 
                     <Form.Item name="entryid" hidden={true} />
@@ -243,6 +260,14 @@ export default function Meeting() {
                             min={0}
                             style={{ width: "100%" }}
                             placeholder="Хувьцааны тоо"
+                        />
+                    </Form.Item>
+                    <Form.Item name="unitprice" label="Нэгж хувьцааны үнэ">
+                        <InputNumber
+                            style={{ width: "100%" }}
+                            placeholder="Мөнгөн дүн"
+                            formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                            parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
                         />
                     </Form.Item>
                     <Form.Item name="amount" label="Хуримтлуулсан мөнгөн дүн">

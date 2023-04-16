@@ -290,6 +290,7 @@ export default function HouseHoldListPage() {
             householdid: 0,
             status: null,
             isactive: true,
+            reason: null,
             numberof: 0,
             name: null,
             districtid: null,
@@ -436,6 +437,9 @@ export default function HouseHoldListPage() {
                         valuePropName="checked"
                     >
                         <Switch checkedChildren="Тийм" unCheckedChildren="Үгүй" style={{ width: '100%' }} />
+                    </Form.Item>
+                    <Form.Item name="reason" label="Шалтгаан">
+                        <Input.TextArea />
                     </Form.Item>
                     <Form.Item name="districtid" label="Дүүрэг">
                         <Select style={{ width: "100%" }}>

@@ -94,6 +94,7 @@ export default function HouseHold() {
                     <Descriptions.Item label="Хаяг">{formdata.getFieldValue('address')}</Descriptions.Item>
                     <Descriptions.Item label="Дундын хадгаламжийн бүлэг">{formdata.getFieldValue('householdgroupname')}</Descriptions.Item>
                     <Descriptions.Item label="Идэвхитэй эсэх?">{formdata.getFieldValue('isactive') === true ? "Идэвхитэй" : "Идэвхигүй/хасагдах шалтгаантай өрх"}</Descriptions.Item>
+                    <Descriptions.Item label="Шалтгаан">{formdata.getFieldValue('reason')}</Descriptions.Item>
                 </Descriptions>
                 <Button type="link" onClick={() => { showModal(); }}>Засах</Button>
             </Spin>
@@ -138,6 +139,9 @@ export default function HouseHold() {
                         valuePropName="checked"
                     >
                         <Switch checkedChildren="Тийм" unCheckedChildren="Үгүй" style={{ width: '100%' }} />
+                    </Form.Item>
+                    <Form.Item name="reason" label="Шалтгаан">
+                        <Input.TextArea />
                     </Form.Item>
                     <Form.Item name="districtname" hidden={true} />
                     <Form.Item name="districtid" label="Дүүрэг">
