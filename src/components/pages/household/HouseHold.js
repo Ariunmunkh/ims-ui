@@ -126,6 +126,29 @@ export default function HouseHold() {
                     <Form.Item name="householdid" label="Өрхийн дугаар" >
                         <InputNumber min={0} readOnly />
                     </Form.Item>
+
+                    <Form.Item name="coachid" label="Хариуцсан коучийн нэр" >
+                        <Select style={{ width: "100%" }}>
+                            {coachlist?.map((t, i) => (
+                                <Select.Option key={i} value={t.coachid}>
+                                    {t.name}
+                                </Select.Option>
+                            ))}
+                        </Select>
+                    </Form.Item>
+                    <Form.Item
+                        name="householdgroupid"
+                        label="Дундын хадгаламжийн бүлэг"
+                    >
+                        <Select style={{ width: "100%" }}>
+                            {householdgroup?.map((t, i) => (
+                                <Select.Option key={i} value={t.id}>
+                                    {t.name}
+                                </Select.Option>
+                            ))}
+                        </Select>
+                    </Form.Item>
+
                     <Form.Item name="numberof" label="Ам бүлийн тоо" hidden={true} />
                     <Form.Item name="name" label="Өрхийн тэргүүний нэр" hidden={true} />
                     <Form.Item name="status" label="Өрхийн статус">
@@ -169,27 +192,6 @@ export default function HouseHold() {
                         <Input />
                     </Form.Item>
 
-                    <Form.Item name="coachid" label="Хариуцсан коучийн нэр" >
-                        <Select style={{ width: "100%" }}>
-                            {coachlist?.map((t, i) => (
-                                <Select.Option key={i} value={t.coachid}>
-                                    {t.name}
-                                </Select.Option>
-                            ))}
-                        </Select>
-                    </Form.Item>
-                    <Form.Item
-                        name="householdgroupid"
-                        label="Дундын хадгаламжийн бүлэг"
-                    >
-                        <Select style={{ width: "100%" }}>
-                            {householdgroup?.map((t, i) => (
-                                <Select.Option key={i} value={t.id}>
-                                    {t.name}
-                                </Select.Option>
-                            ))}
-                        </Select>
-                    </Form.Item>
 
                 </Form>
             </Drawer>
