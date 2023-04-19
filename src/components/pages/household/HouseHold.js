@@ -11,6 +11,7 @@ export default function HouseHold() {
     const [coachlist, setcoachlist] = useState([]);
     const [householdstatus, sethouseholdstatus] = useState([]);
     const [householdgroup, sethouseholdgroup] = useState([]);
+    const [householdgroupcopy, sethouseholdgroupcopy] = useState([]);
     const [loading, setLoading] = useState(false);
 
     const fetchData = useCallback(() => {
@@ -54,6 +55,9 @@ export default function HouseHold() {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const showModal = () => {
+        sethouseholdgroupcopy(householdgroup?.filter(row =>
+            row?.coachid === formdata?.getFieldValue("coachid") &&
+            row?.districtid === formdata?.getFieldValue("districtid")));
         setIsModalOpen(true);
     };
 
@@ -122,6 +126,16 @@ export default function HouseHold() {
                     wrapperCol={{ span: 14 }}
                     labelAlign="left"
                     labelWrap
+                    onFieldsChange={(changedFields, allFields) => {
+
+                        if (changedFields[0]?.name[0] === 'coachid' || changedFields[0]?.name[0] === 'districtid') {
+                            formdata.setFieldValue('householdgroupid', null);
+                            sethouseholdgroupcopy(householdgroup?.filter(row =>
+                                row?.coachid === formdata?.getFieldValue("coachid") &&
+                                row?.districtid === formdata?.getFieldValue("districtid")));
+                        }
+
+                    }}
                 >
                     <Form.Item name="householdid" label="Өрхийн дугаар" >
                         <InputNumber min={0} readOnly />
@@ -141,7 +155,7 @@ export default function HouseHold() {
                         label="Дундын хадгаламжийн бүлэг"
                     >
                         <Select style={{ width: "100%" }}>
-                            {householdgroup?.map((t, i) => (
+                            {householdgroupcopy?.map((t, i) => (
                                 <Select.Option key={i} value={t.id}>
                                     {t.name}
                                 </Select.Option>

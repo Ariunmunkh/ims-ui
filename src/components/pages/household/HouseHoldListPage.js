@@ -248,6 +248,21 @@ export default function HouseHoldListPage() {
             ...getColumnSearchProps("headage"),
         },
         {
+            title: "ХЭБ-д бүртгэлтэй тэргүүнтэй холбогдох хамаарал",
+            dataIndex: "xebrelationship",
+            ...getColumnSearchProps("xebrelationship"),
+        },
+        {
+            title: "ХЭБ-д бүртгэлтэй тэргүүний регистр",
+            dataIndex: "xebregno",
+            ...getColumnSearchProps("xebregno"),
+        },
+        {
+            title: "ХЭБ-д бүртгэлтэй тэргүүний нэр",
+            dataIndex: "xebname",
+            ...getColumnSearchProps("xebname"),
+        },
+        {
             title: "Гол оролцогч гишүүний регистр",
             dataIndex: "regno",
             ...getColumnSearchProps("regno"),
@@ -282,6 +297,11 @@ export default function HouseHoldListPage() {
             title: "Утас",
             dataIndex: "phone",
             ...getColumnSearchProps("phone"),
+        },
+        {
+            title: "Идэвхгүй өрхийн шалтгаан",
+            dataIndex: "reason",
+            ...getColumnSearchProps("reason"),
         },
     ];
 

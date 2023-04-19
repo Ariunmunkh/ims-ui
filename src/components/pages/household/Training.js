@@ -264,11 +264,11 @@ export default function Training() {
                         if (changedFields[0]?.name[0] === 'trainingcategoryid') {
                             formdata.setFieldValue('trainingtypeid', null);
                             formdata.setFieldValue('trainingandactivityid', null);
-                            settrainingtypecopy(trainingtype?.filter(row => row?.trainingcategoryid === formdata?.getFieldValue("trainingcategoryid")))
+                            settrainingtypecopy(trainingtype?.filter(row => row?.trainingcategoryid === formdata?.getFieldValue("trainingcategoryid")));
                         }
                         else if (changedFields[0]?.name[0] === 'trainingtypeid') {
                             formdata.setFieldValue('trainingandactivityid', null);
-                            settrainingandactivitycopy(trainingandactivity?.filter(row => row?.trainingtypeid === formdata?.getFieldValue("trainingtypeid")))
+                            settrainingandactivitycopy(trainingandactivity?.filter(row => row?.trainingtypeid === formdata?.getFieldValue("trainingtypeid")));
                         }
 
                     }}
