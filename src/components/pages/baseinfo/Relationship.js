@@ -242,6 +242,7 @@ export default function Relationship() {
             </Button>
 
             <Table
+                size="small"
                 title={() => formtitle}
                 bordered
                 loading={loading}

@@ -142,6 +142,7 @@ export default function ProjectListPage() {
             </Button>
 
             <Table
+                size="small"
                 title={() => `Төслийн мэдээлэл:`}
                 bordered
                 loading={loading}

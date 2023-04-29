@@ -164,6 +164,7 @@ export default function Meeting() {
             </Button>
 
             <Table
+                size="small"
                 loading={loading}
                 columns={gridcolumns}
                 dataSource={griddata}

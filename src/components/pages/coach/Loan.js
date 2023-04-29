@@ -71,6 +71,7 @@ export default function Loan() {
         <div>
 
             <Table
+                size="small"
                 bordered
                 title={() => (
                     <>

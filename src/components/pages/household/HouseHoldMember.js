@@ -204,6 +204,7 @@ export default function HouseHoldMember() {
             </Button>
 
             <Table
+                size="small"
                 loading={loading}
                 columns={gridcolumns}
                 dataSource={griddata}

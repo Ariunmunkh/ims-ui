@@ -207,6 +207,7 @@ export default function Contact() {
         <div>
 
             <Table
+                size="small"
                 bordered
                 title={() => (
                     <>

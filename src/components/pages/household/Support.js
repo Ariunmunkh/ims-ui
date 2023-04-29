@@ -198,6 +198,7 @@ export default function Support() {
             </Button>
 
             <Table
+                size="small"
                 loading={loading}
                 columns={gridcolumns}
                 dataSource={griddata}

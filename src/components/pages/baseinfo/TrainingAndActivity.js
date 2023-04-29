@@ -246,6 +246,7 @@ export default function TrainingAndActivity() {
             </Button>
 
             <Table
+                size="small"
                 title={() => formtitle}
                 bordered
                 loading={loading}

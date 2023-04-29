@@ -312,6 +312,12 @@ export default function Visit() {
         });
         showModal();
     };
+
+    const disabledDate = (current) => {
+        // Can not select days before today and today
+        return current && current >= dayjs().endOf('day');
+    };
+
     return (
         <div>
             <Button
@@ -324,6 +330,7 @@ export default function Visit() {
             </Button>
 
             <Table
+                size="small"
                 loading={loading}
                 bordered
                 columns={gridcolumns}
@@ -379,7 +386,10 @@ export default function Visit() {
                         </Select>
                     </Form.Item>
                     <Form.Item name="visitdate" label="Айлчилсан огноо">
-                        <DatePicker style={{ width: "100%" }} placeholder="Өдөр сонгох" />
+                        <DatePicker
+                            disabledDate={disabledDate}
+                            style={{ width: "100%" }}
+                            placeholder="Өдөр сонгох" />
                     </Form.Item>
                     <Form.Item name="basicneedsid" label="Өрхийн үндсэн хэрэгцээ">
                         <Select

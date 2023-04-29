@@ -222,6 +222,7 @@ export default function Visit() {
                 <div className="col-md-12">
 
                     <Table
+                        size="small"
                         bordered
                         title={() => (
                             <>

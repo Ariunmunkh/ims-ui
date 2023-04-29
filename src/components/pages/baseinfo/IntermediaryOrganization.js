@@ -246,6 +246,7 @@ export default function IntermediaryOrganization() {
             </Button>
 
             <Table
+                size="small"
                 title={() => formtitle}
                 bordered
                 loading={loading}

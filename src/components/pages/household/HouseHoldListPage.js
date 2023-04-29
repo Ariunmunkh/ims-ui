@@ -359,19 +359,17 @@ export default function HouseHoldListPage() {
     return (
         <>
             <Row gutter={16} style={{ marginTop: 16, marginBottom: 16 }}>
-                <Col span={2}>
+                <Col >
                     <Button type="primary" onClick={(e) => newFormData()}>
                         Шинэ
                     </Button>
                 </Col>
                 <Col>
                     <Text>Өрхийн статус</Text>
-                </Col>
-                <Col>
                     <Select
                         defaultValue={1}
                         onChange={(value) => changeStatus(value, 'status')}
-                        style={{ width: "200px" }}
+                        style={{ width: "200px", margin: "0px 0px 0px 10px" }}
                     >
                         {householdstatus?.map((t, i) => (
                             <Select.Option key={i} value={t.id}>
@@ -397,12 +395,10 @@ export default function HouseHoldListPage() {
                 </Col>
                 <Col>
                     <Text>Бүлэг</Text>
-                </Col>
-                <Col>
                     <Select
                         onChange={(value) => changeGroup(value)}
                         allowClear
-                        style={{ width: "200px" }}
+                        style={{ width: "200px", margin: "0px 0px 0px 10px" }}
                     >
                         {householdgroup?.map((t, i) => (
                             <Select.Option key={i} value={t.id}>
@@ -519,6 +515,7 @@ export default function HouseHoldListPage() {
             <div className="row">
                 <div className="col-md-12">
                     <Table
+                        size="small"
                         bordered
                         title={() => (
                             <>

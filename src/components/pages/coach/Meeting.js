@@ -214,6 +214,7 @@ export default function Meeting() {
         <div>
 
             <Table
+                size="small"
                 bordered
                 title={() => (
                     <>

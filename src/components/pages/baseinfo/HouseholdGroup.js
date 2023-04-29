@@ -257,6 +257,7 @@ export default function HouseholdGroup() {
             </Button>
 
             <Table
+                size="small"
                 title={() => formtitle}
                 bordered
                 loading={loading}

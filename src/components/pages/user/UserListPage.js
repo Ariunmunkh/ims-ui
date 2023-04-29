@@ -21,6 +21,24 @@ export default function UserListPage() {
     const [formdata] = Form.useForm();
     const [coachlist, setcoachlist] = useState([]);
     const [districtlist, setdistrictlist] = useState([]);
+    const [rolelist] = useState([
+        {
+            value: 1,
+            label: "Admin",
+        },
+        {
+            value: 2,
+            label: "Sub-admin",
+        },
+        {
+            value: 3,
+            label: "Coach",
+        },
+        {
+            value: 4,
+            label: "Ministry",
+        },
+    ]);
 
     const fetchData = async () => {
         setLoading(true);
@@ -185,25 +203,12 @@ export default function UserListPage() {
                         value={record?.roleid}
                         disabled
                         bordered={false}
-                        options={[
-                            {
-                                value: 1,
-                                label: "Admin",
-                            },
-                            {
-                                value: 2,
-                                label: "Sub-admin",
-                            },
-                            {
-                                value: 3,
-                                label: "Coach",
-                            },
-                        ]}
+                        options={rolelist}
                     />
                 );
             },
 
-            filters: [{ text: "Admin", value: 1 }, { text: "Sub-admin", value: 2 }, { text: "Coach", value: 3 }],
+            filters: [rolelist],
             onFilter: (value, record) => record.roleid === value,
         },
         {
@@ -311,6 +316,7 @@ export default function UserListPage() {
             </Button>
 
             <Table
+                size="small"
                 title={() => `Бүртгэлтэй хэрэглэгчийн жагсаалт:`}
                 bordered
                 loading={loading}
@@ -359,20 +365,7 @@ export default function UserListPage() {
                         <Select
                             onChange={roleidChange}
                             style={{ width: 275 }}
-                            options={[
-                                {
-                                    value: 1,
-                                    label: "Admin",
-                                },
-                                {
-                                    value: 2,
-                                    label: "Sub-admin",
-                                },
-                                {
-                                    value: 3,
-                                    label: "Coach",
-                                },
-                            ]}
+                            options={rolelist}
                         />
                     </Form.Item>
                     <Form.Item name="districtid" label="Хариуцсан дүүрэг" hidden={formdata.getFieldValue("roleid") !== 2}>

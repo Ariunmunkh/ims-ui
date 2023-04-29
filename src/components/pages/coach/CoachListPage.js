@@ -152,6 +152,7 @@ export default function CoachListPage() {
             </Button>
 
             <Table
+                size="small"
                 title={() => `Коучийн мэдээлэл:`}
                 bordered
                 loading={loading}
@@ -159,7 +160,6 @@ export default function CoachListPage() {
                 dataSource={griddata}
                 onRow={tableOnRow}
                 pagination={true}
-                scroll={{ y: '50vh' }}
                 rowKey={(record) => record.coachid}
             ></Table>
 

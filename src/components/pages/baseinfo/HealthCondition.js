@@ -246,6 +246,7 @@ export default function HealthCondition() {
             </Button>
 
             <Table
+                size="small"
                 title={() => formtitle}
                 bordered
                 loading={loading}

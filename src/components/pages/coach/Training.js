@@ -222,6 +222,7 @@ export default function Training() {
         <div>
 
             <Table
+                size="small"
                 bordered
                 title={() => (
                     <>

@@ -246,6 +246,7 @@ export default function MediatedServiceType() {
             </Button>
 
             <Table
+                size="small"
                 title={() => formtitle}
                 bordered
                 loading={loading}

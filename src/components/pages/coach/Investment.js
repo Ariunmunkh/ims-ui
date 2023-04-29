@@ -345,6 +345,7 @@ export default function Investment() {
             </Button>
 
             <Table
+                size="small"
                 bordered
                 title={() => (
                     <>

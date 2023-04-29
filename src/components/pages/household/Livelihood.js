@@ -158,6 +158,7 @@ export default function Livelihood() {
             </Button>
 
             <Table
+                size="small"
                 loading={loading}
                 columns={gridcolumns}
                 dataSource={griddata}

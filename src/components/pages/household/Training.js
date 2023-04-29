@@ -218,6 +218,7 @@ export default function Training() {
             </Button>
 
             <Table
+                size="small"
                 loading={loading}
                 columns={gridcolumns}
                 dataSource={griddata}
