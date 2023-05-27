@@ -228,7 +228,7 @@ export default function MasterPage() {
     return (
         <Layout>
             <Sider trigger={null} collapsible collapsed={collapsed}><br />
-                <h5 className="text-white text-center" onClick={() => navigate("/")}>DMS систем</h5>
+                <h5 className="text-white text-center" onClick={() => navigate("/")}>ims систем</h5>
                 <hr className="text-white" />
                 <Menu
                     style={{ position: "sticky", top: 0, zIndex: 1 }}
