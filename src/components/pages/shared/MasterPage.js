@@ -35,6 +35,7 @@ import MapPage from "../coach/MapPage";
 import Monitor from "./Monitor";
 import Report from "../report/Report";
 import ProgressReport from "../report/ProgressReport";
+import Register from "./Register";
 
 const { Header, Sider, Content } = Layout;
 const { Text } = Typography;
@@ -333,6 +334,10 @@ export default function MasterPage() {
                         <Route
                             path="/monitor"
                             element={userinfo?.roleid ? <Monitor /> : <AccessDenied />}
+                        />
+                        <Route
+                            path="/register"
+                            element={userinfo?.roleid ? <Register /> : <AccessDenied />}
                         />
                         <Route path="*" element={<NotFound />} />
                     </Routes>
