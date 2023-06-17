@@ -33,16 +33,16 @@ export default function HouseHoldMember() {
     const [formdata] = Form.useForm();
 
     const fetchData = useCallback(() => {
-        setLoading(true);
-        api.get(`/api/record/households/get_householdmember_list?householdid=${householdid}`)
-            .then((res) => {
-                if (res?.status === 200 && res?.data?.rettype === 0) {
-                    setGridData(res?.data?.retdata);
-                }
-            })
-            .finally(() => {
-                setLoading(false);
-            });
+        //setLoading(true);
+        //api.get(`/api/record/households/get_householdmember_list?householdid=${householdid}`)
+        //    .then((res) => {
+        //        if (res?.status === 200 && res?.data?.rettype === 0) {
+        //            setGridData(res?.data?.retdata);
+        //        }
+        //    })
+        //    .finally(() => {
+        //        setLoading(false);
+        //    });
     }, [householdid]);
 
     const tableOnRow = (record, rowIndex) => {
@@ -54,30 +54,30 @@ export default function HouseHoldMember() {
     };
 
     useEffect(() => {
-        api.get(`/api/record/base/get_relationship_list`)
-            .then((res) => {
-                if (res?.status === 200 && res?.data?.rettype === 0) {
-                    setrelationship(res?.data?.retdata);
-                }
-            });
-        api.get(`/api/record/base/get_dropdown_item_list?type=educationdegree`)
-            .then((res) => {
-                if (res?.status === 200 && res?.data?.rettype === 0) {
-                    seteducationdegree(res?.data?.retdata);
-                }
-            });
-        api.get(`/api/record/base/get_dropdown_item_list?type=employmentstatus`)
-            .then((res) => {
-                if (res?.status === 200 && res?.data?.rettype === 0) {
-                    setemploymentstatus(res?.data?.retdata);
-                }
-            });
-        api.get(`/api/record/base/get_dropdown_item_list?type=healthcondition`)
-            .then((res) => {
-                if (res?.status === 200 && res?.data?.rettype === 0) {
-                    sethealthcondition(res?.data?.retdata);
-                }
-            });
+        //api.get(`/api/record/base/get_relationship_list`)
+        //    .then((res) => {
+        //        if (res?.status === 200 && res?.data?.rettype === 0) {
+        //            setrelationship(res?.data?.retdata);
+        //        }
+        //    });
+        //api.get(`/api/record/base/get_dropdown_item_list?type=educationdegree`)
+        //    .then((res) => {
+        //        if (res?.status === 200 && res?.data?.rettype === 0) {
+        //            seteducationdegree(res?.data?.retdata);
+        //        }
+        //    });
+        //api.get(`/api/record/base/get_dropdown_item_list?type=employmentstatus`)
+        //    .then((res) => {
+        //        if (res?.status === 200 && res?.data?.rettype === 0) {
+        //            setemploymentstatus(res?.data?.retdata);
+        //        }
+        //    });
+        //api.get(`/api/record/base/get_dropdown_item_list?type=healthcondition`)
+        //    .then((res) => {
+        //        if (res?.status === 200 && res?.data?.rettype === 0) {
+        //            sethealthcondition(res?.data?.retdata);
+        //        }
+        //    });
         fetchData();
     }, [fetchData]);
 

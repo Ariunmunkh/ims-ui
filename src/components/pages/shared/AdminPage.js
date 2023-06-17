@@ -1,8 +1,6 @@
 import React from "react";
 import { Tabs } from "antd";
 import UserListPage from "../user/UserListPage";
-import CoachListPage from "../coach/CoachListPage";
-import ProjectListPage from "../coach/ProjectListPage";
 import AssetReceived from "../baseinfo/AssetReceived";
 import AssetReceivedType from "../baseinfo/AssetReceivedType";
 import District from "../baseinfo/District";
@@ -37,16 +35,6 @@ export default function AdminPage() {
                         label: `Хэрэглэгч`,
                         key: "1",
                         children: <UserListPage />,
-                    },
-                    {
-                        label: `Төслийн жагсаалт`,
-                        key: "2",
-                        children: <ProjectListPage />,
-                    },
-                    {
-                        label: `Коучийн мэдээлэл`,
-                        key: "3",
-                        children: <CoachListPage />,
                     },
                     {
                         label: `Сум, Дүүрэг`,

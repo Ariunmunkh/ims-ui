@@ -1,11 +1,13 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { api } from "../../system/api";
-import { Drawer, Space, Spin, Form, Button, Input, Select, InputNumber, Descriptions, Switch, Divider } from "antd";
-import HouseHoldMember from "./HouseHoldMember";
+import { Drawer, Space, Spin, Form, Button, Input, Select, InputNumber, Descriptions, Switch } from "antd";
+import useUserInfo from "../../system/useUserInfo";
 
 export default function Volunteer() {
-    const { householdid } = useParams();
+    const { volunteerid } = useParams();
+
+    const { userinfo } = useUserInfo();
     const [formdata] = Form.useForm();
     const [districtlist, setdistrictlist] = useState([]);
     const [coachlist, setcoachlist] = useState([]);
@@ -16,41 +18,43 @@ export default function Volunteer() {
 
     const fetchData = useCallback(() => {
         setLoading(true);
-        api.get(`/api/Volunteer/get_Volunteer_list`)
+
+
+        api.get(`/api/Volunteer/get_Volunteer?id=${volunteerid ?? userinfo.volunteerid}`)
             .then((response) => {
                 formdata.setFieldsValue(response.data.retdata[0]);
             }).finally(() => {
                 setLoading(false);
             });
-    }, [householdid, formdata]);
+    }, [volunteerid, formdata]);
 
-    // useEffect(() => {
-    //     fetchData();
-    //     api.get(`/api/record/base/get_district_list`)
-    //         .then((res) => {
-    //             if (res?.status === 200 && res?.data?.rettype === 0) {
-    //                 setdistrictlist(res?.data?.retdata);
-    //             }
-    //         });
-    //     api.get(`/api/record/coach/get_coach_list`)
-    //         .then((res) => {
-    //             if (res?.status === 200 && res?.data?.rettype === 0) {
-    //                 setcoachlist(res?.data?.retdata);
-    //             }
-    //         });
-    //     api.get(`/api/record/base/get_dropdown_item_list?type=householdstatus`)
-    //         .then((res) => {
-    //             if (res?.status === 200 && res?.data?.rettype === 0) {
-    //                 sethouseholdstatus(res?.data?.retdata);
-    //             }
-    //         });
-    //     api.get(`/api/record/base/get_dropdown_item_list?type=householdgroup`)
-    //         .then((res) => {
-    //             if (res?.status === 200 && res?.data?.rettype === 0) {
-    //                 sethouseholdgroup(res?.data?.retdata);
-    //             }
-    //         });
-    // }, [fetchData]);
+    useEffect(() => {
+        fetchData();
+        //api.get(`/api/record/base/get_district_list`)
+        //    .then((res) => {
+        //        if (res?.status === 200 && res?.data?.rettype === 0) {
+        //            setdistrictlist(res?.data?.retdata);
+        //        }
+        //    });
+        //api.get(`/api/record/coach/get_coach_list`)
+        //    .then((res) => {
+        //        if (res?.status === 200 && res?.data?.rettype === 0) {
+        //            setcoachlist(res?.data?.retdata);
+        //        }
+        //    });
+        //api.get(`/api/record/base/get_dropdown_item_list?type=householdstatus`)
+        //    .then((res) => {
+        //        if (res?.status === 200 && res?.data?.rettype === 0) {
+        //            sethouseholdstatus(res?.data?.retdata);
+        //        }
+        //    });
+        //api.get(`/api/record/base/get_dropdown_item_list?type=householdgroup`)
+        //    .then((res) => {
+        //        if (res?.status === 200 && res?.data?.rettype === 0) {
+        //            sethouseholdgroup(res?.data?.retdata);
+        //        }
+        //    });
+    }, [fetchData]);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -80,17 +84,19 @@ export default function Volunteer() {
     return (
         <div>
             <Spin spinning={loading}>
+
                 <Descriptions
-                    title="САЙН ДУРЫН ИДЭВХТНИЙ МЭДЭЭЛЭЛ"
+                    title={
+                        <>
+                            "САЙН ДУРЫН ИДЭВХТНИЙ МЭДЭЭЛЭЛ"
+                            <Button type="link" onClick={() => { showModal(); }}>Засах</Button>
+                        </>
+                    }
                     bordered
                     style={{ paddingBottom: 30 }}
                 >
-                    <Descriptions.Item label="Харьяалагдах улаан загалмайн хороо">
-                        {formdata.getFieldValue('householdid')}
-                    </Descriptions.Item>
-                    <Descriptions.Item label="Ургийн овог">
-                        {formdata.getFieldValue('name')}
-                    </Descriptions.Item>
+                    <Descriptions.Item label="Харьяалагдах улаан загалмайн хороо">{formdata.getFieldValue('volunteerid')}</Descriptions.Item>
+                    <Descriptions.Item label="Ургийн овог">{formdata.getFieldValue('name')}</Descriptions.Item>
                     <Descriptions.Item label="Эцэг, эхийн нэр">{formdata.getFieldValue('numberof')}</Descriptions.Item>
                     <Descriptions.Item label="Нэр">{formdata.getFieldValue('districtname')}</Descriptions.Item>
                     <Descriptions.Item label="Хүйс">{formdata.getFieldValue('section')}</Descriptions.Item>
@@ -104,7 +110,7 @@ export default function Volunteer() {
                     <Descriptions.Item label="Эрүүл мэндийн байдал">{formdata.getFieldValue('reason')}</Descriptions.Item>
                     <Descriptions.Item label="Фэйсбүүк хаяг">{formdata.getFieldValue('reason')}</Descriptions.Item>
                 </Descriptions>
-                <Button type="link" onClick={() => { showModal(); }}>Засах</Button>
+
             </Spin>
             <Drawer
                 forceRender
@@ -141,7 +147,7 @@ export default function Volunteer() {
 
                     }}
                 >
-                    <Form.Item name="householdid" label="Өрхийн дугаар" >
+                    <Form.Item name="volunteerid" label="Өрхийн дугаар" >
                         <InputNumber min={0} readOnly />
                     </Form.Item>
 
@@ -213,12 +219,6 @@ export default function Volunteer() {
 
                 </Form>
             </Drawer>
-            <Divider />
-            <Descriptions title="ӨРХИЙН ГИШҮҮДИЙН МЭДЭЭЛЭЛ " bordered>
-                <Descriptions.Item >
-                </Descriptions.Item>
-            </Descriptions>
-            <HouseHoldMember />
         </div>
     );
 }

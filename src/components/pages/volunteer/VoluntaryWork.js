@@ -10,27 +10,27 @@ import Highlighter from "react-highlight-words";
 import dayjs from 'dayjs';
 const { confirm } = Modal;
 
-export default function Visit() {
+export default function VoluntaryWork() {
     const { userinfo } = useUserInfo();
     const { householdid } = useParams();
     const [relationship, setrelationship] = useState([]);
     const [basicneeds, setbasicneeds] = useState([]);
     const [coachlist, setcoachlist] = useState([]);
     const [griddata, setGridData] = useState();
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [formdata] = Form.useForm();
 
     const fetchData = useCallback(() => {
-        setLoading(true);
-        api.get(`/api/record/coach/get_householdvisit_list?id=${householdid}`)
-            .then((res) => {
-                if (res?.status === 200 && res?.data?.rettype === 0) {
-                    setGridData(res?.data?.retdata);
-                }
-            })
-            .finally(() => {
-                setLoading(false);
-            });
+        //setLoading(true);
+        //api.get(`/api/record/coach/get_householdvisit_list?id=${householdid}`)
+        //    .then((res) => {
+        //        if (res?.status === 200 && res?.data?.rettype === 0) {
+        //            setGridData(res?.data?.retdata);
+        //        }
+        //    })
+        //    .finally(() => {
+        //        setLoading(false);
+        //    });
 
     }, [householdid]);
 
@@ -43,24 +43,6 @@ export default function Visit() {
     };
 
     useEffect(() => {
-        api.get(`/api/record/households/get_householdmember_list?householdid=${householdid}`)
-            .then((res) => {
-                if (res?.status === 200 && res?.data?.rettype === 0) {
-                    setrelationship(res?.data?.retdata);
-                }
-            });
-        api.get(`/api/record/coach/get_coach_list`)
-            .then((res) => {
-                if (res?.status === 200 && res?.data?.rettype === 0) {
-                    setcoachlist(res?.data?.retdata);
-                }
-            });
-        api.get(`/api/record/base/get_dropdown_item_list?type=basicneeds`)
-            .then((res) => {
-                if (res?.status === 200 && res?.data?.rettype === 0) {
-                    setbasicneeds(res?.data?.retdata);
-                }
-            });
         fetchData();
     }, [fetchData, householdid]);
 
@@ -181,52 +163,25 @@ export default function Visit() {
 
     const gridcolumns = [
         {
-            title: "Айлчилсан огноо",
-            dataIndex: "visitdate",
-            ...getColumnSearchProps("visitdate"),
+            title: "Сайн дурын ажлын төрөл",
+            dataIndex: "voluntarywork",
+            ...getColumnSearchProps("voluntarywork"),
         },
         {
-            title: "Айлчлалаар уулзсан өрхийн гишүүн",
-            dataIndex: "membername",
-            ...getColumnSearchProps("membername"),
+            title: "Хугацаа",
+            dataIndex: "duration",
+            ...getColumnSearchProps("duration"),
         },
         {
-            title: "Өрхийн айлчлалаар хэлэлцсэн асуудал",
+            title: "Огноо",
+            dataIndex: "voluntaryworkdate",
+            ...getColumnSearchProps("voluntaryworkdate"),
+        },
+        {
+            title: "Нэмэлт мэдээлэл",
             dataIndex: "note",
             ...getColumnSearchProps("note"),
-        },
-        {
-            title: "Шийдвэрлэсэн байдал / авах арга хэмжээ",
-            dataIndex: "decisionandaction",
-            ...getColumnSearchProps("decisionandaction"),
-        },
-        {
-            title: "Өрхийн үндсэн хэрэгцээ",
-            dataIndex: "basicneedsname",
-            ...getColumnSearchProps("basicneedsname"),
-        },
-        {
-            title: "Үндсэн хэрэгцээний тайлбар",
-            dataIndex: "basicneedsnote",
-            ...getColumnSearchProps("basicneedsnote"),
-        },
-        {
-            title: "Орлого, зарлагын бүртгэлээ тогтмол хөтөлсөн",
-            dataIndex: "incomeexpenditurerecord",
-            filters: [{ text: "Тийм", value: "Тийм" }, { text: "Үгүй", value: "Үгүй" }],
-            onFilter: (value, record) => record.incomeexpenditurerecord.indexOf(value) === 0,
-        },
-        {
-            title: "Өрхийн хөгжлийн төлөвлөгөө боловсруулсан эсэх",
-            dataIndex: "developmentplan",
-            filters: [{ text: "Тийм", value: "Тийм" }, { text: "Үгүй", value: "Үгүй" }, { text: "Хоосон", value: "Хоосон" }],
-            onFilter: (value, record) => record.developmentplan.indexOf(value) === 0,
-        },
-        {
-            title: "Айлчилсан хүний нэр",
-            dataIndex: "coachname",
-            ...getColumnSearchProps("coachname"),
-        },
+        }
     ];
 
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -326,7 +281,7 @@ export default function Visit() {
                 icon={<PlusOutlined />}
                 onClick={(e) => newFormData()}
             >
-                Өрхийн айлчлалын мэдээлэл нэмэх
+                Сайн дурын ажлын мэдээлэл нэмэх
             </Button>
 
             <Table
@@ -341,7 +296,7 @@ export default function Visit() {
             ></Table>
             <Drawer
                 forceRender
-                title="Өрхийн айлчлалын мэдээлэл нэмэх"
+                title="Сайн дурын ажлын мэдээлэл нэмэх"
                 open={isModalOpen}
                 width={720}
                 onClose={handleCancel}
