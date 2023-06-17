@@ -35,6 +35,7 @@ import MapPage from "../coach/MapPage";
 import Monitor from "./Monitor";
 import Report from "../report/Report";
 import Register from "./Register";
+import Volunteer from "../household/Volunteer";
 
 const { Header, Sider, Content } = Layout;
 const { Text } = Typography;
@@ -198,6 +199,14 @@ export default function MasterPage() {
             label: "Хянах самбар",
           },
         ];
+        case "5":
+          return [
+            {
+              key: "volunteer",
+              icon: <HomeOutlined />,
+              label: "Нүүр",
+            }
+          ];
       default:
         return [];
     }
@@ -217,7 +226,7 @@ export default function MasterPage() {
       <Sider trigger={null} collapsible collapsed={collapsed}>
         <br />
         <h5 className="text-white text-center" onClick={() => navigate("/")}>
-          ims систем
+          IMS систем
         </h5>
         <hr className="text-white" />
         <Menu
@@ -276,7 +285,7 @@ export default function MasterPage() {
           <Routes>
             <Route
               path="/"
-              element={userinfo?.roleid ? <MapPage /> : <AccessDenied />}
+              element={userinfo?.roleid ? <HouseHoldPage /> : <AccessDenied />}
             />
             <Route
               path="/adminpage"
@@ -325,6 +334,10 @@ export default function MasterPage() {
             <Route
               path="/monitor"
               element={userinfo?.roleid ? <Monitor /> : <AccessDenied />}
+            />
+            <Route
+              path="/volunteer"
+              element={userinfo?.roleid ? <HouseHoldPage /> : <AccessDenied />}
             />
             <Route path="/register" component={<Register />} />
             <Route path="*" element={<NotFound />} />

@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { CaretLeftOutlined } from "@ant-design/icons";
 import { Tabs, Tag } from "antd";
 import { Button, Tooltip, Space, Divider } from "antd";
-import HouseHold from "./HouseHold";
+import HouseHold from "./Volunteer";
 import Visit from "./Visit";
 import Meeting from "./Meeting";
 import Loan from "./Loan";
@@ -14,30 +14,31 @@ import Livelihood from "./Livelihood";
 import Investment from "./Investment";
 import Support from "./Support";
 import Contact from "./Contact";
+import Volunteer from "./Volunteer";
 
 export default function HouseHoldPage() {
-    const { householdid } = useParams();
+    // const { id } = useParams();
 
-    const [householddata, sethouseholddata] = useState();
-    const navigate = useNavigate();
+    // const [householddata, sethouseholddata] = useState();
+    // const navigate = useNavigate();
 
-    const fetchData = useCallback(() => {
-        api
-            .get(`/api/record/households/get_household?id=${householdid}`)
-            .then((response) => {
-                sethouseholddata(response.data.retdata[0]);
-            });
-    }, [householdid]);
+    // const fetchData = useCallback(() => {
+    //     api
+    //         .get(`/api/Volunteer/get_Volunteer?id=${id}`)
+    //         .then((response) => {
+    //             sethouseholddata(response.data.retdata[0]);
+    //         });
+    // }, [id]);
 
-    useEffect(() => {
-        fetchData();
-    }, [fetchData]);
+    // useEffect(() => {
+    //     fetchData();
+    // }, [fetchData]);
 
-    if (!householddata) return null;
+    // if (!householddata) return null;
 
     return (
         <div>
-            <Space direction="vertical">
+            {/* <Space direction="vertical">
                 <Space wrap>
                     <Tooltip title="буцах">
                         <Button icon={<CaretLeftOutlined />} onClick={() => navigate(-1)}>
@@ -57,27 +58,27 @@ export default function HouseHoldPage() {
                         Утас: <b>{householddata.phone}</b>
                     </Tag>
                 </Space>
-            </Space>
+            </Space> */}
             <Tabs
                 defaultActiveKey="1"
                 items={[
                     {
                         label: `Үндсэн мэдээлэл`,
                         key: "1",
-                        children: <HouseHold />,
+                        children: <Volunteer />,
                     },
                     {
-                        label: `Өрхийн айлчлал`,
+                        label: `Сайн дурын үйл ажиллагааны мэдээлэл`,
                         key: "2",
                         children: <Visit />,
                     },
                     {
-                        label: `Бүлгийн хурал`,
+                        label: `Сургууль, ангийн мэдээлэл`,
                         key: "3",
                         children: <Meeting />,
                     },
                     {
-                        label: `Зээлийн мэдээлэл`,
+                        label: `Эрхэлсэн ажил`,
                         key: "4",
                         children: (
                             <div>
@@ -89,7 +90,7 @@ export default function HouseHoldPage() {
                         ),
                     },
                     {
-                        label: `Сургалт, үйл ажиллагаа`,
+                        label: `Гадаад хэлний мэдлэг`,
                         key: "5",
                         children: (
                             <div>
@@ -98,7 +99,7 @@ export default function HouseHoldPage() {
                         ),
                     },
                     {
-                        label: `Хөрөнгө оруулалт, тусламж`,
+                        label: `Яаралтай холбоо барих хүний мэдээлэл`,
                         key: "6",
 
                         children: (
@@ -109,16 +110,6 @@ export default function HouseHoldPage() {
                                 <Support />
                             </div>
                         ),
-                    },
-                    {
-                        label: `Амьжиргаа сайжруулах үйл ажиллагаа`,
-                        key: "7",
-                        children: <Livelihood />,
-                    },
-                    {
-                        label: `Холбон зуучилсан үйл ажиллагаа`,
-                        key: "8",
-                        children: <Contact />,
                     },
                 ]}
             />

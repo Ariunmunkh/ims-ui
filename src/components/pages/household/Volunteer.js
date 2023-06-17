@@ -4,7 +4,7 @@ import { api } from "../../system/api";
 import { Drawer, Space, Spin, Form, Button, Input, Select, InputNumber, Descriptions, Switch, Divider } from "antd";
 import HouseHoldMember from "./HouseHoldMember";
 
-export default function HouseHold() {
+export default function Volunteer() {
     const { householdid } = useParams();
     const [formdata] = Form.useForm();
     const [districtlist, setdistrictlist] = useState([]);
@@ -16,7 +16,7 @@ export default function HouseHold() {
 
     const fetchData = useCallback(() => {
         setLoading(true);
-        api.get(`/api/record/households/get_household?id=${householdid}`)
+        api.get(`/api/Volunteer/get_Volunteer_list`)
             .then((response) => {
                 formdata.setFieldsValue(response.data.retdata[0]);
             }).finally(() => {
@@ -24,33 +24,33 @@ export default function HouseHold() {
             });
     }, [householdid, formdata]);
 
-    useEffect(() => {
-        fetchData();
-        api.get(`/api/record/base/get_district_list`)
-            .then((res) => {
-                if (res?.status === 200 && res?.data?.rettype === 0) {
-                    setdistrictlist(res?.data?.retdata);
-                }
-            });
-        api.get(`/api/record/coach/get_coach_list`)
-            .then((res) => {
-                if (res?.status === 200 && res?.data?.rettype === 0) {
-                    setcoachlist(res?.data?.retdata);
-                }
-            });
-        api.get(`/api/record/base/get_dropdown_item_list?type=householdstatus`)
-            .then((res) => {
-                if (res?.status === 200 && res?.data?.rettype === 0) {
-                    sethouseholdstatus(res?.data?.retdata);
-                }
-            });
-        api.get(`/api/record/base/get_dropdown_item_list?type=householdgroup`)
-            .then((res) => {
-                if (res?.status === 200 && res?.data?.rettype === 0) {
-                    sethouseholdgroup(res?.data?.retdata);
-                }
-            });
-    }, [fetchData]);
+    // useEffect(() => {
+    //     fetchData();
+    //     api.get(`/api/record/base/get_district_list`)
+    //         .then((res) => {
+    //             if (res?.status === 200 && res?.data?.rettype === 0) {
+    //                 setdistrictlist(res?.data?.retdata);
+    //             }
+    //         });
+    //     api.get(`/api/record/coach/get_coach_list`)
+    //         .then((res) => {
+    //             if (res?.status === 200 && res?.data?.rettype === 0) {
+    //                 setcoachlist(res?.data?.retdata);
+    //             }
+    //         });
+    //     api.get(`/api/record/base/get_dropdown_item_list?type=householdstatus`)
+    //         .then((res) => {
+    //             if (res?.status === 200 && res?.data?.rettype === 0) {
+    //                 sethouseholdstatus(res?.data?.retdata);
+    //             }
+    //         });
+    //     api.get(`/api/record/base/get_dropdown_item_list?type=householdgroup`)
+    //         .then((res) => {
+    //             if (res?.status === 200 && res?.data?.rettype === 0) {
+    //                 sethouseholdgroup(res?.data?.retdata);
+    //             }
+    //         });
+    // }, [fetchData]);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -81,24 +81,28 @@ export default function HouseHold() {
         <div>
             <Spin spinning={loading}>
                 <Descriptions
-                    title="ӨРХИЙН МЭДЭЭЛЭЛ"
+                    title="САЙН ДУРЫН ИДЭВХТНИЙ МЭДЭЭЛЭЛ"
                     bordered
                     style={{ paddingBottom: 30 }}
                 >
-                    <Descriptions.Item label="Өрхийн дугаар">
+                    <Descriptions.Item label="Харьяалагдах улаан загалмайн хороо">
                         {formdata.getFieldValue('householdid')}
                     </Descriptions.Item>
-                    <Descriptions.Item label="Өрхийн тэргүүн нэр">
+                    <Descriptions.Item label="Ургийн овог">
                         {formdata.getFieldValue('name')}
                     </Descriptions.Item>
-                    <Descriptions.Item label="Ам бүл">{formdata.getFieldValue('numberof')}</Descriptions.Item>
-                    <Descriptions.Item label="Дүүрэг">{formdata.getFieldValue('districtname')}</Descriptions.Item>
-                    <Descriptions.Item label="Хороо">{formdata.getFieldValue('section')}</Descriptions.Item>
-                    <Descriptions.Item label="Утас">{formdata.getFieldValue('phone')}</Descriptions.Item>
-                    <Descriptions.Item label="Хаяг">{formdata.getFieldValue('address')}</Descriptions.Item>
-                    <Descriptions.Item label="Дундын хадгаламжийн бүлэг">{formdata.getFieldValue('householdgroupname')}</Descriptions.Item>
-                    <Descriptions.Item label="Идэвхитэй эсэх?">{formdata.getFieldValue('isactive') === true ? "Идэвхитэй" : "Идэвхигүй/хасагдах шалтгаантай өрх"}</Descriptions.Item>
-                    <Descriptions.Item label="Шалтгаан">{formdata.getFieldValue('reason')}</Descriptions.Item>
+                    <Descriptions.Item label="Эцэг, эхийн нэр">{formdata.getFieldValue('numberof')}</Descriptions.Item>
+                    <Descriptions.Item label="Нэр">{formdata.getFieldValue('districtname')}</Descriptions.Item>
+                    <Descriptions.Item label="Хүйс">{formdata.getFieldValue('section')}</Descriptions.Item>
+                    <Descriptions.Item label="Нас">{formdata.getFieldValue('phone')}</Descriptions.Item>
+                    <Descriptions.Item label="Регистрийн дугаар">{formdata.getFieldValue('address')}</Descriptions.Item>
+                    <Descriptions.Item label="Утас">{formdata.getFieldValue('householdgroupname')}</Descriptions.Item>
+                    <Descriptions.Item label="И-мэйл">{formdata.getFieldValue('householdgroupname')}</Descriptions.Item>
+                    <Descriptions.Item label="Элссэн огноо /улаан загалмайд/">{formdata.getFieldValue('householdgroupname')}</Descriptions.Item>
+                    <Descriptions.Item label="Төрсөн газар">{formdata.getFieldValue('householdgroupname')}</Descriptions.Item>
+                    <Descriptions.Item label="Цусны бүлэг">{formdata.getFieldValue('isactive') === true}</Descriptions.Item>
+                    <Descriptions.Item label="Эрүүл мэндийн байдал">{formdata.getFieldValue('reason')}</Descriptions.Item>
+                    <Descriptions.Item label="Фэйсбүүк хаяг">{formdata.getFieldValue('reason')}</Descriptions.Item>
                 </Descriptions>
                 <Button type="link" onClick={() => { showModal(); }}>Засах</Button>
             </Spin>
