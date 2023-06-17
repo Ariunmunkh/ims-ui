@@ -34,7 +34,6 @@ import Contact from "../coach/Contact";
 import MapPage from "../coach/MapPage";
 import Monitor from "./Monitor";
 import Report from "../report/Report";
-import ProgressReport from "../report/ProgressReport";
 import Register from "./Register";
 
 const { Header, Sider, Content } = Layout;
@@ -98,11 +97,6 @@ export default function MasterPage() {
             label: "Төгсөлтийн үр дүн",
           },
           {
-            key: "progressreport",
-            icon: <StockOutlined />,
-            label: "Явцын үр дүн",
-          },
-          {
             key: "monitor",
             icon: <DashboardOutlined />,
             label: "Хянах самбар",
@@ -151,11 +145,6 @@ export default function MasterPage() {
             label: "Төгсөлтийн үр дүн",
           },
           {
-            key: "progressreport",
-            icon: <StockOutlined />,
-            label: "Явцын үр дүн",
-          },
-          {
             key: "monitor",
             icon: <DashboardOutlined />,
             label: "Хянах самбар",
@@ -202,11 +191,6 @@ export default function MasterPage() {
             key: "report",
             icon: <StockOutlined />,
             label: "Төгсөлтийн үр дүн",
-          },
-          {
-            key: "progressreport",
-            icon: <StockOutlined />,
-            label: "Явцын үр дүн",
           },
           {
             key: "monitor",
@@ -337,10 +321,6 @@ export default function MasterPage() {
             <Route
               path="/report"
               element={userinfo?.roleid ? <Report /> : <AccessDenied />}
-            />
-            <Route
-              path="/progressreport"
-              element={userinfo?.roleid ? <ProgressReport /> : <AccessDenied />}
             />
             <Route
               path="/monitor"
