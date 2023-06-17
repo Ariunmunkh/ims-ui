@@ -4,6 +4,6 @@ import "../../../../node_modules/bootstrap/dist/css/bootstrap.min.css";
 
 export default function Register() {
   return (
-   <div><p>asdasdsa</p></div>
+   <div><h1>asdasdsa</h1></div>
   );
 }

@@ -53,7 +53,7 @@ export default function Login({ setToken }) {
         <div className="row">
           <Spin spinning={loading}></Spin>
           <div className="col-md-6 col-lg-4 text-black d-flex align-content-center flex-wrap mt-2">
-            <div className="d-flex align-content-center flex-wrap">
+            <div className="d-flex align-content-center flex-wrap ml-2">
               <Form
                 name="normal_login"
                 className="login-form"
@@ -126,14 +126,16 @@ export default function Login({ setToken }) {
                     <p className="font-weight-light font-italic text-right">
                       Бүртгэлгүй бол
                       <Link
-                        to='/Register'
+                        to={'register'}
                         className="text-primary font-weight-bold"
                       >
                         &nbsp;ЭНД&nbsp;
                       </Link>
                       дарж бүртгүүлнэ үү.
                     </p>
-                   
+                    <Link to="/register">
+                      <button variant="outlined">Sign up</button>
+                    </Link>
                   </Form.Item>
                   <Popconfirm cancelText={errormsg}></Popconfirm>
                 </Form.Item>
