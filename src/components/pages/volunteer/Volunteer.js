@@ -1,19 +1,20 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { api } from "../../system/api";
-import { Drawer, Space, Spin, Form, Button, Input, Select, InputNumber, Descriptions, Switch } from "antd";
+import { Drawer, Space, Spin, Form, Button, Input, Select, InputNumber, Descriptions, DatePicker } from "antd";
 import useUserInfo from "../../system/useUserInfo";
+import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+
+dayjs.extend(customParseFormat);
+const dateFormat = 'YYYY/MM/DD';
 
 export default function Volunteer() {
+
     const { volunteerid } = useParams();
 
     const { userinfo } = useUserInfo();
     const [formdata] = Form.useForm();
-    const [districtlist, setdistrictlist] = useState([]);
-    const [coachlist, setcoachlist] = useState([]);
-    const [householdstatus, sethouseholdstatus] = useState([]);
-    const [householdgroup, sethouseholdgroup] = useState([]);
-    const [householdgroupcopy, sethouseholdgroupcopy] = useState([]);
     const [loading, setLoading] = useState(false);
 
     const fetchData = useCallback(() => {
@@ -21,47 +22,30 @@ export default function Volunteer() {
 
 
         api.get(`/api/Volunteer/get_Volunteer?id=${volunteerid ?? userinfo.volunteerid}`)
-            .then((response) => {
-                formdata.setFieldsValue(response.data.retdata[0]);
+            .then((res) => {
+
+                let fdata = res?.data?.retdata[0];
+                if (fdata.birthday === '0001-01-01T00:00:00')
+                    fdata.birthday = null;
+                else
+                    fdata.birthday = dayjs(fdata.birthday, dateFormat);
+                fdata.birthday = null;
+                fdata.joindate = null;
+
+                formdata.setFieldsValue(fdata);
+
             }).finally(() => {
                 setLoading(false);
             });
-    }, [volunteerid, formdata]);
+    }, [volunteerid, userinfo.volunteerid, formdata]);
 
     useEffect(() => {
         fetchData();
-        //api.get(`/api/record/base/get_district_list`)
-        //    .then((res) => {
-        //        if (res?.status === 200 && res?.data?.rettype === 0) {
-        //            setdistrictlist(res?.data?.retdata);
-        //        }
-        //    });
-        //api.get(`/api/record/coach/get_coach_list`)
-        //    .then((res) => {
-        //        if (res?.status === 200 && res?.data?.rettype === 0) {
-        //            setcoachlist(res?.data?.retdata);
-        //        }
-        //    });
-        //api.get(`/api/record/base/get_dropdown_item_list?type=householdstatus`)
-        //    .then((res) => {
-        //        if (res?.status === 200 && res?.data?.rettype === 0) {
-        //            sethouseholdstatus(res?.data?.retdata);
-        //        }
-        //    });
-        //api.get(`/api/record/base/get_dropdown_item_list?type=householdgroup`)
-        //    .then((res) => {
-        //        if (res?.status === 200 && res?.data?.rettype === 0) {
-        //            sethouseholdgroup(res?.data?.retdata);
-        //        }
-        //    });
     }, [fetchData]);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const showModal = () => {
-        sethouseholdgroupcopy(householdgroup?.filter(row =>
-            row?.coachid === formdata?.getFieldValue("coachid") &&
-            row?.districtid === formdata?.getFieldValue("districtid")));
         setIsModalOpen(true);
     };
 
@@ -70,7 +54,11 @@ export default function Volunteer() {
     };
 
     const onFinish = async (values) => {
-        await api.post(`/api/record/households/set_household`, formdata.getFieldsValue()).then((res) => {
+        let fdata = formdata.getFieldsValue();
+        fdata.birthday = fdata.birthday.format('YYYY/MM/DD');
+        fdata.joindate = fdata.joindate.format('YYYY/MM/DD');
+
+        await api.post(`/api/Volunteer/set_Volunteer`, fdata).then((res) => {
             if (res?.status === 200 && res?.data?.rettype === 0) {
                 setIsModalOpen(false);
                 fetchData();
@@ -95,18 +83,18 @@ export default function Volunteer() {
                     bordered
                     style={{ paddingBottom: 30 }}
                 >
-                    <Descriptions.Item label="Харьяалагдах улаан загалмайн хороо">{formdata.getFieldValue('volunteerid')}</Descriptions.Item>
-                    <Descriptions.Item label="Ургийн овог">{formdata.getFieldValue('name')}</Descriptions.Item>
-                    <Descriptions.Item label="Эцэг, эхийн нэр">{formdata.getFieldValue('numberof')}</Descriptions.Item>
-                    <Descriptions.Item label="Нэр">{formdata.getFieldValue('districtname')}</Descriptions.Item>
-                    <Descriptions.Item label="Хүйс">{formdata.getFieldValue('section')}</Descriptions.Item>
-                    <Descriptions.Item label="Нас">{formdata.getFieldValue('phone')}</Descriptions.Item>
-                    <Descriptions.Item label="Регистрийн дугаар">{formdata.getFieldValue('address')}</Descriptions.Item>
-                    <Descriptions.Item label="Утас">{formdata.getFieldValue('householdgroupname')}</Descriptions.Item>
+                    <Descriptions.Item label="Харьяалагдах улаан загалмайн хороо">{formdata.getFieldValue('id')}</Descriptions.Item>
+                    <Descriptions.Item label="Ургийн овог">{formdata.getFieldValue('familyname')}</Descriptions.Item>
+                    <Descriptions.Item label="Эцэг, эхийн нэр">{formdata.getFieldValue('lastname')}</Descriptions.Item>
+                    <Descriptions.Item label="Нэр">{formdata.getFieldValue('firstname')}</Descriptions.Item>
+                    <Descriptions.Item label="Хүйс">{formdata.getFieldValue('gender') === 0 ? 'Эр' : 'Эм'}</Descriptions.Item>
+                    <Descriptions.Item label="Нас">{formdata.getFieldValue('birthday')}</Descriptions.Item>
+                    <Descriptions.Item label="Регистрийн дугаар">{formdata.getFieldValue('regno')}</Descriptions.Item>
+                    <Descriptions.Item label="Утас">{formdata.getFieldValue('phone')}</Descriptions.Item>
                     <Descriptions.Item label="И-мэйл">{formdata.getFieldValue('householdgroupname')}</Descriptions.Item>
                     <Descriptions.Item label="Элссэн огноо /улаан загалмайд/">{formdata.getFieldValue('householdgroupname')}</Descriptions.Item>
                     <Descriptions.Item label="Төрсөн газар">{formdata.getFieldValue('householdgroupname')}</Descriptions.Item>
-                    <Descriptions.Item label="Цусны бүлэг">{formdata.getFieldValue('isactive') === true}</Descriptions.Item>
+                    <Descriptions.Item label="Цусны бүлэг">{formdata.getFieldValue('bloodgroupid')}</Descriptions.Item>
                     <Descriptions.Item label="Эрүүл мэндийн байдал">{formdata.getFieldValue('reason')}</Descriptions.Item>
                     <Descriptions.Item label="Фэйсбүүк хаяг">{formdata.getFieldValue('reason')}</Descriptions.Item>
                 </Descriptions>
@@ -114,7 +102,7 @@ export default function Volunteer() {
             </Spin>
             <Drawer
                 forceRender
-                title="Өрхийн мэдээлэл засах"
+                title="Сайн дурын идэвхтний мэдээлэл засах"
                 open={isModalOpen}
                 width={720}
                 onClose={handleCancel}
@@ -136,86 +124,91 @@ export default function Volunteer() {
                     wrapperCol={{ span: 14 }}
                     labelAlign="left"
                     labelWrap
-                    onFieldsChange={(changedFields, allFields) => {
-
-                        if (changedFields[0]?.name[0] === 'coachid' || changedFields[0]?.name[0] === 'districtid') {
-                            formdata.setFieldValue('householdgroupid', null);
-                            sethouseholdgroupcopy(householdgroup?.filter(row =>
-                                row?.coachid === formdata?.getFieldValue("coachid") &&
-                                row?.districtid === formdata?.getFieldValue("districtid")));
-                        }
-
-                    }}
                 >
-                    <Form.Item name="volunteerid" label="Өрхийн дугаар" >
+                    <Form.Item name="id" label="Бүртгэлийн дугаар" >
                         <InputNumber min={0} readOnly />
                     </Form.Item>
 
-                    <Form.Item name="coachid" label="Хариуцсан коучийн нэр" >
-                        <Select style={{ width: "100%" }}>
-                            {coachlist?.map((t, i) => (
-                                <Select.Option key={i} value={t.coachid}>
-                                    {t.name}
-                                </Select.Option>
-                            ))}
-                        </Select>
-                    </Form.Item>
-                    <Form.Item
-                        name="householdgroupid"
-                        label="Дундын хадгаламжийн бүлэг"
-                    >
-                        <Select style={{ width: "100%" }}>
-                            {householdgroupcopy?.map((t, i) => (
-                                <Select.Option key={i} value={t.id}>
-                                    {t.name}
-                                </Select.Option>
-                            ))}
-                        </Select>
-                    </Form.Item>
-
-                    <Form.Item name="numberof" label="Ам бүлийн тоо" hidden={true} />
-                    <Form.Item name="name" label="Өрхийн тэргүүний нэр" hidden={true} />
-                    <Form.Item name="status" label="Өрхийн статус">
-                        <Select style={{ width: '100%' }}>
-                            {householdstatus?.map((t, i) => (<Select.Option key={i} value={t.id}>{t.name}</Select.Option>))}
-                        </Select>
-                    </Form.Item>
-                    <Form.Item
-                        name="isactive"
-                        label="Идэвхитэй эсэх?"
-                        valuePropName="checked"
-                    >
-                        <Switch checkedChildren="Тийм" unCheckedChildren="Үгүй" style={{ width: '100%' }} />
-                    </Form.Item>
-                    <Form.Item name="reason" label="Шалтгаан">
-                        <Input.TextArea />
-                    </Form.Item>
-                    <Form.Item name="districtname" hidden={true} />
-                    <Form.Item name="districtid" label="Дүүрэг">
-                        <Select style={{ width: "100%" }}>
-                            {districtlist?.map((t, i) => (
-                                <Select.Option key={i} value={t.districtid}>
-                                    {t.name}
-                                </Select.Option>
-                            ))}
-                        </Select>
-                    </Form.Item>
-                    <Form.Item name="section" label="Хороо" >
-                        <InputNumber min={0} />
-                    </Form.Item>
-                    <Form.Item name="address" label="Хаяг">
-                        <Input.TextArea style={{ width: "100%" }} placeholder="Хаяг" />
-                    </Form.Item>
-                    <Form.Item name="phone" label="Утас" >
-                        <Input />
-                    </Form.Item>
-                    <Form.Item name="latitude" label="Өргөрөг/Latitude/" >
-                        <Input />
-                    </Form.Item>
-                    <Form.Item name="longitude" label="Уртраг/longitude/" >
+                    <Form.Item name="coachid" label="Харьяалагдах улаан загалмайн хороо" >
                         <Input />
                     </Form.Item>
 
+                    <Form.Item
+                        name="familyname"
+                        label="Ургийн овог"
+                    >
+                        <Input />
+                    </Form.Item>
+                    <Form.Item
+                        name="lastname"
+                        label="Эцэг, эхийн нэр"
+                    >
+                        <Input />
+                    </Form.Item>
+                    <Form.Item
+                        name="firstname"
+                        label="Өөрийн нэр"
+                    >
+                        <Input />
+                    </Form.Item>
+
+                    <Form.Item name="gender" label="Хүйс">
+                        <Select
+                            style={{ width: '100%' }}
+                            options={[
+                                { value: 0, label: 'Эмэгтэй' },
+                                { value: 1, label: 'Эрэгтэй' },
+                            ]}
+                        >
+                        </Select>
+                    </Form.Item>
+
+                    <Form.Item
+                        name="birthday"
+                        label="Төрсөн огноо"
+                    >
+                        <DatePicker style={{ width: "100%" }} format={dateFormat} placeholder="Өдөр сонгох" />
+                    </Form.Item>
+
+                    <Form.Item name="regno" label="Регистрийн дугаар">
+                        <Input />
+                    </Form.Item>
+
+                    <Form.Item name="phone" label="Утас">
+                        <Input />
+                    </Form.Item>
+
+                    <Form.Item name="email" label="Имэйл" >
+                        <Input />
+                    </Form.Item>
+
+                    <Form.Item
+                        name="joindate"
+                        label="Элссэн огноо /улаан загалмайд/"
+                    >
+                        <DatePicker style={{ width: "100%" }} format={dateFormat} placeholder="Өдөр сонгох" />
+                    </Form.Item>
+
+                    <Form.Item name="birthplace" label="Төрсөн газар">
+                        <Input />
+                    </Form.Item>
+
+                    <Form.Item name="bloodgroupid" label="Цусны бүлэг">
+                        <Select style={{ width: "100%" }}>
+
+                        </Select>
+                    </Form.Item>
+
+                    <Form.Item name="healthconditionid" label="Эрүүл мэндийн байдал">
+                        <Select style={{ width: "100%" }}>
+
+                        </Select>
+                    </Form.Item>
+
+
+                    <Form.Item name="facebook" label="Фэйсбүүк хаяг">
+                        <Input />
+                    </Form.Item>
 
                 </Form>
             </Drawer>
