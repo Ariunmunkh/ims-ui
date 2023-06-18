@@ -1,4 +1,4 @@
-﻿import React from 'react'
+import React from 'react'
 import { Button, Form, Input } from 'antd';
 import PropTypes from 'prop-types';
 import { api } from "../../system/api";

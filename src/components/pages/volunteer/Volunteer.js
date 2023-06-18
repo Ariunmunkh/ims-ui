@@ -23,7 +23,7 @@ export default function Volunteer() {
 
         api.get(`/api/Volunteer/get_Volunteer?id=${volunteerid ?? userinfo.volunteerid}`)
             .then((res) => {
-
+                
                 let fdata = res?.data?.retdata[0];
                 if (fdata.birthday === '0001-01-01T00:00:00')
                     fdata.birthday = null;
@@ -31,7 +31,6 @@ export default function Volunteer() {
                     fdata.birthday = dayjs(fdata.birthday, dateFormat);
                 fdata.birthday = null;
                 fdata.joindate = null;
-
                 formdata.setFieldsValue(fdata);
 
             }).finally(() => {
