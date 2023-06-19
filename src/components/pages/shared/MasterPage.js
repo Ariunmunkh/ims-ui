@@ -11,7 +11,6 @@ import {
 import { Layout, Menu, theme, Space, Button, Typography } from "antd";
 
 import AdminPage from "./AdminPage";
-import HouseHoldListPage from "../volunteer/HouseHoldListPage";
 import VolunteerPage from "../volunteer/VolunteerPage";
 import useToken from "../../system/useToken";
 import useUserInfo from "../../system/useUserInfo";
@@ -157,12 +156,6 @@ export default function MasterPage() {
                             path="/adminpage"
                             element={
                                 userinfo?.roleid === "1" ? <AdminPage /> : <AccessDenied />
-                            }
-                        />
-                        <Route
-                            path="/householdlist"
-                            element={
-                                userinfo?.roleid ? <HouseHoldListPage /> : <AccessDenied />
                             }
                         />
                         <Route

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { api } from "../../system/api";
+import useUserInfo from "../../system/useUserInfo";
 import { Table, Modal, Drawer, Space, Form, Button, Typography, Switch, DatePicker, InputNumber, } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { PlusOutlined } from "@ant-design/icons";
@@ -8,32 +9,27 @@ import dayjs from 'dayjs';
 const { confirm } = Modal;
 const { Text } = Typography;
 
-export default function Meeting() {
-    const { householdid } = useParams();
+export default function Education() {
+    const { userinfo } = useUserInfo();
+    const { volunteerid } = useParams();
     const [household, sethousehold] = useState();
     const [griddata, setGridData] = useState();
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [formdata] = Form.useForm();
 
     const fetchData = useCallback(() => {
-        setLoading(true);
-        api.get(`/api/record/households/get_household?id=${householdid}`)
-            .then((res) => {
-                if (res?.status === 200 && res?.data?.rettype === 0) {
-                    sethousehold(res?.data?.retdata[0]);
-                }
-            });
-        api
-            .get(`/api/record/coach/get_meetingattendance_list?id=${householdid}`)
-            .then((res) => {
-                if (res?.status === 200 && res?.data?.rettype === 0) {
-                    setGridData(res?.data?.retdata);
-                }
-            })
-            .finally(() => {
-                setLoading(false);
-            });
-    }, [householdid]);
+        //setLoading(true);
+        //api
+        //    .get(`/api/record/coach/get_meetingattendance_list?id=${volunteerid}`)
+        //    .then((res) => {
+        //        if (res?.status === 200 && res?.data?.rettype === 0) {
+        //            setGridData(res?.data?.retdata);
+        //        }
+        //    })
+        //    .finally(() => {
+        //        setLoading(false);
+        //    });
+    }, [volunteerid]);
 
     const tableOnRow = (record, rowIndex) => {
         return {
@@ -99,56 +95,46 @@ export default function Meeting() {
     };
 
     const onDelete = async () => {
-        await api
-            .delete(
-                `/api/record/coach/delete_meetingattendance?id=${formdata.getFieldValue(
-                    "entryid"
-                )}`
-            )
-            .then((res) => {
-                if (res?.status === 200 && res?.data?.rettype === 0) {
-                    setIsModalOpen(false);
-                    fetchData();
-                }
-            });
+        //await api
+        //    .delete(`/api/record/coach/delete_meetingattendance?id=${formdata.getFieldValue("id")}`)
+        //    .then((res) => {
+        //        if (res?.status === 200 && res?.data?.rettype === 0) {
+        //            setIsModalOpen(false);
+        //            fetchData();
+        //        }
+        //    });
     };
 
     const onFinish = async (values) => {
-        let fdata = formdata.getFieldsValue();
-        fdata.meetingdate = fdata.meetingdate.format('YYYY.MM.DD HH:mm:ss');
-        await api
-            .post(`/api/record/coach/set_meetingattendance`, fdata)
-            .then((res) => {
-                if (res?.status === 200 && res?.data?.rettype === 0) {
-                    setIsModalOpen(false);
-                    fetchData();
-                }
-            });
+        //let fdata = formdata.getFieldsValue();
+        //fdata.meetingdate = fdata.meetingdate.format('YYYY.MM.DD HH:mm:ss');
+        //await api
+        //    .post(`/api/record/coach/set_meetingattendance`, fdata)
+        //    .then((res) => {
+        //        if (res?.status === 200 && res?.data?.rettype === 0) {
+        //            setIsModalOpen(false);
+        //            fetchData();
+        //        }
+        //    });
     };
 
     const getFormData = async (entryid) => {
-        await api
-            .get(`/api/record/coach/get_meetingattendance?id=${entryid}`)
-            .then((res) => {
-                if (res?.status === 200 && res?.data?.rettype === 0) {
-                    let fdata = res?.data?.retdata[0];
-                    fdata.meetingdate = dayjs(fdata.meetingdate, 'YYYY.MM.DD HH:mm:ss');
-                    formdata.setFieldsValue(fdata);
-                    showModal();
-                }
-            });
+        //await api
+        //    .get(`/api/record/coach/get_meetingattendance?id=${entryid}`)
+        //    .then((res) => {
+        //        if (res?.status === 200 && res?.data?.rettype === 0) {
+        //            let fdata = res?.data?.retdata[0];
+        //            fdata.meetingdate = dayjs(fdata.meetingdate, 'YYYY.MM.DD HH:mm:ss');
+        //            formdata.setFieldsValue(fdata);
+        //            showModal();
+        //        }
+        //    });
     };
 
     const newFormData = async () => {
         formdata.setFieldsValue({
-            entryid: 0,
-            memberid: null,
-            householdid: householdid,
-            meetingdate: null,
-            isjoin: true,
-            quantity: null,
-            unitprice: household?.unitprice,
-            amount: null,
+            id: 0,
+            volunteerid: volunteerid ?? userinfo.volunteerid,
         });
         showModal();
     };

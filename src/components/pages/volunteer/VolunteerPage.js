@@ -1,12 +1,10 @@
 import React from "react";
-import { Tabs, Divider } from "antd";
+import { Tabs } from "antd";
 import VoluntaryWork from "./VoluntaryWork";
-import Meeting from "./Meeting";
-import Loan from "./Loan";
-import LoanReturn from "./LoanReturn";
+import Education from "./Education";
+import Employment from "./Employment";
 import Training from "./Training";
-import Investment from "./Investment";
-import Support from "./Support";
+import EmergencyContact from "./EmergencyContact";
 import Volunteer from "./Volunteer";
 
 export default function VolunteerPage() {
@@ -29,41 +27,22 @@ export default function VolunteerPage() {
                     {
                         label: `Сургууль, ангийн мэдээлэл`,
                         key: "3",
-                        children: <Meeting />,
+                        children: <Education />,
                     },
                     {
                         label: `Эрхэлсэн ажил`,
                         key: "4",
-                        children: (
-                            <div>
-                                <Loan />
-                                <br />
-                                <Divider />
-                                <LoanReturn />
-                            </div>
-                        ),
+                        children: <Employment />,
                     },
                     {
                         label: `Гадаад хэлний мэдлэг`,
                         key: "5",
-                        children: (
-                            <div>
-                                <Training />
-                            </div>
-                        ),
+                        children: <Training />,
                     },
                     {
-                        label: `Яаралтай холбоо барих хүний мэдээлэл`,
+                        label: `Шаардлагатай үед холбоо барих хүний мэдээлэл`,
                         key: "6",
-
-                        children: (
-                            <div>
-                                <Investment />
-                                <br />
-                                <Divider />
-                                <Support />
-                            </div>
-                        ),
+                        children: <EmergencyContact />,
                     },
                 ]}
             />

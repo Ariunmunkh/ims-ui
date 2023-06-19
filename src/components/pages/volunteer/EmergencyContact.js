@@ -1,24 +1,32 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { api } from "../../system/api";
-import { Table, Modal, Drawer, Space, Form, Button, DatePicker, Select, Divider, } from "antd";
+import useUserInfo from "../../system/useUserInfo";
+import {
+    Table,
+    Modal,
+    Drawer,
+    Space,
+    Form,
+    Button,
+    Input,
+    Divider,
+    Select,
+} from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { PlusOutlined } from "@ant-design/icons";
-import dayjs from 'dayjs';
 const { confirm } = Modal;
 
-export default function Livelihood() {
-    const { householdid } = useParams();
-    const [subbranch, setsubbranch] = useState([]);
-    const [business, setbusiness] = useState([]);
+export default function EmergencyContact() {
+    const { userinfo } = useUserInfo();
+    const { volunteerid } = useParams();
     const [griddata, setGridData] = useState();
     const [loading, setLoading] = useState(true);
     const [formdata] = Form.useForm();
 
     const fetchData = useCallback(() => {
         setLoading(true);
-        api
-            .get(`/api/record/coach/get_improvement_list?id=${householdid}`)
+        api.get(`/api/Volunteer/get_EmergencyContact_list?id=${volunteerid ?? userinfo.volunteerid}`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setGridData(res?.data?.retdata);
@@ -27,7 +35,8 @@ export default function Livelihood() {
             .finally(() => {
                 setLoading(false);
             });
-    }, [householdid]);
+
+    }, [volunteerid, userinfo.volunteerid]);
 
     const tableOnRow = (record, rowIndex) => {
         return {
@@ -38,34 +47,22 @@ export default function Livelihood() {
     };
 
     useEffect(() => {
-        api.get(`/api/record/base/get_dropdown_item_list?type=subbranch`)
-            .then((res) => {
-                if (res?.status === 200 && res?.data?.rettype === 0) {
-                    setsubbranch(res?.data?.retdata);
-                }
-            });
-        api.get(`/api/record/base/get_dropdown_item_list?type=business`)
-            .then((res) => {
-                if (res?.status === 200 && res?.data?.rettype === 0) {
-                    setbusiness(res?.data?.retdata);
-                }
-            });
         fetchData();
     }, [fetchData]);
 
     const gridcolumns = [
         {
-            title: "Бизнес төлөвлөгөө боловсруулсан огноо",
-            dataIndex: "plandate",
+            title: "Таны юу болох",
+            dataIndex: "relationshipid",
         },
         {
-            title: "Бизнесийн төрөл",
-            dataIndex: "subbranch",
+            title: "Овог, нэр",
+            dataIndex: "firstname",
         },
         {
-            title: "Өрхийн сонгосон бизнес",
-            dataIndex: "businessname",
-        },
+            title: "Утасны дугаар",
+            dataIndex: "phone",
+        }
     ];
 
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -97,10 +94,7 @@ export default function Livelihood() {
 
     const onDelete = async () => {
         await api
-            .delete(
-                `/api/record/coach/delete_improvement?id=${formdata.getFieldValue(
-                    "entryid"
-                )}`
+            .delete(`/api/Volunteer/delete_EmergencyContact?id=${formdata.getFieldValue("id")}`
             )
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
@@ -112,24 +106,20 @@ export default function Livelihood() {
 
     const onFinish = async (values) => {
         let fdata = formdata.getFieldsValue();
-        fdata.plandate = fdata.plandate.format('YYYY.MM.DD HH:mm:ss');
-        await api
-            .post(`/api/record/coach/set_improvement`, fdata)
-            .then((res) => {
-                if (res?.status === 200 && res?.data?.rettype === 0) {
-                    setIsModalOpen(false);
-                    fetchData();
-                }
-            });
+        await api.post(`/api/Volunteer/set_EmergencyContact`, fdata).then((res) => {
+            if (res?.status === 200 && res?.data?.rettype === 0) {
+                setIsModalOpen(false);
+                fetchData();
+            }
+        });
     };
 
     const getFormData = async (entryid) => {
         await api
-            .get(`/api/record/coach/get_improvement?id=${entryid}`)
+            .get(`/api/Volunteer/get_EmergencyContact?id=${entryid}`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     let fdata = res?.data?.retdata[0];
-                    fdata.plandate = dayjs(fdata.plandate, 'YYYY.MM.DD HH:mm:ss');
                     formdata.setFieldsValue(fdata);
                     showModal();
                 }
@@ -138,14 +128,15 @@ export default function Livelihood() {
 
     const newFormData = async () => {
         formdata.setFieldsValue({
-            entryid: 0,
-            householdid: householdid,
-            plandate: null,
-            businessid: null,
-            subbranchid: null,
+            id: 0,
+            volunteerid: volunteerid ?? userinfo.volunteerid,
+            relationshipid: null,
+            firstname: null,
+            phone: null,
         });
         showModal();
     };
+
     return (
         <div>
             <Button
@@ -154,7 +145,7 @@ export default function Livelihood() {
                 icon={<PlusOutlined />}
                 onClick={(e) => newFormData()}
             >
-                Амьжиргаа сайжруулах үйл ажиллагааны мэдээлэл нэмэх
+                Гэр бүлийн гишүүний мэдээлэл нэмэх
             </Button>
 
             <Table
@@ -163,24 +154,24 @@ export default function Livelihood() {
                 columns={gridcolumns}
                 dataSource={griddata}
                 onRow={tableOnRow}
-                pagination={false}
+                pagination
                 rowKey={(record) => record.entryid}
             ></Table>
             <Drawer
                 forceRender
-                title="Амьжиргаа сайжруулах үйл ажиллагааны мэдээлэл нэмэх"
+                title="Гэр бүлийн гишүүний мэдээлэл нэмэх"
                 open={isModalOpen}
                 width={720}
                 onClose={handleCancel}
                 centered
-                bodyStyle={{ paddingBottom: 80, }}
+                bodyStyle={{ paddingBottom: 80 }}
                 extra={
                     <Space>
                         <Button
                             key="delete"
                             danger
                             onClick={showDeleteConfirm}
-                            hidden={formdata.getFieldValue("entryid") === 0}
+                            hidden={formdata.getFieldValue("id") === 0}
                         >
                             Устгах
                         </Button>
@@ -201,21 +192,22 @@ export default function Livelihood() {
                     labelAlign="left"
                     labelWrap
                 >
-                    <Form.Item name="entryid" hidden={true} />
-                    <Form.Item name="householdid" hidden={true} />
-                    <Form.Item name="plandate" label="Бизнес төлөвлөгөө боловсруулсан огноо">
-                        <DatePicker style={{ width: "100%" }} placeholder="Өдөр сонгох" />
-                    </Form.Item>
-                    <Form.Item name="subbranchid" label="Бизнесийн төрөл">
+                    <Form.Item name="id" hidden={true} />
+                    <Form.Item name="volunteerid" hidden={true} />
+           
+                    <Form.Item name="relationshipid" label="Таны юу болох">
                         <Select style={{ width: '100%' }}>
-                            {subbranch?.map((t, i) => (<Select.Option key={i} value={t.id}>{t.name}</Select.Option>))}
                         </Select>
                     </Form.Item>
-                    <Form.Item name="businessid" label="Өрхийн сонгосон бизнес">
-                        <Select style={{ width: '100%' }}>
-                            {business?.map((t, i) => (<Select.Option key={i} value={t.id}>{t.name}</Select.Option>))}
-                        </Select>
+
+                    <Form.Item name="firstname" label="Овог нэр">
+                        <Input />
                     </Form.Item>
+
+                    <Form.Item name="phone" label="Утасны дугаар">
+                        <Input />
+                    </Form.Item>
+
                 </Form>
             </Drawer>
         </div>

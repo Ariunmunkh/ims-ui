@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { api } from "../../system/api";
 import useUserInfo from "../../system/useUserInfo";
-import { Table, Modal, Drawer, Space, Form, Button, Input, DatePicker, Select, Switch, Divider, } from "antd";
+import { Table, Modal, Drawer, Space, Form, Button, Input, DatePicker, Select, Divider, } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { PlusOutlined } from "@ant-design/icons";
 import { SearchOutlined } from "@ant-design/icons";
@@ -12,27 +12,24 @@ const { confirm } = Modal;
 
 export default function VoluntaryWork() {
     const { userinfo } = useUserInfo();
-    const { householdid } = useParams();
-    const [relationship, setrelationship] = useState([]);
-    const [basicneeds, setbasicneeds] = useState([]);
-    const [coachlist, setcoachlist] = useState([]);
+    const { volunteerid } = useParams();
     const [griddata, setGridData] = useState();
     const [loading, setLoading] = useState(false);
     const [formdata] = Form.useForm();
 
     const fetchData = useCallback(() => {
-        //setLoading(true);
-        //api.get(`/api/record/coach/get_householdvisit_list?id=${householdid}`)
-        //    .then((res) => {
-        //        if (res?.status === 200 && res?.data?.rettype === 0) {
-        //            setGridData(res?.data?.retdata);
-        //        }
-        //    })
-        //    .finally(() => {
-        //        setLoading(false);
-        //    });
+        setLoading(true);
+        api.get(`/api/Volunteer/get_VolunteerVoluntaryWork_list?id=${volunteerid ?? userinfo.volunteerid}`)
+            .then((res) => {
+                if (res?.status === 200 && res?.data?.rettype === 0) {
+                    setGridData(res?.data?.retdata);
+                }
+            })
+            .finally(() => {
+                setLoading(false);
+            });
 
-    }, [householdid]);
+    }, [volunteerid, userinfo.volunteerid]);
 
     const tableOnRow = (record, rowIndex) => {
         return {
@@ -44,7 +41,7 @@ export default function VoluntaryWork() {
 
     useEffect(() => {
         fetchData();
-    }, [fetchData, householdid]);
+    }, [fetchData]);
 
     const [searchText, setSearchText] = useState("");
     const [searchedColumn, setSearchedColumn] = useState("");
@@ -198,15 +195,11 @@ export default function VoluntaryWork() {
         confirm({
             title: "Устгах уу?",
             icon: <ExclamationCircleFilled />,
-            //content: 'Some descriptions',
             okText: "Тийм",
             okType: "danger",
             cancelText: "Үгүй",
             onOk() {
                 onDelete();
-            },
-            onCancel() {
-                //console.log('Cancel');
             },
         });
     };
@@ -214,9 +207,7 @@ export default function VoluntaryWork() {
     const onDelete = async () => {
         await api
             .delete(
-                `/api/record/coach/delete_householdvisit?id=${formdata.getFieldValue(
-                    "visitid"
-                )}`
+                `/api/Volunteer/delete_VolunteerVoluntaryWork?id=${formdata.getFieldValue("id")}`
             )
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
@@ -228,9 +219,9 @@ export default function VoluntaryWork() {
 
     const onFinish = async (values) => {
         let fdata = formdata.getFieldsValue();
-        fdata.visitdate = fdata.visitdate.format('YYYY.MM.DD HH:mm:ss');
+        fdata.voluntaryworkdate = fdata.voluntaryworkdate.format('YYYY.MM.DD HH:mm:ss');
         await api
-            .post(`/api/record/coach/set_householdvisit`, fdata)
+            .post(`/api/Volunteer/set_VolunteerVoluntaryWork`, fdata)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setIsModalOpen(false);
@@ -241,11 +232,11 @@ export default function VoluntaryWork() {
 
     const getFormData = async (visitid) => {
         await api
-            .get(`/api/record/coach/get_householdvisit?id=${visitid}`)
+            .get(`/api/Volunteer/get_VolunteerVoluntaryWork?id=${visitid}`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     let fdata = res?.data?.retdata[0];
-                    fdata.visitdate = dayjs(fdata.visitdate, 'YYYY.MM.DD HH:mm:ss');
+                    fdata.voluntaryworkdate = dayjs(fdata.voluntaryworkdate, 'YYYY.MM.DD HH:mm:ss');
                     formdata.setFieldsValue(fdata);
                     showModal();
                 }
@@ -254,16 +245,12 @@ export default function VoluntaryWork() {
 
     const newFormData = async () => {
         formdata.setFieldsValue({
-            visitid: 0,
-            coachid: userinfo.coachid,
-            memberid: null,
-            householdid: householdid,
-            visitdate: null,
-            basicneedsid: [],
-            incomeexpenditurerecord: false,
-            developmentplan: false,
+            id: 0,
+            volunteerid: volunteerid ?? userinfo.volunteerid,
+            voluntaryworkid: null,
+            duration: null,
+            voluntaryworkdate: null,
             note: null,
-            decisionandaction: null,
         });
         showModal();
     };
@@ -308,7 +295,7 @@ export default function VoluntaryWork() {
                             key="delete"
                             danger
                             onClick={showDeleteConfirm}
-                            hidden={formdata.getFieldValue("visitid") === 0}
+                            hidden={formdata.getFieldValue("id") === 0}
                         >
                             Устгах
                         </Button>
@@ -329,66 +316,30 @@ export default function VoluntaryWork() {
                     labelAlign="left"
                     labelWrap
                 >
-                    <Form.Item name="visitid" hidden={true} />
-                    <Form.Item name="householdid" hidden={true} />
-                    <Form.Item name="coachid" label="Айлчилсан хүний нэр" hidden={userinfo.coachid !== ''} >
+                    <Form.Item name="id" hidden={true} />
+                    <Form.Item name="volunteerid" hidden={true} />
+
+                    <Form.Item name="voluntaryworkid" label="Сайн дурын ажлын төрөл" rules={[{ required: true, message: 'Сайн дурын ажлын төрөл оруулна уу!' }]}>
                         <Select style={{ width: "100%" }}>
-                            {coachlist?.map((t, i) => (
-                                <Select.Option key={i} value={t.coachid}>
-                                    {t.name}
-                                </Select.Option>
-                            ))}
+
                         </Select>
                     </Form.Item>
-                    <Form.Item name="visitdate" label="Айлчилсан огноо">
+
+                    <Form.Item name="duration" label="Хугацаа">
+                        <Input />
+                    </Form.Item>
+
+                    <Form.Item name="voluntaryworkdate" label="Огноо">
                         <DatePicker
                             disabledDate={disabledDate}
                             style={{ width: "100%" }}
                             placeholder="Өдөр сонгох" />
                     </Form.Item>
-                    <Form.Item name="basicneedsid" label="Өрхийн үндсэн хэрэгцээ">
-                        <Select
-                            mode="multiple"
-                            style={{ width: "100%" }}>
-                            {basicneeds?.map((t, i) => (
-                                <Select.Option key={i} value={t.id}>
-                                    {t.name}
-                                </Select.Option>
-                            ))}
-                        </Select>
-                    </Form.Item>
-                    <Form.Item name="basicneedsnote" label="Үндсэн хэрэгцээний тайлбар">
+
+                    <Form.Item name="note" label="Нэмэлт мэдээлэл">
                         <Input.TextArea />
                     </Form.Item>
-                    <Form.Item
-                        name="incomeexpenditurerecord"
-                        label="Орлого, зарлагын бүртгэлээ тогтмол хөтөлсөн эсэх?"
-                        valuePropName="checked"
-                    >
-                        <Switch checkedChildren="Тийм" unCheckedChildren="Үгүй" style={{ width: '100%' }} />
-                    </Form.Item>
-                    <Form.Item
-                        name="developmentplan"
-                        label="Өрхийн хөгжлийн төлөвлөгөө боловсруулсан эсэх?"
-                        valuePropName="checked"
-                    >
-                        <Switch checkedChildren="Тийм" unCheckedChildren="Үгүй" style={{ width: '100%' }} />
-                    </Form.Item>
-                    <Form.Item name="memberid" label="Айлчлалаар уулзсан өрхийн гишүүн">
-                        <Select style={{ width: "100%" }}>
-                            {relationship?.map((t, i) => (
-                                <Select.Option key={i} value={t.memberid}>
-                                    {t.name}
-                                </Select.Option>
-                            ))}
-                        </Select>
-                    </Form.Item>
-                    <Form.Item name="note" label="Өрхийн айлчлалаар хэлэлцсэн асуудал">
-                        <Input.TextArea />
-                    </Form.Item>
-                    <Form.Item name="decisionandaction" label="Шийдвэрлэсэн байдал / авах арга хэмжээ">
-                        <Input.TextArea />
-                    </Form.Item>
+
                 </Form>
             </Drawer>
         </div>

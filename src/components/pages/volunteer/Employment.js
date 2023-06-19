@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { api } from "../../system/api";
+import useUserInfo from "../../system/useUserInfo";
 import { Table, Modal, Drawer, Space, Form, Button, Input, Select, DatePicker, InputNumber, Typography, } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { PlusOutlined } from "@ant-design/icons";
@@ -8,26 +9,27 @@ import dayjs from 'dayjs';
 const { confirm } = Modal;
 const { Text } = Typography;
 
-export default function Loan() {
-    const { householdid } = useParams();
+export default function Employment() {
+    const { userinfo } = useUserInfo();
+    const { volunteerid } = useParams();
     const [griddata, setGridData] = useState();
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [formdata] = Form.useForm();
     const [loanpurpose, setloanpurpose] = useState([]);
 
     const fetchData = useCallback(() => {
-        setLoading(true);
-        api
-            .get(`/api/record/coach/get_loan_list?id=${householdid}`)
-            .then((res) => {
-                if (res?.status === 200 && res?.data?.rettype === 0) {
-                    setGridData(res?.data?.retdata);
-                }
-            })
-            .finally(() => {
-                setLoading(false);
-            });
-    }, [householdid]);
+        //setLoading(true);
+        //api
+        //    .get(`/api/record/coach/get_loan_list?id=${volunteerid}`)
+        //    .then((res) => {
+        //        if (res?.status === 200 && res?.data?.rettype === 0) {
+        //            setGridData(res?.data?.retdata);
+        //        }
+        //    })
+        //    .finally(() => {
+        //        setLoading(false);
+        //    });
+    }, [volunteerid]);
 
     const tableOnRow = (record, rowIndex) => {
         return {
@@ -38,12 +40,6 @@ export default function Loan() {
     };
 
     useEffect(() => {
-        api.get(`/api/record/base/get_dropdown_item_list?type=loanpurpose`)
-            .then((res) => {
-                if (res?.status === 200 && res?.data?.rettype === 0) {
-                    setloanpurpose(res?.data?.retdata);
-                }
-            });
         fetchData();
     }, [fetchData]);
 
@@ -82,64 +78,56 @@ export default function Loan() {
         confirm({
             title: "Устгах уу?",
             icon: <ExclamationCircleFilled />,
-            //content: 'Some descriptions',
             okText: "Тийм",
             okType: "danger",
             cancelText: "Үгүй",
             onOk() {
                 onDelete();
             },
-            onCancel() {
-                //console.log('Cancel');
-            },
         });
     };
 
     const onDelete = async () => {
-        await api
-            .delete(
-                `/api/record/coach/delete_loan?id=${formdata.getFieldValue("entryid")}`
-            )
-            .then((res) => {
-                if (res?.status === 200 && res?.data?.rettype === 0) {
-                    setIsModalOpen(false);
-                    fetchData();
-                }
-            });
+        //await api
+        //    .delete(
+        //        `/api/record/coach/delete_loan?id=${formdata.getFieldValue("entryid")}`
+        //    )
+        //    .then((res) => {
+        //        if (res?.status === 200 && res?.data?.rettype === 0) {
+        //            setIsModalOpen(false);
+        //            fetchData();
+        //        }
+        //    });
     };
 
     const onFinish = async (values) => {
-        let fdata = formdata.getFieldsValue();
-        fdata.loandate = fdata.loandate.format('YYYY.MM.DD HH:mm:ss');
-        await api
-            .post(`/api/record/coach/set_loan`, fdata)
-            .then((res) => {
-                if (res?.status === 200 && res?.data?.rettype === 0) {
-                    setIsModalOpen(false);
-                    fetchData();
-                }
-            });
+        //let fdata = formdata.getFieldsValue();
+        //fdata.loandate = fdata.loandate.format('YYYY.MM.DD HH:mm:ss');
+        //await api
+        //    .post(`/api/record/coach/set_loan`, fdata)
+        //    .then((res) => {
+        //        if (res?.status === 200 && res?.data?.rettype === 0) {
+        //            setIsModalOpen(false);
+        //            fetchData();
+        //        }
+        //    });
     };
 
     const getFormData = async (entryid) => {
-        await api.get(`/api/record/coach/get_loan?id=${entryid}`).then((res) => {
-            if (res?.status === 200 && res?.data?.rettype === 0) {
-                let fdata = res?.data?.retdata[0];
-                fdata.loandate = dayjs(fdata.loandate, 'YYYY.MM.DD HH:mm:ss');
-                formdata.setFieldsValue(fdata);
-                showModal();
-            }
-        });
+        //await api.get(`/api/record/coach/get_loan?id=${entryid}`).then((res) => {
+        //    if (res?.status === 200 && res?.data?.rettype === 0) {
+        //        let fdata = res?.data?.retdata[0];
+        //        fdata.loandate = dayjs(fdata.loandate, 'YYYY.MM.DD HH:mm:ss');
+        //        formdata.setFieldsValue(fdata);
+        //        showModal();
+        //    }
+        //});
     };
 
     const newFormData = async () => {
         formdata.setFieldsValue({
-            entryid: 0,
-            householdid: householdid,
-            loandate: null,
-            amount: null,
-            loanpurposeid: null,
-            loanpurposenote: null,
+            id: 0,
+            volunteerid: volunteerid ?? userinfo.volunteerid,
         });
         showModal();
     };
@@ -162,25 +150,6 @@ export default function Loan() {
                 onRow={tableOnRow}
                 pagination={true}
                 rowKey={(record) => record.entryid}
-                summary={(pageData) => {
-
-                    let totalamount = 0;
-                    pageData.forEach(({ amount }) => {
-                        totalamount += parseFloat(amount.replaceAll(',', ''));
-                    });
-                    totalamount = totalamount.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
-                    return (
-                        <>
-                            <Table.Summary.Row style={{ background: '#fafafa' }}>
-                                <Table.Summary.Cell index={0}>Нийт:</Table.Summary.Cell>
-                                <Table.Summary.Cell index={1} align='right'>
-                                    <Text>{totalamount}</Text>
-                                </Table.Summary.Cell>
-                                <Table.Summary.Cell index={2} />
-                            </Table.Summary.Row>
-                        </>
-                    );
-                }}
             ></Table>
 
             <Drawer
@@ -219,7 +188,7 @@ export default function Loan() {
                     <Form.Item name="loandate" label="Зээл авсан огноо">
                         <DatePicker style={{ width: "100%" }} placeholder="Өдөр сонгох" />
                     </Form.Item>
-                    <Form.Item name="householdid" label="householdid" hidden={true}>
+                    <Form.Item name="volunteerid" label="volunteerid" hidden={true}>
                         <Input />
                     </Form.Item>
 
