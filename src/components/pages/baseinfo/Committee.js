@@ -6,18 +6,17 @@ import { PlusOutlined } from "@ant-design/icons";
 import { SearchOutlined } from "@ant-design/icons";
 import Highlighter from "react-highlight-words";
 const { confirm } = Modal;
-export default function MediatedServiceType() {
+export default function Committee() {
 
     const [griddata, setGridData] = useState();
     const [loading, setLoading] = useState(true);
-    const [formtitle] = useState('Холбон зуучилсан үйлчилгээний төрөл');
-    const [formtype] = useState('mediatedservicetype');
+    const [formtitle] = useState('Дунд шатны хорооны бүртгэл');
     const [formdata] = Form.useForm();
 
     const fetchData = useCallback(async () => {
         setLoading(true);
         await api
-            .get(`/api/record/base/get_dropdown_item_list?type=${formtype}`)
+            .get(`/api/record/base/get_Committee_list`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setGridData(res?.data?.retdata);
@@ -26,7 +25,7 @@ export default function MediatedServiceType() {
             .finally(() => {
                 setLoading(false);
             });
-    }, [formtype]);
+    }, []);
 
     const tableOnRow = (record, rowIndex) => {
         return {
@@ -182,24 +181,18 @@ export default function MediatedServiceType() {
         confirm({
             title: "Устгах уу?",
             icon: <ExclamationCircleFilled />,
-            //content: 'Some descriptions',
             okText: "Тийм",
             okType: "danger",
             cancelText: "Үгүй",
             onOk() {
                 onDelete();
             },
-            onCancel() {
-                //console.log('Cancel');
-            },
         });
     };
 
     const onDelete = async () => {
         await api
-            .delete(
-                `/api/record/base/delete_dropdown_item?id=${formdata.getFieldValue("id")}&type=${formtype}`
-            )
+            .delete(`/api/record/base/delete_Committee?id=${formdata.getFieldValue("id")}`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setIsModalOpen(false);
@@ -210,7 +203,7 @@ export default function MediatedServiceType() {
 
     const onFinish = async (values) => {
         await api
-            .post(`/api/record/base/set_dropdown_item`, formdata.getFieldsValue())
+            .post(`/api/record/base/set_Committee`, formdata.getFieldsValue())
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setIsModalOpen(false);
@@ -220,7 +213,7 @@ export default function MediatedServiceType() {
     };
 
     const getFormData = async (id) => {
-        await api.get(`/api/record/base/get_dropdown_item?id=${id}&type=${formtype}`).then((res) => {
+        await api.get(`/api/record/base/get_Committee?id=${id}`).then((res) => {
             if (res?.status === 200 && res?.data?.rettype === 0) {
                 formdata.setFieldsValue(res?.data?.retdata[0]);
                 showModal();
@@ -229,7 +222,13 @@ export default function MediatedServiceType() {
     };
 
     const newFormData = async () => {
-        formdata.setFieldsValue({ id: 0, name: null, type: formtype });
+        formdata.setFieldsValue({
+            id: 0,
+            name: null,
+            bossname: null,
+            phone: null,
+            location: null
+        });
         showModal();
     };
 
@@ -292,11 +291,19 @@ export default function MediatedServiceType() {
                         <Input />
                     </Form.Item>
 
-                    <Form.Item name="type" label="Төрөл" hidden={true} >
+                    <Form.Item name="name" label="Салбар нэгж" >
                         <Input />
                     </Form.Item>
 
-                    <Form.Item name="name" label="Нэр" >
+                    <Form.Item name="bossname" label="Хорооны дарга нарын нэр"  >
+                        <Input />
+                    </Form.Item>
+
+                    <Form.Item name="phone" label="Утасны дугаар"  >
+                        <Input />
+                    </Form.Item>
+
+                    <Form.Item name="location" label="Байршил"  >
                         <Input />
                     </Form.Item>
 
@@ -305,3 +312,4 @@ export default function MediatedServiceType() {
         </div>
     );
 }
+

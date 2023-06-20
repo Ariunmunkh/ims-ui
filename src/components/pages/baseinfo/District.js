@@ -10,13 +10,14 @@ export default function District() {
 
     const [griddata, setGridData] = useState();
     const [loading, setLoading] = useState(true);
-    const [formtitle] = useState('Сум, дүүрэг');
+    const [formtitle] = useState('Сум, Дүүрэг');
+    const [formtype] = useState('district');
     const [formdata] = Form.useForm();
 
     const fetchData = useCallback(async () => {
         setLoading(true);
         await api
-            .get(`/api/record/base/get_district_list`)
+            .get(`/api/record/base/get_dropdown_item_list?type=${formtype}`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setGridData(res?.data?.retdata);
@@ -25,12 +26,12 @@ export default function District() {
             .finally(() => {
                 setLoading(false);
             });
-    }, [setLoading]);
+    }, [formtype]);
 
     const tableOnRow = (record, rowIndex) => {
         return {
             onClick: (event) => {
-                getFormData(record.districtid);
+                getFormData(record.id);
             },
         };
     };
@@ -195,7 +196,10 @@ export default function District() {
     };
 
     const onDelete = async () => {
-        await api.delete(`/api/record/base/delete_district?id=${formdata.getFieldValue("districtid")}`)
+        await api
+            .delete(
+                `/api/record/base/delete_dropdown_item?id=${formdata.getFieldValue("id")}&type=${formtype}`
+            )
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setIsModalOpen(false);
@@ -205,7 +209,8 @@ export default function District() {
     };
 
     const onFinish = async (values) => {
-        await api.post(`/api/record/base/set_district`, formdata.getFieldsValue())
+        await api
+            .post(`/api/record/base/set_dropdown_item`, formdata.getFieldsValue())
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setIsModalOpen(false);
@@ -215,7 +220,7 @@ export default function District() {
     };
 
     const getFormData = async (id) => {
-        await api.get(`/api/record/base/get_district?id=${id}`).then((res) => {
+        await api.get(`/api/record/base/get_dropdown_item?id=${id}&type=${formtype}`).then((res) => {
             if (res?.status === 200 && res?.data?.rettype === 0) {
                 formdata.setFieldsValue(res?.data?.retdata[0]);
                 showModal();
@@ -224,7 +229,7 @@ export default function District() {
     };
 
     const newFormData = async () => {
-        formdata.setFieldsValue({ districtid: 0, name: null });
+        formdata.setFieldsValue({ id: 0, name: null, type: formtype });
         showModal();
     };
 
@@ -265,7 +270,7 @@ export default function District() {
                             key="delete"
                             danger
                             onClick={showDeleteConfirm}
-                            hidden={formdata.getFieldValue("districtid") === 0}
+                            hidden={formdata.getFieldValue("id") === 0}
                         >
                             Устгах
                         </Button>
@@ -283,7 +288,11 @@ export default function District() {
                     labelCol={{ span: 8 }}
                     wrapperCol={{ span: 14 }}
                 >
-                    <Form.Item name="districtid" label="Дугаар" hidden={true}>
+                    <Form.Item name="id" label="Дугаар" hidden={true}>
+                        <Input />
+                    </Form.Item>
+
+                    <Form.Item name="type" label="Төрөл" hidden={true} >
                         <Input />
                     </Form.Item>
 
@@ -296,4 +305,3 @@ export default function District() {
         </div>
     );
 }
-

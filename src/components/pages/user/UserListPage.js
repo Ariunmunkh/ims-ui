@@ -19,8 +19,6 @@ export default function UserListPage() {
     const [griddata, setGridData] = useState();
     const [loading, setLoading] = useState(true);
     const [formdata] = Form.useForm();
-    const [coachlist, setcoachlist] = useState([]);
-    const [districtlist, setdistrictlist] = useState([]);
     const [rolelist] = useState([
         {
             value: 1,
@@ -63,18 +61,6 @@ export default function UserListPage() {
     };
 
     useEffect(() => {
-        api.get(`/api/record/coach/get_coach_list`)
-            .then((res) => {
-                if (res?.status === 200 && res?.data?.rettype === 0) {
-                    setcoachlist(res?.data?.retdata);
-                }
-            });
-        api.get(`/api/record/base/get_district_list`)
-            .then((res) => {
-                if (res?.status === 200 && res?.data?.rettype === 0) {
-                    setdistrictlist(res?.data?.retdata);
-                }
-            });
         fetchData();
     }, []);
 
@@ -222,11 +208,6 @@ export default function UserListPage() {
             ...getColumnSearchProps("email"),
         },
         {
-            title: "Коуч / Хариуцсан дүүрэг",
-            dataIndex: "rolename",
-            ...getColumnSearchProps("rolename"),
-        },
-        {
             title: "Огноо",
             dataIndex: "updated",
         },
@@ -367,24 +348,6 @@ export default function UserListPage() {
                             style={{ width: 275 }}
                             options={rolelist}
                         />
-                    </Form.Item>
-                    <Form.Item name="districtid" label="Хариуцсан дүүрэг" hidden={formdata.getFieldValue("roleid") !== 2}>
-                        <Select style={{ width: "100%" }}>
-                            {districtlist?.map((t, i) => (
-                                <Select.Option key={i} value={t.districtid}>
-                                    {t.name}
-                                </Select.Option>
-                            ))}
-                        </Select>
-                    </Form.Item>
-                    <Form.Item name="coachid" label="Коучийн нэр" hidden={formdata.getFieldValue("roleid") !== 3}>
-                        <Select style={{ width: "100%" }}>
-                            {coachlist?.map((t, i) => (
-                                <Select.Option key={i} value={t.coachid}>
-                                    {t.name}
-                                </Select.Option>
-                            ))}
-                        </Select>
                     </Form.Item>
                     <Form.Item
                         name="username"

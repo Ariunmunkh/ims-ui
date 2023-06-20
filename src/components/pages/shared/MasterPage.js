@@ -16,10 +16,6 @@ import useToken from "../../system/useToken";
 import useUserInfo from "../../system/useUserInfo";
 import NotFound from "./NotFound";
 import AccessDenied from "./AccessDenied";
-import Monitor from "./Monitor";
-import Report from "../report/Report";
-import Register from "./Register";
-import Volunteer from "../volunteer/Volunteer";
 
 const { Header, Sider, Content } = Layout;
 const { Text } = Typography;
@@ -49,11 +45,11 @@ export default function MasterPage() {
                 ];
             case "2":
                 return [
-                    
+
                 ];
             case "3":
                 return [
-                    
+
                 ];
             case "5":
                 return [
@@ -154,23 +150,8 @@ export default function MasterPage() {
                         />
                         <Route
                             path="/adminpage"
-                            element={
-                                userinfo?.roleid === "1" ? <AdminPage /> : <AccessDenied />
-                            }
+                            element={userinfo?.roleid ? <AdminPage /> : <AccessDenied />}
                         />
-                        <Route
-                            path="/report"
-                            element={userinfo?.roleid ? <Report /> : <AccessDenied />}
-                        />
-                        <Route
-                            path="/monitor"
-                            element={userinfo?.roleid ? <Monitor /> : <AccessDenied />}
-                        />
-                        <Route
-                            path="/volunteer"
-                            element={userinfo?.roleid ? <Volunteer /> : <AccessDenied />}
-                        />
-                        <Route path="/register" component={<Register />} />
                         <Route path="*" element={<NotFound />} />
                     </Routes>
                 </Content>

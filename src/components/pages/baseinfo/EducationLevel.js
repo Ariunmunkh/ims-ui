@@ -6,12 +6,12 @@ import { PlusOutlined } from "@ant-design/icons";
 import { SearchOutlined } from "@ant-design/icons";
 import Highlighter from "react-highlight-words";
 const { confirm } = Modal;
-export default function AssetReceived() {
+export default function EducationLevel() {
 
     const [griddata, setGridData] = useState();
     const [loading, setLoading] = useState(true);
-    const [formtitle] = useState('Хүлээн авсан хөрөнгийн нэр');
-    const [formtype] = useState('assetreceived');
+    const [formtitle] = useState('Боловсролын түвшин');
+    const [formtype] = useState('educationlevel');
     const [formdata] = Form.useForm();
 
     const fetchData = useCallback(async () => {
