@@ -1,26 +1,23 @@
 import React, { useRef, useState, useEffect, useCallback } from "react";
-import { useParams } from "react-router-dom";
 import { api } from "../../system/api";
-import useUserInfo from "../../system/useUserInfo";
-import { Table, Modal, Drawer, Space, Form, Button, Input, DatePicker, Select, Divider, } from "antd";
+import { Table, Modal, Drawer, Form, Space, Button, Input } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { PlusOutlined } from "@ant-design/icons";
 import { SearchOutlined } from "@ant-design/icons";
 import Highlighter from "react-highlight-words";
-import dayjs from 'dayjs';
 const { confirm } = Modal;
-
 export default function VoluntaryWork() {
-    const { userinfo } = useUserInfo();
-    const { volunteerid } = useParams();
+
     const [griddata, setGridData] = useState();
-    const [voluntarywork, setvoluntarywork] = useState([]);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [formtitle] = useState('Сайн дурын ажлын төрөл');
+    const [formtype] = useState('voluntarywork');
     const [formdata] = Form.useForm();
 
-    const fetchData = useCallback(() => {
+    const fetchData = useCallback(async () => {
         setLoading(true);
-        api.get(`/api/Volunteer/get_VolunteerVoluntaryWork_list?id=${volunteerid ?? userinfo.volunteerid}`)
+        await api
+            .get(`/api/record/base/get_dropdown_item_list?type=${formtype}`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setGridData(res?.data?.retdata);
@@ -29,8 +26,7 @@ export default function VoluntaryWork() {
             .finally(() => {
                 setLoading(false);
             });
-
-    }, [volunteerid, userinfo.volunteerid]);
+    }, [formtype]);
 
     const tableOnRow = (record, rowIndex) => {
         return {
@@ -41,12 +37,6 @@ export default function VoluntaryWork() {
     };
 
     useEffect(() => {
-        api.get(`/api/record/base/get_dropdown_item_list?type=voluntarywork`)
-            .then((res) => {
-                if (res?.status === 200 && res?.data?.rettype === 0) {
-                    setvoluntarywork(res?.data?.retdata);
-                }
-            });
         fetchData();
     }, [fetchData]);
 
@@ -167,25 +157,15 @@ export default function VoluntaryWork() {
 
     const gridcolumns = [
         {
-            title: "Сайн дурын ажлын төрөл",
-            dataIndex: "voluntarywork",
-            ...getColumnSearchProps("voluntarywork"),
-        },
-        {
-            title: "Хугацаа",
-            dataIndex: "duration",
-            ...getColumnSearchProps("duration"),
+            title: "Нэр",
+            dataIndex: "name",
+            ...getColumnSearchProps("name"),
         },
         {
             title: "Огноо",
-            dataIndex: "voluntaryworkdate",
-            ...getColumnSearchProps("voluntaryworkdate"),
+            dataIndex: "updated",
+            width: 160,
         },
-        {
-            title: "Нэмэлт мэдээлэл",
-            dataIndex: "note",
-            ...getColumnSearchProps("note"),
-        }
     ];
 
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -202,11 +182,15 @@ export default function VoluntaryWork() {
         confirm({
             title: "Устгах уу?",
             icon: <ExclamationCircleFilled />,
+            //content: 'Some descriptions',
             okText: "Тийм",
             okType: "danger",
             cancelText: "Үгүй",
             onOk() {
                 onDelete();
+            },
+            onCancel() {
+                //console.log('Cancel');
             },
         });
     };
@@ -214,7 +198,7 @@ export default function VoluntaryWork() {
     const onDelete = async () => {
         await api
             .delete(
-                `/api/Volunteer/delete_VolunteerVoluntaryWork?id=${formdata.getFieldValue("id")}`
+                `/api/record/base/delete_dropdown_item?id=${formdata.getFieldValue("id")}&type=${formtype}`
             )
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
@@ -225,10 +209,8 @@ export default function VoluntaryWork() {
     };
 
     const onFinish = async (values) => {
-        let fdata = formdata.getFieldsValue();
-        fdata.voluntaryworkdate = fdata.voluntaryworkdate.format('YYYY.MM.DD HH:mm:ss');
         await api
-            .post(`/api/Volunteer/set_VolunteerVoluntaryWork`, fdata)
+            .post(`/api/record/base/set_dropdown_item`, formdata.getFieldsValue())
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setIsModalOpen(false);
@@ -237,64 +219,50 @@ export default function VoluntaryWork() {
             });
     };
 
-    const getFormData = async (visitid) => {
-        await api
-            .get(`/api/Volunteer/get_VolunteerVoluntaryWork?id=${visitid}`)
-            .then((res) => {
-                if (res?.status === 200 && res?.data?.rettype === 0) {
-                    let fdata = res?.data?.retdata[0];
-                    fdata.voluntaryworkdate = dayjs(fdata.voluntaryworkdate, 'YYYY.MM.DD HH:mm:ss');
-                    formdata.setFieldsValue(fdata);
-                    showModal();
-                }
-            });
+    const getFormData = async (id) => {
+        await api.get(`/api/record/base/get_dropdown_item?id=${id}&type=${formtype}`).then((res) => {
+            if (res?.status === 200 && res?.data?.rettype === 0) {
+                formdata.setFieldsValue(res?.data?.retdata[0]);
+                showModal();
+            }
+        });
     };
 
     const newFormData = async () => {
-        formdata.setFieldsValue({
-            id: 0,
-            volunteerid: volunteerid ?? userinfo.volunteerid,
-            voluntaryworkid: null,
-            duration: null,
-            voluntaryworkdate: null,
-            note: null,
-        });
+        formdata.setFieldsValue({ id: 0, name: null, type: formtype });
         showModal();
     };
 
-    const disabledDate = (current) => {
-        // Can not select days before today and today
-        return current && current >= dayjs().endOf('day');
-    };
 
     return (
         <div>
             <Button
                 style={{ marginBottom: 16 }}
-                type="primary"
                 icon={<PlusOutlined />}
+                type="primary"
                 onClick={(e) => newFormData()}
             >
-                Сайн дурын ажлын мэдээлэл нэмэх
+                {`${formtitle} нэмэх`}
             </Button>
 
             <Table
                 size="small"
-                loading={loading}
+                title={() => formtitle}
                 bordered
+                loading={loading}
                 columns={gridcolumns}
                 dataSource={griddata}
                 onRow={tableOnRow}
-                rowKey={(record) => record.visitid}
                 pagination={true}
+                rowKey={(record) => record.id}
             ></Table>
+
             <Drawer
                 forceRender
-                title="Сайн дурын ажлын мэдээлэл нэмэх"
-                open={isModalOpen}
+                title={formtitle}
                 width={720}
                 onClose={handleCancel}
-                centered
+                open={isModalOpen}
                 bodyStyle={{ paddingBottom: 80, }}
                 extra={
                     <Space>
@@ -315,36 +283,21 @@ export default function VoluntaryWork() {
                     </Space>
                 }
             >
-                <Divider />
                 <Form
                     form={formdata}
                     labelCol={{ span: 8 }}
                     wrapperCol={{ span: 14 }}
-                    labelAlign="left"
-                    labelWrap
                 >
-                    <Form.Item name="id" hidden={true} />
-                    <Form.Item name="volunteerid" hidden={true} />
-
-                    <Form.Item name="voluntaryworkid" label="Сайн дурын ажлын төрөл" rules={[{ required: true, message: 'Сайн дурын ажлын төрөл оруулна уу!' }]}>
-                        <Select style={{ width: "100%" }}>
-                            {voluntarywork?.map((t, i) => (<Select.Option key={i} value={t.id}>{t.name}</Select.Option>))}
-                        </Select>
-                    </Form.Item>
-
-                    <Form.Item name="duration" label="Хугацаа">
+                    <Form.Item name="id" label="Дугаар" hidden={true}>
                         <Input />
                     </Form.Item>
 
-                    <Form.Item name="voluntaryworkdate" label="Огноо">
-                        <DatePicker
-                            disabledDate={disabledDate}
-                            style={{ width: "100%" }}
-                            placeholder="Өдөр сонгох" />
+                    <Form.Item name="type" label="Төрөл" hidden={true} >
+                        <Input />
                     </Form.Item>
 
-                    <Form.Item name="note" label="Нэмэлт мэдээлэл">
-                        <Input.TextArea />
+                    <Form.Item name="name" label="Нэр" >
+                        <Input />
                     </Form.Item>
 
                 </Form>
@@ -352,3 +305,4 @@ export default function VoluntaryWork() {
         </div>
     );
 }
+

@@ -15,6 +15,7 @@ export default function Volunteer() {
 
     const { userinfo } = useUserInfo();
     const [formdata] = Form.useForm();
+    const [educationlevel, seteducationlevel] = useState([]);
     const [loading, setLoading] = useState(false);
 
     const fetchData = useCallback(() => {
@@ -39,6 +40,12 @@ export default function Volunteer() {
     }, [volunteerid, userinfo.volunteerid, formdata]);
 
     useEffect(() => {
+        api.get(`/api/record/base/get_dropdown_item_list?type=educationlevel`)
+            .then((res) => {
+                if (res?.status === 200 && res?.data?.rettype === 0) {
+                    seteducationlevel(res?.data?.retdata);
+                }
+            });
         fetchData();
     }, [fetchData]);
 
@@ -54,8 +61,8 @@ export default function Volunteer() {
 
     const onFinish = async (values) => {
         let fdata = formdata.getFieldsValue();
-        fdata.birthday = fdata.birthday.format('YYYY/MM/DD');
-        fdata.joindate = fdata.joindate.format('YYYY/MM/DD');
+        //fdata.birthday = fdata.birthday.format('YYYY/MM/DD');
+        //fdata.joindate = fdata.joindate.format('YYYY/MM/DD');
 
         await api.post(`/api/Volunteer/set_Volunteer`, fdata).then((res) => {
             if (res?.status === 200 && res?.data?.rettype === 0) {
@@ -94,6 +101,7 @@ export default function Volunteer() {
                     <Descriptions.Item label="Элссэн огноо /улаан загалмайд/">{formdata.getFieldValue('householdgroupname')}</Descriptions.Item>
                     <Descriptions.Item label="Төрсөн газар">{formdata.getFieldValue('householdgroupname')}</Descriptions.Item>
                     <Descriptions.Item label="Цусны бүлэг">{formdata.getFieldValue('bloodgroupid')}</Descriptions.Item>
+                    <Descriptions.Item label="Боловсролын түвшин">{formdata.getFieldValue('educationlevelid')}</Descriptions.Item>
                     <Descriptions.Item label="Эрүүл мэндийн байдал">{formdata.getFieldValue('reason')}</Descriptions.Item>
                     <Descriptions.Item label="Фэйсбүүк хаяг">{formdata.getFieldValue('reason')}</Descriptions.Item>
                 </Descriptions>
@@ -195,6 +203,12 @@ export default function Volunteer() {
                     <Form.Item name="bloodgroupid" label="Цусны бүлэг">
                         <Select style={{ width: "100%" }}>
 
+                        </Select>
+                    </Form.Item>
+                    
+                    <Form.Item name="educationlevelid" label="Боловсролын түвшин">
+                        <Select style={{ width: "100%" }}>
+                            {educationlevel?.map((t, i) => (<Select.Option key={i} value={t.id}>{t.name}</Select.Option>))}
                         </Select>
                     </Form.Item>
 

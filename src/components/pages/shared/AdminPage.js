@@ -4,6 +4,7 @@ import UserListPage from "../user/UserListPage";
 import District from "../baseinfo/District";
 import Committee from "../baseinfo/Committee";
 import EducationLevel from "../baseinfo/EducationLevel";
+import VoluntaryWork from "../baseinfo/VoluntaryWork";
 
 export default function AdminPage() {
 
@@ -30,9 +31,14 @@ export default function AdminPage() {
                         children: <Committee />,
                     },
                     {
-                        label: `Боловсролын түвшинг`,
+                        label: `Боловсролын түвшин`,
                         key: "6",
                         children: <EducationLevel />,
+                    },
+                    {
+                        label: `Сайн дурын ажлын төрөл`,
+                        key: "7",
+                        children: <VoluntaryWork />,
                     },
                 ]}
             />
