@@ -1,108 +1,157 @@
-import React from 'react'
-import { Button, Form, Input } from 'antd';
-import PropTypes from 'prop-types';
+import React, { useState } from "react";
+import {
+  Button,
+  Checkbox,
+  Form,
+  Input,
+  message,
+  Popconfirm,
+  Spin,
+  Row,
+  Col,
+  Space,
+} from "antd";
+import PropTypes from "prop-types";
 import { api } from "../../system/api";
-import './Register.css'
+
+import "./Register.css";
+
+import logo from "../../../assets/images/logo.png";
+import bg from "../../../assets/images/bg.jpg";
 
 export default function Register({ setRegister }) {
+  const [loading, setLoading] = useState(false);
+  async function addVolunteer(volunteerdata) {
+    return api
+      .post("/api/Volunteer/set_Volunteer", volunteerdata)
+      .then((response) => response?.data?.retdata);
+  }
+  async function addUser(userdata) {
+    return api
+      .post("/api/systems/User/set_user", userdata)
+      .then((response) => response?.data?.retdata);
+  }
 
-    async function addVolunteer(volunteerdata) {
-        return api
-            .post("/api/Volunteer/set_Volunteer", volunteerdata)
-            .then((response) => response?.data?.retdata);
-    }
-    async function addUser(userdata) {
-        return api
-            .post("/api/systems/User/set_user", userdata)
-            .then((response) => response?.data?.retdata);
-    }
+  const onFinish = async (values) => {
+    var volunteerdata = await addVolunteer(values);
+    await addUser({
+      username: values.email,
+      password: values.password,
+      email: values.email,
+      roleid: 5,
+      volunteerid: volunteerdata.volunteerid,
+    });
 
-    const onFinish = async (values) => {
+    setRegister(false);
+  };
 
-        var volunteerdata = await addVolunteer(values);
-        await addUser({
-            username: values.email,
-            password: values.password,
-            email: values.email,
-            roleid:5,
-            volunteerid: volunteerdata.volunteerid
-        });
+  return (
+    <Spin spinning={loading}>
+      <Row>
+        <Col span={9}>
+          <div className="content">
+            <div style={{ textAlign: "center" }}>
+              <img src={logo} width={70} style={{ paddingBottom: 10 }}></img>
+            </div>
+            <Space align={"center"}></Space>
+            <h5 className="text-center text-uppercase text-primary">
+              Монголын улаан загалмай нийгэмлэг
+            </h5>
+            <p className="text-center font-italic">
+              Мэдээллийн менежментийн систем
+            </p>
+            <hr />
+            <h3 className="mb-3 ">Бүртгэл үүсгэх</h3>
 
-        setRegister(false);
-    };
+            <Form
+              onFinish={onFinish}
+              name="register"
+              labelCol={{ span: 8 }}
+              style={{ maxWidth: 400, textAlign : 'center' }}
+              
+            >
+              <Form.Item
+                name="lastname"
+                label="Эцэг\Эх\-н нэр"
+                rules={[{ required: true,  message: "Эцэг, Эхийн нэрийг оруулна уу!"}]}
+              >
+                <Input placeholder="Овог"/>
+              </Form.Item>
 
-    return (
-        <div className="content">
+              <Form.Item
+                name="firstname"
+                label="Өөрийн нэр"
+                rules={[
+                  {
+                    required: true,
+                    message: "Өөрийн нэрийг оруулна уу!",
+                  },
+                ]}
+              >
+                <Input placeholder="Нэр"/>
+              </Form.Item>
 
-            <h5>Бүртгэл үүсгэх</h5>
+              <Form.Item
+                name="email"
+                label="И-мэйл"
+                rules={[
+                  {
+                    required: true,
+                    type: "email",
+                    message: "И-мэйл хаягаа оруулна уу!",
+                  },
+                ]}
+              >
+                <Input placeholder="И-мэйл"/>
+              </Form.Item>
 
-            <Form onFinish={onFinish} >
+              <Form.Item
+                name="password"
+                label="Нууц үг"
+                rules={[
+                  {
+                    required: true,
+                    message: "Нууц үг оруулна уу!",
+                  },
+                ]}
+              >
+                <Input type="password" placeholder="Нууц үг" />
+              </Form.Item>
 
+              <Form.Item
+                name="password"
+                label="Нууц үг давтах"
+                rules={[
+                  {
+                    required: true,
+                    message: "Нууц үг давтах!",
+                  },
+                ]}
+              >
+                <Input type="password" placeholder="Нууц үг давтах" />
+              </Form.Item>
 
-                <Form.Item name="lastname" label="Эцэг\Эх\-н нэр">
-                    <Input />
-                </Form.Item>
-
-                <Form.Item
-                    name="firstname"
-                    label="Өөрийн нэр"
-                    rules={[
-                        {
-                            required: true,
-                            message: 'Өөрийн нэрийг оруулна уу!',
-                        },
-                    ]}>
-                    <Input />
-                </Form.Item>
-
-                <Form.Item name="email" label="Имэйл" rules={[{ required: true, type: 'email', message: 'Имэйл хаягаа оруулна уу!' }]}>
-                    <Input />
-                </Form.Item>
-
-                <Form.Item
-                    name="password"
-                    label="Нууц үг"
-                    rules={[
-                        {
-                            required: true,
-                            message: 'Please input your Password!',
-                        },
-                    ]}
-                >
-                    <Input
-                        type="password"
-                        placeholder="Password"
-                    />
-                </Form.Item>
-
-                <Form.Item
-                    name="password"
-                    label="Нууц үг давтах"
-                    rules={[
-                        {
-                            required: true,
-                            message: 'Please input your Password!',
-                        },
-                    ]}
-                >
-                    <Input
-                        type="password"
-                        placeholder="Password"
-                    />
-                </Form.Item>
-
-                <Form.Item>
-                    <Button type="primary" htmlType="submit">
-                        Нууц үг шинэчлэх имэйл илгээх
-                    </Button>
-                </Form.Item>
-
+              <Form.Item>
+                <Button type="primary" htmlType="submit" size="large" >
+                  Бүртгүүлэх
+                </Button>
+              </Form.Item>
             </Form>
-
-        </div>
-    )
+          </div>
+        </Col>
+        <Col span={15}>
+          <img
+            src={bg}
+            alt="zurag"
+            className="w-100 vh-100"
+            style={{ objectFit: "cover", objectPosition: "center" }}
+          />
+        </Col>
+      </Row>
+    </Spin>
+  );
 }
 
 Register.propTypes = {
-    setForgetPass: PropTypes.func.isRequired
+  setForgetPass: PropTypes.func.isRequired,
 };

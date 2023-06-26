@@ -84,13 +84,14 @@ export default function Login({ setToken }) {
                 rules={[
                   {
                     required: true,
-                    message: "Please input your Username!",
+                    type: "email",
+                    message: "Бүртгэлтэй и-мэйл хаягаа оруулна уу!",
                   },
                 ]}
               >
                 <Input
                   prefix={<UserOutlined className="site-form-item-icon" />}
-                  placeholder="Username"
+                  placeholder="И-мэйл хаяг"
                 />
               </Form.Item>
               <Form.Item
@@ -98,14 +99,14 @@ export default function Login({ setToken }) {
                 rules={[
                   {
                     required: true,
-                    message: "Please input your Password!",
+                    message: "Нууц үг оруулна уу!",
                   },
                 ]}
               >
                 <Input
                   prefix={<LockOutlined className="site-form-item-icon" />}
                   type="password"
-                  placeholder="Password"
+                  placeholder="Нууц үг"
                 />
               </Form.Item>
               <Form.Item>
