@@ -45,22 +45,24 @@ export default function Employment() {
 
     const gridcolumns = [
         {
-            title: "Зээл авсан огноо",
-            dataIndex: "loandate",
-            width: 200,
+            title: "Ажлын салбар",
+            dataIndex: "worktype",
         },
         {
-            title: "Бүлгээс зээлсэн мөнгөн дүн",
-            dataIndex: "amount",
-            align: 'right',
+            title: "Ажлын газар",
+            dataIndex: "workname",
         },
         {
-            title: "Зээлийн зориулалт",
-            dataIndex: "loanpurpose",
+            title: "Албан тушаал",
+            dataIndex: "position",
         },
         {
-            title: "Зээлийн зориулалтын тайлбар",
-            dataIndex: "loanpurposenote",
+            title: "Эхэлсэн огноо",
+            dataIndex: "startdate",
+        },
+        {
+            title: "Дууссан огноо",
+            dataIndex: "enddate",
         },
     ];
 
@@ -139,7 +141,7 @@ export default function Employment() {
                 icon={<PlusOutlined />}
                 onClick={(e) => newFormData()}
             >
-                Зээлийн мэдээлэл нэмэх
+                Ажлын мэдээлэл нэмэх
             </Button>
 
             <Table
@@ -154,7 +156,7 @@ export default function Employment() {
 
             <Drawer
                 forceRender
-                title="Зээлийн мэдээлэл нэмэх"
+                title="Ажлын мэдээлэл"
                 open={isModalOpen}
                 width={720}
                 onClose={handleCancel}
@@ -185,28 +187,22 @@ export default function Employment() {
                     labelAlign="left"
                     labelWrap
                 >
-                    <Form.Item name="loandate" label="Зээл авсан огноо">
-                        <DatePicker style={{ width: "100%" }} placeholder="Өдөр сонгох" />
-                    </Form.Item>
-                    <Form.Item name="volunteerid" label="volunteerid" hidden={true}>
-                        <Input />
-                    </Form.Item>
-
-                    <Form.Item name="amount" label="Бүлгээс зээлсэн мөнгөн дүн">
-                        <InputNumber
-                            style={{ width: "100%" }}
-                            placeholder="Мөнгөн дүн"
-                            formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                            parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
-                        />
-                    </Form.Item>
-                    <Form.Item name="loanpurposeid" label="Зээлийн зориулалт">
+                    <Form.Item name="worktype" label="Ажлын салбар">
                         <Select style={{ width: '100%' }}>
-                            {loanpurpose?.map((t, i) => (<Select.Option key={i} value={t.id}>{t.name}</Select.Option>))}
                         </Select>
                     </Form.Item>
-                    <Form.Item name="loanpurposenote" label="Зээлийн зориулалтын тайлбар">
-                        <Input.TextArea />
+                    <Form.Item name="workname" label="Ажлын газар">
+                        <Select style={{ width: '100%' }}>
+                        </Select>
+                    </Form.Item>
+                    <Form.Item name="position" label="Албан тушаал" hidden={true}>
+                        <Input  style={{ width: "100%" }} placeholder="Албан тушаал" />
+                    </Form.Item>
+                    <Form.Item name="startdate" label="Эхэлсэн огноо">
+                        <DatePicker style={{ width: "100%" }} placeholder="Эхэлсэн огноо" />
+                    </Form.Item>
+                    <Form.Item name="enddate" label="Дууссан огноо">
+                        <DatePicker style={{ width: "100%" }} placeholder="Дууссан огноо" />
                     </Form.Item>
                 </Form>
             </Drawer>

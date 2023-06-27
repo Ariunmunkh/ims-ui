@@ -25,7 +25,7 @@ export default function VolunteerPage() {
                         children: <VoluntaryWork />,
                     },
                     {
-                        label: `Сургууль, ангийн мэдээлэл`,
+                        label: `Боловсрол`,
                         key: "3",
                         children: <Education />,
                     },
