@@ -7,6 +7,7 @@ import {
     SettingOutlined,
     HomeOutlined,
     LogoutOutlined,
+    UserSwitchOutlined,
 } from "@ant-design/icons";
 import { Layout, Menu, theme, Space, Button, Typography } from "antd";
 
@@ -66,7 +67,7 @@ export default function MasterPage() {
                     },
                     {
                         key: "volunteer",
-                        icon: <HomeOutlined />,
+                        icon: <UserSwitchOutlined />,
                         label: "Үндсэн мэдээлэл",
                     }
                 ];
