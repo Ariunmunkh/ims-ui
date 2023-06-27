@@ -16,6 +16,7 @@ import useToken from "../../system/useToken";
 import useUserInfo from "../../system/useUserInfo";
 import NotFound from "./NotFound";
 import AccessDenied from "./AccessDenied";
+import Home from "../volunteer/Home";
 
 const { Header, Sider, Content } = Layout;
 const { Text } = Typography;
@@ -59,9 +60,14 @@ export default function MasterPage() {
                         label: "Суурь бүртгэл",
                     },
                     {
-                        key: "volunteer",
+                        key: "home",
                         icon: <HomeOutlined />,
                         label: "Нүүр",
+                    },
+                    {
+                        key: "volunteer",
+                        icon: <HomeOutlined />,
+                        label: "Үндсэн мэдээлэл",
                     }
                 ];
             default:
@@ -151,6 +157,10 @@ export default function MasterPage() {
                         <Route
                             path="/adminpage"
                             element={userinfo?.roleid ? <AdminPage /> : <AccessDenied />}
+                        />
+                        <Route
+                            path="/home"
+                            element={userinfo?.roleid ? <Home /> : <AccessDenied />}
                         />
                         <Route path="*" element={<NotFound />} />
                     </Routes>
