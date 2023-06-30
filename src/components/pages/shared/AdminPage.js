@@ -5,6 +5,7 @@ import District from "../baseinfo/District";
 import Committee from "../baseinfo/Committee";
 import EducationLevel from "../baseinfo/EducationLevel";
 import VoluntaryWork from "../baseinfo/VoluntaryWork";
+import Hutulbur from "../baseinfo/Hutulbur";
 
 export default function AdminPage() {
 
@@ -22,24 +23,31 @@ export default function AdminPage() {
                     },
                     {
                         label: `Сум, Дүүрэг`,
-                        key: "4",
+                        key: "2",
                         children: <District />,
                     },
                     {
                         label: `Дунд шатны хорооны бүртгэл`,
-                        key: "5",
+                        key: "3",
                         children: <Committee />,
                     },
                     {
                         label: `Боловсролын түвшин`,
-                        key: "6",
+                        key: "4",
                         children: <EducationLevel />,
                     },
                     {
                         label: `Сайн дурын ажлын төрөл`,
-                        key: "7",
+                        key: "5",
                         children: <VoluntaryWork />,
                     },
+                    {
+                        label: `ДШХ-ны сарын мэдээний индикатор`,
+                        key: "6",
+                        children: <Hutulbur />,
+                    },
+                   
+                    
                 ]}
             />
         </div>
