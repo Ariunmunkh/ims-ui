@@ -215,7 +215,6 @@ export default function Training() {
 
       <Table
         size="small"
-        loading={loading}
         columns={gridcolumns}
         dataSource={griddata}
         onRow={tableOnRow}
