@@ -19,6 +19,7 @@ import {
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { PlusOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
+import TextArea from "antd/es/input/TextArea";
 const { confirm } = Modal;
 const { Text } = Typography;
 
@@ -99,28 +100,24 @@ export default function Training() {
 
   const gridcolumns = [
     {
-      title: "Гадаад хэл",
-      dataIndex: "languages",
+      title: "Сургалтын нэр",
+      dataIndex: "training",
     },
     {
       title: "Түвшин",
       dataIndex: "level",
     },
     {
-      title: "Сурсан хугацаа /жилээр/",
+      title: "Сургалтад хамрагдсан өдөр",
       dataIndex: "duration",
     },
     {
-      title: "Түвшин шалгасан оноотой эсэх",
-      dataIndex: "isscore",
+      title: "Сургалтад хамрагдсан байршил",
+      dataIndex: "location",
     },
     {
-      title: "Шалгалтын нэр",
-      dataIndex: "testname",
-    },
-    {
-      title: "Шалгалтын оноо",
-      dataIndex: "score",
+      title: "Нэмэлт мэдээлэл",
+      dataIndex: "description",
     },
   ];
 
@@ -210,7 +207,7 @@ export default function Training() {
         icon={<PlusOutlined />}
         onClick={(e) => newFormData()}
       >
-        Гадаад хэлний мэдлэг нэмэх
+        Хамрагдсан сургалт нэмэх
       </Button>
 
       <Table
@@ -223,7 +220,7 @@ export default function Training() {
       ></Table>
       <Drawer
         forceRender
-        title="Гадаад хэлний мэдлэг нэмэх"
+        title="Хамрагдсан сургалт нэмэх"
         open={isModalOpen}
         width={720}
         onClose={handleCancel}
@@ -281,7 +278,7 @@ export default function Training() {
           <Form.Item name="entryid" hidden={true} />
           <Form.Item name="householdid" hidden={true} />
 
-          <Form.Item name="languages" label="Гадаад хэл">
+          <Form.Item name="training" label="Сургалтын нэр">
             <Select style={{ width: "100%" }}></Select>
           </Form.Item>
           <Form.Item name="level" label="Түвшин">
@@ -289,42 +286,22 @@ export default function Training() {
               {/* Анхан шат, Дунд шат, Ахисан шат */}
             </Select>
           </Form.Item>
-          <Form.Item name="duration" label="Сурсан хугацаа /жилээр/">
+          <Form.Item name="duration" label="Сургалтад хамрагдсан өдөр">
             <InputNumber
               placeholder="Хугацаа"
               min={1}
               style={{ width: "100%" }}
             />
           </Form.Item>
-          <Form.Item
-            name="isscore"
-            label="Түвшин шалгасан оноотой эсэх"
-            valuePropName="checked"
-          >
-            <Switch
-              checkedChildren="Тийм"
-              unCheckedChildren="Үгүй"
-              style={{ width: "100%" }}
-            />
+          <Form.Item name="location" label="Сургалтад хамрагдсан байршил">
+           <Input/>
           </Form.Item>
 
-          <Form.Item name="testname" label="Шалгалтын нэр">
-            <Select style={{ width: "100%" }}></Select>
-          </Form.Item>
-          <Form.Item name="duration" label="Сурсан хугацаа /жилээр/">
-            <InputNumber
-              placeholder="Хугацаа"
-              min={1}
-              style={{ width: "100%" }}
-            />
-          </Form.Item>
-          <Form.Item name="score" label="Шалгалтын оноо">
-            <Input
-              placeholder="Шалгалтын оноо"
-              min={0}
-              max={12}
-              style={{ width: "100%" }}
-            />
+          <Form.Item
+            name="description"
+            label="Нэмэлт мэдээлэл"
+          >
+            <TextArea />
           </Form.Item>
         </Form>
       </Drawer>

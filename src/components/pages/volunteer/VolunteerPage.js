@@ -25,23 +25,28 @@ export default function VolunteerPage() {
                         children: <VoluntaryWork />,
                     },
                     {
-                        label: `Боловсрол`,
+                        label: `Хамрагдсан сургалт`,
                         key: "3",
+                        children: <Training />,
+                    },
+                    {
+                        label: `Боловсрол`,
+                        key: "4",
                         children: <Education />,
                     },
                     {
                         label: `Эрхэлсэн ажил`,
-                        key: "4",
+                        key: "5",
                         children: <Employment />,
                     },
                     {
                         label: `Гадаад хэлний мэдлэг`,
-                        key: "5",
+                        key: "6",
                         children: <Training />,
                     },
                     {
                         label: `Шаардлагатай үед холбоо барих хүний мэдээлэл`,
-                        key: "6",
+                        key: "7",
                         children: <EmergencyContact />,
                     },
                 ]}

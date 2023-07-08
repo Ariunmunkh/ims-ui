@@ -27,8 +27,8 @@ export default function Home() {
   ];
   return userinfo.roleid === 5 ? (
     <>
-      <Row gutter={16}>
-        <Col xs={24} lg={{ span: 12 }}>
+          <Row gutter={16}>
+        <Col xs={24} lg={{ span: 8 }}>
           <Card
             hoverable={true}
             style={{
@@ -42,15 +42,15 @@ export default function Home() {
               style={{ textAlign: "center" }}
               // title={<Title ellipsis={true} autos level={4}>Баянзүрх дүүргийн улаан загалмайн хороо</Title>}
               title={
-                <h5 className="text-primary font-weight-bold">
+                <h6 className="text-primary font-weight-bold">
                   Баянзүрх дүүргийн улаан загалмайн хороо
-                </h5>
+                </h6>
               }
               description="7777-0508"
             />
           </Card>
         </Col>
-        <Col xs={24} lg={{ span: 12 }}>
+        <Col xs={24} lg={{ span: 8 }}>
           <Card
             hoverable={true}
             style={{
@@ -75,6 +75,31 @@ export default function Home() {
             />
           </Card>
         </Col>
+        <Col xs={24} lg={{ span: 8 }}>
+          <Card
+            hoverable={true}
+            style={{
+              textAlign: "center",
+              backgroundColor: "#FAFAFA",
+            }}
+            extra={
+              <Avatar
+                style={{
+                  backgroundColor: "#1677FF", 
+                }}
+              >
+                K
+              </Avatar>
+            }
+            title="МУЗН-ийн хэрэгжүүлж буй төсөл, хөтөлбөрүүд"
+          >
+            <Meta
+              style={{ textAlign: "center" }}
+              title={<h5 className="text-primary font-weight-bold">5</h5>}
+              description="Хэрэгжүүлж буй төсөл, хөтөлбөрийн тоо"
+            />
+          </Card>
+        </Col>
       </Row>
       <br />
       <Row>
@@ -96,6 +121,7 @@ export default function Home() {
     </>
   ) : (
     <>
+
       <Row gutter={16}>
         <Col xs={24} lg={{ span: 8 }}>
         <Card

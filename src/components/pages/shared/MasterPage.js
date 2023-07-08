@@ -38,7 +38,7 @@ export default function MasterPage() {
       case "1":
         return [
           {
-            key: "adminpage",
+            key: "admin",
             icon: <SettingOutlined />,
             label: "Суурь бүртгэл",
           },
@@ -55,7 +55,7 @@ export default function MasterPage() {
       case "5":
         return [
           {
-            key: "adminpage",
+            key: "admin",
             icon: <SettingOutlined />,
             label: "Суурь бүртгэл",
           },
@@ -162,14 +162,14 @@ export default function MasterPage() {
           <Routes>
             <Route
               path="/"
-              element={userinfo?.roleid ? <VolunteerPage /> : <AccessDenied />}
+              element={userinfo?.roleid ? <Home /> : <AccessDenied />}
             />
             <Route
               path="/volunteer/:volunteerid"
               element={userinfo?.roleid ? <VolunteerPage /> : <AccessDenied />}
             />
             <Route
-              path="/adminpage"
+              path="/admin"
               element={userinfo?.roleid ? <AdminPage /> : <AccessDenied />}
             />
             <Route
@@ -179,6 +179,10 @@ export default function MasterPage() {
             <Route
               path="/report"
               element={userinfo?.roleid ? <Report /> : <AccessDenied />}
+            />
+             <Route
+              path="/volunteer"
+              element={userinfo?.roleid ? <VolunteerPage /> : <AccessDenied />}
             />
             <Route path="*" element={<NotFound />} />
           </Routes>

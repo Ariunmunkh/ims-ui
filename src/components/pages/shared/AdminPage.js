@@ -6,6 +6,8 @@ import Committee from "../baseinfo/Committee";
 import EducationLevel from "../baseinfo/EducationLevel";
 import VoluntaryWork from "../baseinfo/VoluntaryWork";
 import Hutulbur from "../baseinfo/Hutulbur";
+import Project from "../baseinfo/Project";
+import Surgalt from "../baseinfo/Surgalt";
 
 export default function AdminPage() {
 
@@ -45,6 +47,16 @@ export default function AdminPage() {
                         label: `ДШХ-ны сарын мэдээний индикатор`,
                         key: "6",
                         children: <Hutulbur />,
+                    },
+                    {
+                        label: `МУЗН-ийн хэрэгжүүлж буй төсөл, хөтөлбөр`,
+                        key: "7",
+                        children: <Project />,
+                    },
+                    {
+                        label: `Сургалтын төрөл`,
+                        key: "8",
+                        children: <Surgalt />,
                     },
                    
                     
