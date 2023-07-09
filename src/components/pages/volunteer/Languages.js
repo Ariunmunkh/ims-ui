@@ -2,24 +2,48 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { api } from "../../system/api";
 import useUserInfo from "../../system/useUserInfo";
-import { Table, Modal, Drawer, Space, Form, Button, Input, Select, DatePicker, InputNumber, Typography, } from "antd";
+import {
+    Table,
+    Modal,
+    Drawer,
+    Space,
+    Form,
+    Button,
+    Switch,
+    InputNumber,
+    Select,
+    Input
+} from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { PlusOutlined } from "@ant-design/icons";
-import dayjs from 'dayjs';
 const { confirm } = Modal;
-const { Text } = Typography;
 
-export default function Employment() {
+export default function Languages() {
     const { userinfo } = useUserInfo();
     const { volunteerid } = useParams();
     const [griddata, setGridData] = useState();
+    const [languages, setlanguages] = useState([]);
     const [loading, setLoading] = useState(false);
     const [formdata] = Form.useForm();
-    const [loanpurpose, setloanpurpose] = useState([]);
+    const [levelList] = useState([
+        {
+            value: 1,
+            label: "Анхан шат",
+        },
+        {
+            value: 2,
+            label: "Дунд шат"
+        },
+        {
+            value: 3,
+            label: "Ахисан шат",
+        }
+    ]);
 
     const fetchData = useCallback(() => {
         setLoading(true);
-        api.get(`/api/Volunteer/get_VolunteerEmployment_list?id=${volunteerid ?? userinfo.volunteerid}`)
+        api
+            .get(`/api/Volunteer/get_VolunteerLanguages_list?id=${volunteerid ?? userinfo.volunteerid}`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setGridData(res?.data?.retdata);
@@ -28,7 +52,6 @@ export default function Employment() {
             .finally(() => {
                 setLoading(false);
             });
-
     }, [volunteerid, userinfo.volunteerid]);
 
     const tableOnRow = (record, rowIndex) => {
@@ -40,29 +63,39 @@ export default function Employment() {
     };
 
     useEffect(() => {
+        api.get(`/api/record/base/get_dropdown_item_list?type=languages`)
+            .then((res) => {
+                if (res?.status === 200 && res?.data?.rettype === 0) {
+                    setlanguages(res?.data?.retdata);
+                }
+            });
         fetchData();
     }, [fetchData]);
 
     const gridcolumns = [
         {
-            title: "Ажлын салбар",
-            dataIndex: "employment",
+            title: "Гадаад хэл",
+            dataIndex: "languageid",
         },
         {
-            title: "Ажлын газар",
-            dataIndex: "company",
+            title: "Түвшин",
+            dataIndex: "levelid",
         },
         {
-            title: "Албан тушаал",
-            dataIndex: "job",
+            title: "Сурсан хугацаа /Жилээр/",
+            dataIndex: "studyyear",
         },
         {
-            title: "Эхэлсэн огноо",
-            dataIndex: "begindate",
+            title: "Түвшин шалгасан оноотой эсэх",
+            dataIndex: "isscore",
         },
         {
-            title: "Дууссан огноо",
-            dataIndex: "enddate",
+            title: "Шалгалтын нэр",
+            dataIndex: "testname",
+        },
+        {
+            title: "Шалгалтын оноо",
+            dataIndex: "testscore",
         },
     ];
 
@@ -91,9 +124,7 @@ export default function Employment() {
 
     const onDelete = async () => {
         await api
-            .delete(
-                `/api/Volunteer/delete_VolunteerEmployment?id=${formdata.getFieldValue("id")}`
-            )
+            .delete(`/api/Volunteer/delete_VolunteerLanguages?id=${formdata.getFieldValue("id")}`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setIsModalOpen(false);
@@ -104,11 +135,9 @@ export default function Employment() {
 
     const onFinish = async (values) => {
         let fdata = formdata.getFieldsValue();
-        //fdata.loandate = fdata.loandate.format('YYYY.MM.DD HH:mm:ss');
-        fdata.begindate = null;
-        fdata.enddate = null;
+        //fdata.meetingdate = fdata.meetingdate.format('YYYY.MM.DD HH:mm:ss');
         await api
-            .post(`/api/Volunteer/set_VolunteerEmployment`, fdata)
+            .post(`/api/Volunteer/set_VolunteerLanguages`, fdata)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setIsModalOpen(false);
@@ -118,27 +147,28 @@ export default function Employment() {
     };
 
     const getFormData = async (id) => {
-        await api.get(`/api/Volunteer/get_VolunteerEmployment?id=${id}`).then((res) => {
-            if (res?.status === 200 && res?.data?.rettype === 0) {
-                let fdata = res?.data?.retdata[0];
-                fdata.begindate = null;
-                fdata.enddate = null;
-                //fdata.loandate = dayjs(fdata.loandate, 'YYYY.MM.DD HH:mm:ss');
-                formdata.setFieldsValue(fdata);
-                showModal();
-            }
-        });
+        await api
+            .get(`/api/Volunteer/get_VolunteerLanguages?id=${id}`)
+            .then((res) => {
+                if (res?.status === 200 && res?.data?.rettype === 0) {
+                    let fdata = res?.data?.retdata[0];
+                    //fdata.meetingdate = dayjs(fdata.meetingdate, 'YYYY.MM.DD HH:mm:ss');
+                    formdata.setFieldsValue(fdata);
+                    showModal();
+                }
+            });
     };
 
     const newFormData = async () => {
         formdata.setFieldsValue({
             id: 0,
             volunteerid: volunteerid ?? userinfo.volunteerid,
-            employment: null,
-            company: null,
-            job: null,
-            begindate: null,
-            enddate: null,
+            languageid: null,
+            levelid: null,
+            studyyear: null,
+            isscore: null,
+            testname: null,
+            testscore: null,
             note: null
         });
         showModal();
@@ -151,7 +181,7 @@ export default function Employment() {
                 icon={<PlusOutlined />}
                 onClick={(e) => newFormData()}
             >
-                Ажлын мэдээлэл нэмэх
+                Боловсрол нэмэх
             </Button>
 
             <Table
@@ -162,15 +192,17 @@ export default function Employment() {
                 onRow={tableOnRow}
                 pagination={true}
                 rowKey={(record) => record.id}
-            ></Table>
+                summary={(pageData) => {
 
+                }}
+            ></Table>
             <Drawer
                 forceRender
-                title="Ажлын мэдээлэл"
+                title="Боловсрол нэмэх"
                 open={isModalOpen}
                 width={720}
                 onClose={handleCancel}
-                bodyStyle={{ paddingBottom: 80, }}
+                bodyStyle={{ paddingBottom: 80 }}
                 extra={
                     <Space>
                         <Button
@@ -196,31 +228,63 @@ export default function Employment() {
                     wrapperCol={{ span: 14 }}
                     labelAlign="left"
                     labelWrap
+                    onFieldsChange={(changedFields, allFields) => {
+
+                    }}
                 >
-                    <Form.Item name="id" hidden={true}>
+                    <Form.Item name="id" hidden={true} >
                         <Input />
                     </Form.Item>
-                    <Form.Item name="volunteerid" hidden={true}>
+                    <Form.Item name="volunteerid" hidden={true}  >
                         <Input />
                     </Form.Item>
 
-                    <Form.Item name="employment" label="Ажлын салбар">
-                        <Input placeholder="Ажлын салбар" />
+                    <Form.Item name="languageid" label="Гадаад хэл" >
+                        <Select style={{ width: "100%" }}>
+                            {languages?.map((t, i) => (<Select.Option key={i} value={t.id}>{t.name}</Select.Option>))}
+                        </Select>
                     </Form.Item>
-                    <Form.Item name="company" label="Ажлын газар">
-                        <Input placeholder="Ажлын газар" />
+
+                    <Form.Item name="levelid" label="Түвшин">
+                        <Select
+                            style={{ width: "100%" }}
+                            options={levelList}>
+                        </Select>
                     </Form.Item>
-                    <Form.Item name="job" label="Албан тушаал">
-                        <Input style={{ width: "100%" }} placeholder="Албан тушаал" />
+
+                    <Form.Item name="studyyear" label="Сурсан хугацаа /Жилээр/">
+                        <InputNumber
+                            style={{ width: "100%" }}
+                            placeholder="Сурсан хугацаа /Жилээр/"
+                        />
                     </Form.Item>
-                    <Form.Item name="begindate" label="Эхэлсэн огноо">
-                        <DatePicker style={{ width: "100%" }} placeholder="Эхэлсэн огноо" />
+
+                    <Form.Item
+                        name="isscore"
+                        label="Түвшин шалгасан оноотой эсэх"
+                        valuePropName="checked"
+                    >
+                        <Switch
+                            checkedChildren="Тийм"
+                            unCheckedChildren="Үгүй"
+                            style={{ width: "100%" }}
+                        />
                     </Form.Item>
-                    <Form.Item name="enddate" label="Дууссан огноо">
-                        <DatePicker style={{ width: "100%" }} placeholder="Дууссан огноо" />
+
+                    <Form.Item name="testname" label="Шалгалтын нэр">
+                        <Input style={{ width: "100%" }} placeholder="Шалгалтын нэр" />
                     </Form.Item>
+
+
+                    <Form.Item name="testscore" label="Шалгалтын оноо">
+                        <InputNumber
+                            style={{ width: "100%" }}
+                            placeholder="Шалгалтын оноо"
+                        />
+                    </Form.Item>
+
                     <Form.Item name="note" label="Нэмэлт мэдээлэл">
-                        <Input.TextArea />
+                        <Input style={{ width: "100%" }} placeholder="Нэмэлт мэдээлэл" />
                     </Form.Item>
                 </Form>
             </Drawer>

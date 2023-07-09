@@ -7,7 +7,8 @@ import EducationLevel from "../baseinfo/EducationLevel";
 import VoluntaryWork from "../baseinfo/VoluntaryWork";
 import Hutulbur from "../baseinfo/Hutulbur";
 import Project from "../baseinfo/Project";
-import Surgalt from "../baseinfo/Surgalt";
+import Training from "../baseinfo/Training";
+import Languages from "../baseinfo/Languages";
 
 export default function AdminPage() {
 
@@ -56,10 +57,15 @@ export default function AdminPage() {
                     {
                         label: `Сургалтын төрөл`,
                         key: "8",
-                        children: <Surgalt />,
+                        children: <Training />,
                     },
-                   
-                    
+                    {
+                        label: `Гадаад хэлний төрөл`,
+                        key: "9",
+                        children: <Languages />,
+                    },
+
+
                 ]}
             />
         </div>

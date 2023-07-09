@@ -6,12 +6,12 @@ import { PlusOutlined } from "@ant-design/icons";
 import { SearchOutlined } from "@ant-design/icons";
 import Highlighter from "react-highlight-words";
 const { confirm } = Modal;
-export default function Surgalt() {
+export default function Languages() {
 
     const [griddata, setGridData] = useState();
     const [loading, setLoading] = useState(true);
-    const [formtitle] = useState('Хамрагдах боломжтой сургалт');
-    const [formtype] = useState('training');
+    const [formtitle] = useState('Гадаад хэлний төрөл');
+    const [formtype] = useState('languages');
     const [formdata] = Form.useForm();
 
     const fetchData = useCallback(async () => {
@@ -292,7 +292,11 @@ export default function Surgalt() {
                         <Input />
                     </Form.Item>
 
-                    <Form.Item name="name" label="Сургалтын нэр" >
+                    <Form.Item name="type" label="Төрөл" hidden={true} >
+                        <Input />
+                    </Form.Item>
+
+                    <Form.Item name="name" label="Нэр" >
                         <Input />
                     </Form.Item>
 

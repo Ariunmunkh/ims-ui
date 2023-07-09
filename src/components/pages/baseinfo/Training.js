@@ -10,8 +10,8 @@ export default function Training() {
 
     const [griddata, setGridData] = useState();
     const [loading, setLoading] = useState(true);
-    const [formtitle] = useState('Боловсролын түвшин');
-    const [formtype] = useState('educationlevel');
+    const [formtitle] = useState('Хамрагдах боломжтой сургалт');
+    const [formtype] = useState('training');
     const [formdata] = Form.useForm();
 
     const fetchData = useCallback(async () => {

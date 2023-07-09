@@ -4,6 +4,7 @@ import VoluntaryWork from "./VoluntaryWork";
 import Education from "./Education";
 import Employment from "./Employment";
 import Training from "./Training";
+import Languages from "./Languages";
 import EmergencyContact from "./EmergencyContact";
 import Volunteer from "./Volunteer";
 
@@ -42,7 +43,7 @@ export default function VolunteerPage() {
                     {
                         label: `Гадаад хэлний мэдлэг`,
                         key: "6",
-                        children: <Training />,
+                        children: <Languages />,
                     },
                     {
                         label: `Шаардлагатай үед холбоо барих хүний мэдээлэл`,
