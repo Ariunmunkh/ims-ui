@@ -21,6 +21,7 @@ export default function EmergencyContact() {
     const { userinfo } = useUserInfo();
     const { volunteerid } = useParams();
     const [griddata, setGridData] = useState();
+    const [relationship, setrelationship] = useState([]);
     const [loading, setLoading] = useState(true);
     const [formdata] = Form.useForm();
 
@@ -47,13 +48,19 @@ export default function EmergencyContact() {
     };
 
     useEffect(() => {
+        api.get(`/api/record/base/get_dropdown_item_list?type=relationship`)
+            .then((res) => {
+                if (res?.status === 200 && res?.data?.rettype === 0) {
+                    setrelationship(res?.data?.retdata);
+                }
+            });
         fetchData();
     }, [fetchData]);
 
     const gridcolumns = [
         {
             title: "Таны юу болох",
-            dataIndex: "relationshipid",
+            dataIndex: "relationship",
         },
         {
             title: "Овог, нэр",
@@ -197,6 +204,7 @@ export default function EmergencyContact() {
 
                     <Form.Item name="relationshipid" label="Таны юу болох">
                         <Select style={{ width: '100%' }}>
+                            {relationship?.map((t, i) => (<Select.Option key={i} value={t.id}>{t.name}</Select.Option>))}
                         </Select>
                     </Form.Item>
 

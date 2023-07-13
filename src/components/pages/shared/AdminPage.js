@@ -9,6 +9,7 @@ import Hutulbur from "../baseinfo/Hutulbur";
 import Project from "../baseinfo/Project";
 import Training from "../baseinfo/Training";
 import Languages from "../baseinfo/Languages";
+import Relationship from "../baseinfo/Relationship";
 
 export default function AdminPage() {
 
@@ -63,6 +64,11 @@ export default function AdminPage() {
                         label: `Гадаад хэлний төрөл`,
                         key: "9",
                         children: <Languages />,
+                    },
+                    {
+                        label: `Таны юу болох`,
+                        key: "10",
+                        children: <Relationship />,
                     },
 
 

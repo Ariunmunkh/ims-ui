@@ -1,51 +1,23 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useCallback } from "react";
 import { api } from "../../system/api";
-import { Table, Modal, Drawer, Form, Space, Button, Input, Select } from "antd";
+import { Table, Modal, Drawer, Form, Space, Button, Input } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { PlusOutlined } from "@ant-design/icons";
 import { SearchOutlined } from "@ant-design/icons";
 import Highlighter from "react-highlight-words";
 const { confirm } = Modal;
-export default function UserListPage() {
-    const nulldata = {
-        userid: 0,
-        roleid: 1,
-        username: null,
-        email: null,
-        password: null,
-        coach: null,
-        districtid: null,
-    };
+export default function Relationship() {
+
     const [griddata, setGridData] = useState();
     const [loading, setLoading] = useState(true);
+    const [formtitle] = useState('Таны юу болох');
+    const [formtype] = useState('relationship');
     const [formdata] = Form.useForm();
-    const [rolelist] = useState([
-        {
-            value: 1,
-            label: "Admin",
-        },
-        {
-            value: 2,
-            label: "Sub-admin",
-        },
-        {
-            value: 3,
-            label: "Coach",
-        },
-        {
-            value: 4,
-            label: "Others",
-        },
-        {
-            value: 5,
-            label: "Volunteer",
-        },
-    ]);
 
-    const fetchData = async () => {
+    const fetchData = useCallback(async () => {
         setLoading(true);
         await api
-            .get(`/api/systems/User/get_user_list`)
+            .get(`/api/record/base/get_dropdown_item_list?type=${formtype}`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setGridData(res?.data?.retdata);
@@ -54,19 +26,19 @@ export default function UserListPage() {
             .finally(() => {
                 setLoading(false);
             });
-    };
+    }, [formtype]);
 
     const tableOnRow = (record, rowIndex) => {
         return {
             onClick: (event) => {
-                getFormData(record.userid);
+                getFormData(record.id);
             },
         };
     };
 
     useEffect(() => {
         fetchData();
-    }, []);
+    }, [fetchData]);
 
     const [searchText, setSearchText] = useState("");
     const [searchedColumn, setSearchedColumn] = useState("");
@@ -185,35 +157,14 @@ export default function UserListPage() {
 
     const gridcolumns = [
         {
-            title: "Үүрэг",
-            dataIndex: "roleid",
-            render: (text, record, index) => {
-                return (
-                    <Select
-                        value={record?.roleid}
-                        disabled
-                        bordered={false}
-                        options={rolelist}
-                    />
-                );
-            },
-
-            filters: [rolelist],
-            onFilter: (value, record) => record.roleid === value,
-        },
-        {
-            title: "Нэвтрэх нэр",
-            dataIndex: "username",
-            ...getColumnSearchProps("username"),
-        },
-        {
-            title: "Имэйл",
-            dataIndex: "email",
-            ...getColumnSearchProps("email"),
+            title: "Нэр",
+            dataIndex: "name",
+            ...getColumnSearchProps("name"),
         },
         {
             title: "Огноо",
             dataIndex: "updated",
+            width: 160,
         },
     ];
 
@@ -247,9 +198,7 @@ export default function UserListPage() {
     const onDelete = async () => {
         await api
             .delete(
-                `/api/systems/User/delete_user?userid=${formdata.getFieldValue(
-                    "userid"
-                )}`
+                `/api/record/base/delete_dropdown_item?id=${formdata.getFieldValue("id")}&type=${formtype}`
             )
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
@@ -261,7 +210,7 @@ export default function UserListPage() {
 
     const onFinish = async (values) => {
         await api
-            .post(`/api/systems/User/set_user`, formdata.getFieldsValue())
+            .post(`/api/record/base/set_dropdown_item`, formdata.getFieldsValue())
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setIsModalOpen(false);
@@ -270,24 +219,20 @@ export default function UserListPage() {
             });
     };
 
-    const getFormData = async (userid) => {
-        await api.get(`/api/systems/User/get_user?userid=${userid}`).then((res) => {
+    const getFormData = async (id) => {
+        await api.get(`/api/record/base/get_dropdown_item?id=${id}&type=${formtype}`).then((res) => {
             if (res?.status === 200 && res?.data?.rettype === 0) {
                 formdata.setFieldsValue(res?.data?.retdata[0]);
-                formdata.setFieldValue('password', null);
                 showModal();
             }
         });
     };
 
     const newFormData = async () => {
-        formdata.setFieldsValue(nulldata);
+        formdata.setFieldsValue({ id: 0, name: null, type: formtype });
         showModal();
     };
 
-    const roleidChange = (value) => {
-        formdata.setFieldValue("coachid", null);
-    };
 
     return (
         <div>
@@ -297,24 +242,24 @@ export default function UserListPage() {
                 type="primary"
                 onClick={(e) => newFormData()}
             >
-                Хэрэглэгч нэмэх
+                {`${formtitle} нэмэх`}
             </Button>
 
             <Table
                 size="small"
-                title={() => `Бүртгэлтэй хэрэглэгчийн жагсаалт:`}
+                title={() => formtitle}
                 bordered
                 loading={loading}
                 columns={gridcolumns}
                 dataSource={griddata}
                 onRow={tableOnRow}
                 pagination={true}
-                rowKey={(record) => record.userid}
+                rowKey={(record) => record.id}
             ></Table>
 
             <Drawer
                 forceRender
-                title="Хэрэглэгч нэмэх"
+                title={formtitle}
                 width={720}
                 onClose={handleCancel}
                 open={isModalOpen}
@@ -325,7 +270,7 @@ export default function UserListPage() {
                             key="delete"
                             danger
                             onClick={showDeleteConfirm}
-                            hidden={formdata.getFieldValue("userid") === 0}
+                            hidden={formdata.getFieldValue("id") === 0}
                         >
                             Устгах
                         </Button>
@@ -343,35 +288,21 @@ export default function UserListPage() {
                     labelCol={{ span: 8 }}
                     wrapperCol={{ span: 14 }}
                 >
-                    <Form.Item name="userid" label="Дугаар" hidden={true}>
+                    <Form.Item name="id" label="Дугаар" hidden={true}>
                         <Input />
                     </Form.Item>
-                    <Form.Item name="roleid" label="Үүрэг" rules={[{ required: true }]}>
-                        <Select
-                            onChange={roleidChange}
-                            style={{ width: 275 }}
-                            options={rolelist}
-                        />
-                    </Form.Item>
-                    <Form.Item
-                        name="username"
-                        label="Нэвтрэх нэр"
-                        rules={[{ required: true }]}
-                    >
+
+                    <Form.Item name="type" label="Төрөл" hidden={true} >
                         <Input />
                     </Form.Item>
-                    <Form.Item
-                        name="email"
-                        label="Имэйл"
-                        rules={[{ required: true, type: "email" }]}
-                    >
+
+                    <Form.Item name="name" label="Нэр" >
                         <Input />
                     </Form.Item>
-                    <Form.Item name="password" label="Нууц үг">
-                        <Input />
-                    </Form.Item>
+
                 </Form>
             </Drawer>
         </div>
     );
 }
+
