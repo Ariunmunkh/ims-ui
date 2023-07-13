@@ -75,11 +75,21 @@ export default function Languages() {
     const gridcolumns = [
         {
             title: "Гадаад хэл",
-            dataIndex: "languageid",
+            dataIndex: "languages",
         },
         {
             title: "Түвшин",
             dataIndex: "levelid",
+            render: (text, record, index) => {
+                return (
+                    <Select
+                        value={record?.levelid}
+                        disabled
+                        bordered={false}
+                        options={levelList}
+                    />
+                );
+            },
         },
         {
             title: "Сурсан хугацаа /Жилээр/",
@@ -88,6 +98,16 @@ export default function Languages() {
         {
             title: "Түвшин шалгасан оноотой эсэх",
             dataIndex: "isscore",
+            render: (text, record, index) => {
+                return (
+                    <Select
+                        value={record?.isscore}
+                        disabled
+                        bordered={false}
+                        options={[{ value: true, label: "Тийм", }, { value: false, label: "Үгүй" }]}
+                    />
+                );
+            },
         },
         {
             title: "Шалгалтын нэр",

@@ -2,12 +2,11 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { api } from "../../system/api";
 import useUserInfo from "../../system/useUserInfo";
-import { Table, Modal, Drawer, Space, Form, Button, Input, Select, DatePicker, InputNumber, Typography, } from "antd";
+import { Table, Modal, Drawer, Space, Form, Button, Input,  DatePicker } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { PlusOutlined } from "@ant-design/icons";
 import dayjs from 'dayjs';
 const { confirm } = Modal;
-const { Text } = Typography;
 
 export default function Employment() {
     const { userinfo } = useUserInfo();
@@ -15,7 +14,6 @@ export default function Employment() {
     const [griddata, setGridData] = useState();
     const [loading, setLoading] = useState(false);
     const [formdata] = Form.useForm();
-    const [loanpurpose, setloanpurpose] = useState([]);
 
     const fetchData = useCallback(() => {
         setLoading(true);
@@ -59,10 +57,16 @@ export default function Employment() {
         {
             title: "Эхэлсэн огноо",
             dataIndex: "begindate",
+            render: (text, record, index) => {
+                return (<DatePicker value={dayjs(record?.begindate, 'YYYY.MM.DD HH:mm:ss')} disabled bordered={false} />);
+            },
         },
         {
             title: "Дууссан огноо",
             dataIndex: "enddate",
+            render: (text, record, index) => {
+                return (<DatePicker value={dayjs(record?.enddate, 'YYYY.MM.DD HH:mm:ss')} disabled bordered={false} />);
+            },
         },
     ];
 
@@ -104,9 +108,8 @@ export default function Employment() {
 
     const onFinish = async (values) => {
         let fdata = formdata.getFieldsValue();
-        //fdata.loandate = fdata.loandate.format('YYYY.MM.DD HH:mm:ss');
-        fdata.begindate = null;
-        fdata.enddate = null;
+        fdata.begindate = fdata.begindate.format('YYYY.MM.DD HH:mm:ss');
+        fdata.enddate = fdata.enddate.format('YYYY.MM.DD HH:mm:ss');
         await api
             .post(`/api/Volunteer/set_VolunteerEmployment`, fdata)
             .then((res) => {
@@ -121,9 +124,8 @@ export default function Employment() {
         await api.get(`/api/Volunteer/get_VolunteerEmployment?id=${id}`).then((res) => {
             if (res?.status === 200 && res?.data?.rettype === 0) {
                 let fdata = res?.data?.retdata[0];
-                fdata.begindate = null;
-                fdata.enddate = null;
-                //fdata.loandate = dayjs(fdata.loandate, 'YYYY.MM.DD HH:mm:ss');
+                fdata.begindate = dayjs(fdata.begindate, 'YYYY.MM.DD HH:mm:ss');
+                fdata.enddate = dayjs(fdata.enddate, 'YYYY.MM.DD HH:mm:ss');
                 formdata.setFieldsValue(fdata);
                 showModal();
             }

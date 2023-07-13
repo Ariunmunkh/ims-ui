@@ -61,7 +61,7 @@ export default function Education() {
     const gridcolumns = [
         {
             title: "Боловсролын түвшин",
-            dataIndex: "edulevel",
+            dataIndex: "educationlevel",
         },
         {
             title: "Сургуулийн нэр",
@@ -70,6 +70,16 @@ export default function Education() {
         {
             title: "Төгссөн эсэх",
             dataIndex: "isend",
+            render: (text, record, index) => {
+                return (
+                    <Select
+                        value={record?.isend}
+                        disabled
+                        bordered={false}
+                        options={[{ value: true, label: "Тийм", }, { value: false, label: "Үгүй" }]}
+                    />
+                );
+            },
         },
         {
             title: "Курс/Анги",
@@ -128,9 +138,9 @@ export default function Education() {
             });
     };
 
-    const getFormData = async (entryid) => {
+    const getFormData = async (id) => {
         await api
-            .get(`/api/Volunteer/get_VolunteerEducation?id=${entryid}`)
+            .get(`/api/Volunteer/get_VolunteerEducation?id=${id}`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     let fdata = res?.data?.retdata[0];
@@ -171,18 +181,7 @@ export default function Education() {
                 dataSource={griddata}
                 onRow={tableOnRow}
                 pagination={true}
-                rowKey={(record) => record.entryid}
-                summary={(pageData) => {
-                    let totalamount = 0;
-                    let totalquantity = 0;
-                    pageData.forEach(({ amount, quantity }) => {
-                        totalamount += parseFloat(amount);
-                        totalquantity += quantity;
-                    });
-                    totalamount = totalamount
-                        .toFixed(2)
-                        .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
-                }}
+                rowKey={(record) => record.id}
             ></Table>
             <Drawer
                 forceRender
@@ -197,7 +196,7 @@ export default function Education() {
                             key="delete"
                             danger
                             onClick={showDeleteConfirm}
-                            hidden={formdata.getFieldValue("entryid") === 0}
+                            hidden={formdata.getFieldValue("id") === 0}
                         >
                             Устгах
                         </Button>

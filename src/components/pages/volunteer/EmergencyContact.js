@@ -41,7 +41,7 @@ export default function EmergencyContact() {
     const tableOnRow = (record, rowIndex) => {
         return {
             onClick: (event) => {
-                getFormData(record.entryid);
+                getFormData(record.id);
             },
         };
     };
@@ -114,9 +114,9 @@ export default function EmergencyContact() {
         });
     };
 
-    const getFormData = async (entryid) => {
+    const getFormData = async (id) => {
         await api
-            .get(`/api/Volunteer/get_EmergencyContact?id=${entryid}`)
+            .get(`/api/Volunteer/get_EmergencyContact?id=${id}`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     let fdata = res?.data?.retdata[0];
@@ -155,7 +155,7 @@ export default function EmergencyContact() {
                 dataSource={griddata}
                 onRow={tableOnRow}
                 pagination
-                rowKey={(record) => record.entryid}
+                rowKey={(record) => record.id}
             ></Table>
             <Drawer
                 forceRender
@@ -194,7 +194,7 @@ export default function EmergencyContact() {
                 >
                     <Form.Item name="id" hidden={true} />
                     <Form.Item name="volunteerid" hidden={true} />
-           
+
                     <Form.Item name="relationshipid" label="Таны юу болох">
                         <Select style={{ width: '100%' }}>
                         </Select>

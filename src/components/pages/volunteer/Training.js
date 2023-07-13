@@ -13,8 +13,6 @@ import {
     Select,
     Divider,
     InputNumber,
-    Switch,
-    Typography,
     Input,
 } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
@@ -22,7 +20,6 @@ import { PlusOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import TextArea from "antd/es/input/TextArea";
 const { confirm } = Modal;
-const { Text } = Typography;
 
 export default function Training() {
     const { userinfo } = useUserInfo();
@@ -85,7 +82,17 @@ export default function Training() {
         },
         {
             title: "Түвшин",
-            dataIndex: "level",
+            dataIndex: "levelid",
+            render: (text, record, index) => {
+                return (
+                    <Select
+                        value={record?.levelid}
+                        disabled
+                        bordered={false}
+                        options={levelList}
+                    />
+                );
+            },
         },
         {
             title: "Сургалтад хамрагдсан өдөр",
@@ -97,7 +104,7 @@ export default function Training() {
         },
         {
             title: "Нэмэлт мэдээлэл",
-            dataIndex: "description",
+            dataIndex: "note",
         },
     ];
 
@@ -126,11 +133,7 @@ export default function Training() {
 
     const onDelete = async () => {
         await api
-            .delete(
-                `/api/Volunteer/delete_VolunteerTraining?id=${formdata.getFieldValue(
-                    "entryid"
-                )}`
-            )
+            .delete(`/api/Volunteer/delete_VolunteerTraining?id=${formdata.getFieldValue("id")}`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setIsModalOpen(false);
@@ -141,7 +144,7 @@ export default function Training() {
 
     const onFinish = async (values) => {
         let fdata = formdata.getFieldsValue();
-        //fdata.trainingdate = fdata.trainingdate.format("YYYY.MM.DD HH:mm:ss");
+        fdata.trainingdate = fdata.trainingdate.format("YYYY.MM.DD HH:mm:ss");
         await api.post(`/api/Volunteer/set_VolunteerTraining`, fdata).then((res) => {
             if (res?.status === 200 && res?.data?.rettype === 0) {
                 setIsModalOpen(false);
@@ -150,13 +153,13 @@ export default function Training() {
         });
     };
 
-    const getFormData = async (entryid) => {
+    const getFormData = async (id) => {
         await api
-            .get(`/api/Volunteer/get_VolunteerTraining?id=${entryid}`)
+            .get(`/api/Volunteer/get_VolunteerTraining?id=${id}`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     let fdata = res?.data?.retdata[0];
-                    //fdata.trainingdate = dayjs(fdata.trainingdate, "YYYY.MM.DD HH:mm:ss");
+                    fdata.trainingdate = dayjs(fdata.trainingdate, "YYYY.MM.DD HH:mm:ss");
                     formdata.setFieldsValue(fdata);
                     showModal();
                 }
@@ -168,6 +171,7 @@ export default function Training() {
             id: 0,
             volunteerid: volunteerid ?? userinfo.volunteerid,
             trainingid: null,
+            levelid: null,
             trainingdate: null,
             location: null,
             duration: null,
@@ -243,7 +247,7 @@ export default function Training() {
                         </Select>
                     </Form.Item>
 
-                    <Form.Item name="level" label="Түвшин">
+                    <Form.Item name="levelid" label="Түвшин">
                         <Select
                             style={{ width: "100%" }}
                             options={levelList}>
@@ -269,7 +273,7 @@ export default function Training() {
                     </Form.Item>
 
                     <Form.Item
-                        name="description"
+                        name="note"
                         label="Нэмэлт мэдээлэл"
                     >
                         <TextArea />
