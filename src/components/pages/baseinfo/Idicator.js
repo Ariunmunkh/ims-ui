@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect, useCallback } from "react";
 import { api } from "../../system/api";
-import { Table, Modal, Drawer, Form, Space, Button, Input } from "antd";
+import { Table, Modal, Drawer, Form, Space, Button, Input, Select } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { PlusOutlined } from "@ant-design/icons";
 import { SearchOutlined } from "@ant-design/icons";
@@ -13,9 +13,19 @@ export default function Indicator() {
     const [formtitle] = useState('Хөтөлбөрийн индикатор');
     const [formtype] = useState('indicator');
     const [formdata] = Form.useForm();
+    const [program, setprogram] = useState([]);
 
     const fetchData = useCallback(async () => {
         setLoading(true);
+
+        await api
+            .get(`/api/record/base/get_dropdown_item_list?type=program`)
+            .then((res) => {
+                if (res?.status === 200 && res?.data?.rettype === 0) {
+                    setprogram(res?.data?.retdata);
+                }
+            });
+
         await api
             .get(`/api/record/base/get_dropdown_item_list?type=${formtype}`)
             .then((res) => {
@@ -157,6 +167,20 @@ export default function Indicator() {
 
     const gridcolumns = [
         {
+            title: "Хөтөлбөр",
+            dataIndex: "headid",
+            render: (text, record, index) => {
+                return (
+                    <Select
+                        value={record?.headid}
+                        disabled
+                        bordered={false}
+                        options={program}
+                    />
+                );
+            },
+        },
+        {
             title: "Нэр",
             dataIndex: "name",
             ...getColumnSearchProps("name"),
@@ -294,6 +318,12 @@ export default function Indicator() {
 
                     <Form.Item name="type" label="Төрөл" hidden={true} >
                         <Input />
+                    </Form.Item>
+
+                    <Form.Item name="headid" label="Хөтөлбөр" >
+                        <Select style={{ width: "100%" }}>
+                            {program?.map((t, i) => (<Select.Option key={i} value={t.id}>{t.name}</Select.Option>))}
+                        </Select>
                     </Form.Item>
 
                     <Form.Item name="name" label="Нэр" >
