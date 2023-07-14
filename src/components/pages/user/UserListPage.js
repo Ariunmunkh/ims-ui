@@ -22,22 +22,27 @@ export default function UserListPage() {
     const [rolelist] = useState([
         {
             value: 1,
+            text: "Admin",
             label: "Admin",
         },
         {
             value: 2,
+            text: "Sub-admin",
             label: "Sub-admin",
         },
         {
             value: 3,
+            text: "Coach",
             label: "Coach",
         },
         {
             value: 4,
+            text: "Others",
             label: "Others",
         },
         {
             value: 5,
+            text: "Volunteer",
             label: "Volunteer",
         },
     ]);
@@ -198,7 +203,7 @@ export default function UserListPage() {
                 );
             },
 
-            filters: [rolelist],
+            filters: rolelist,
             onFilter: (value, record) => record.roleid === value,
         },
         {

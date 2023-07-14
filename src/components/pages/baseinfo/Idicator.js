@@ -30,7 +30,9 @@ export default function Indicator() {
             .get(`/api/record/base/get_dropdown_item_list?type=${formtype}`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
-                    setGridData(res?.data?.retdata);
+                    let tdata = res?.data?.retdata;
+                    tdata.sort((a, b) => a.name > b.name ? 1 : -1);
+                    setGridData(tdata);
                 }
             })
             .finally(() => {
@@ -176,12 +178,16 @@ export default function Indicator() {
                         disabled
                         bordered={false}
                         options={program}
-                    />
+                    >
+                    </Select>
                 );
             },
+
+            filters: program,
+            onFilter: (value, record) => record.headid === value,
         },
         {
-            title: "Нэр",
+            title: "Индикатор",
             dataIndex: "name",
             ...getColumnSearchProps("name"),
         },
@@ -309,8 +315,8 @@ export default function Indicator() {
             >
                 <Form
                     form={formdata}
-                    labelCol={{ span: 8 }}
-                    wrapperCol={{ span: 14 }}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 18 }}
                 >
                     <Form.Item name="id" label="Дугаар" hidden={true}>
                         <Input />

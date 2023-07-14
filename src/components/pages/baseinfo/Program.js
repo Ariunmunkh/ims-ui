@@ -20,7 +20,9 @@ export default function Program() {
             .get(`/api/record/base/get_dropdown_item_list?type=${formtype}`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
-                    setGridData(res?.data?.retdata);
+                    let tdata = res?.data?.retdata;
+                    tdata.sort((a, b) => a.name > b.name ? 1 : -1);
+                    setGridData(tdata);
                 }
             })
             .finally(() => {
