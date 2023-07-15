@@ -5,6 +5,7 @@ import { Col, Row, Steps, Divider, Table, Space, Button, DatePicker, Typography 
 const { Text } = Typography;
 export default function Report() {
 
+    const [reportdata, setreportdata] = useState([]);
     const [reportdate, setreportdate] = useState();
     const [programid, setprogramid] = useState(0);
     const [title, settitle] = useState();
@@ -26,48 +27,73 @@ export default function Report() {
                     settitle(tdata[0]?.name);
                 }
             });
-        await api
-            .get(`/api/record/base/get_dropdown_item_list?type=indicator`)
-            .then((res) => {
-                if (res?.status === 200 && res?.data?.rettype === 0) {
-                    let tdata = res?.data?.retdata;
-                    tdata.sort((a, b) => a.name > b.name ? 1 : -1);
-                    setindicator(tdata);
-                }
-            });
+
         await api
             .get(`/api/record/base/get_dropdown_item_list?type=agegroup`)
-            .then((res) => {
+            .then(async (res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
-                    let tdata = res?.data?.retdata;
-                    tdata.sort((a, b) => a.name > b.name ? 1 : -1);
+
+
+                    let tagegroup = res?.data?.retdata;
+                    tagegroup.sort((a, b) => a.name > b.name ? 1 : -1);
                     let cdata = [];
-                    for (var i = 0; i < tdata.length; i++) {
+
+                    tagegroup.forEach((row) => {
                         cdata.push({
-                            title: tdata[i].name,
+                            title: row.name,
                             children: [
                                 {
                                     title: "эр",
-                                    dataIndex: "male" + tdata[i].id,
+                                    dataIndex: "male" + row.id,
                                 },
                                 {
                                     title: "эм",
-                                    dataIndex: "female" + tdata[i].id,
+                                    dataIndex: "female" + row.id,
                                 },
                             ],
                         });
+                    });
 
-                    }
                     cdata.push({
                         title: "Үйлдэл",
                         key: "action",
                         render: (_, record) => (
                             <Space size="middle">
-                                <Button type="link">Засах</Button>
+                                <Button type="link" >Засах</Button>
                             </Space>
                         ),
                     });
                     setagegroup(cdata);
+
+
+                    let tindicator = [];
+
+                    await api
+                        .get(`/api/record/base/get_dropdown_item_list?type=indicator`)
+                        .then((res) => {
+                            if (res?.status === 200 && res?.data?.rettype === 0) {
+                                tindicator = res?.data?.retdata;
+                                tindicator.sort((a, b) => a.name > b.name ? 1 : -1);
+                                setindicator(tindicator);
+                            }
+                        });
+
+                    if (tindicator?.length > 0) {
+
+                        let treportdata = [];
+                        let trow = {};
+
+                        tagegroup.forEach((row) => {
+                            trow["male" + row.id] = 0;
+                            trow["female" + row.id] = 1;
+                        });
+
+                        tindicator.forEach((row) => {
+                            treportdata.push({ id: row.id, data: [trow] });
+                        });
+                        setreportdata(treportdata);
+                    }
+
                 }
             })
             .finally(() => {
@@ -78,6 +104,17 @@ export default function Report() {
     useEffect(() => {
         fetchData();
     }, [fetchData]);
+
+    const onFinish = async (values) => {
+
+        await api
+            .post(`/api/record/base/set_dropdown_item`, values)
+            .then((res) => {
+                if (res?.status === 200 && res?.data?.rettype === 0) {
+
+                }
+            });
+    };
 
     return (
         <>
@@ -119,7 +156,7 @@ export default function Report() {
                             )}
                             loading={loading}
                             bordered
-                            dataSource={null}
+                            dataSource={reportdata.filter(i => i.id === t.id)[0]?.data}
                             columns={agegroup}
                         ></Table>
                     </Col>
