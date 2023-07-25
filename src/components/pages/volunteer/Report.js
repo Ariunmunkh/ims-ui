@@ -168,15 +168,15 @@ export default function Report() {
                                             marginRight: 8,
                                         }}
                                     >
-                                        Save
+                                        Хадгалах
                                     </Typography.Link>
                                     <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
-                                        <a>Cancel</a>
+                                        <a>Болих</a>
                                     </Popconfirm>
                                 </span>
                             ) : (
                                 <Typography.Link disabled={editingKey !== ''} onClick={() => edit(record)}>
-                                    Edit
+                                    Засах
                                 </Typography.Link>
                             );
                         },

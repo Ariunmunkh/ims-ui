@@ -9,6 +9,7 @@ import {
   LogoutOutlined,
   BarChartOutlined,
   UserSwitchOutlined,
+  InfoCircleOutlined
 } from "@ant-design/icons";
 import { Layout, Menu, theme, Space, Button, Typography } from "antd";
 
@@ -21,6 +22,7 @@ import AccessDenied from "./AccessDenied";
 import Home from "../volunteer/Home";
 import logo from "../../../assets/images/logo.png";
 import Report from "../volunteer/Report";
+import Survey from "../information/Survey";
 
 const { Header, Sider, Content } = Layout;
 const { Text } = Typography;
@@ -73,6 +75,11 @@ export default function MasterPage() {
             key: "volunteer",
             icon: <UserSwitchOutlined />,
             label: "Үндсэн мэдээлэл",
+          },
+          {
+            key: "survey",
+            icon: <InfoCircleOutlined />,
+            label: "ДШХ-ны судалгаа",
           },
         ];
       default:
@@ -183,6 +190,10 @@ export default function MasterPage() {
              <Route
               path="/volunteer"
               element={userinfo?.roleid ? <VolunteerPage /> : <AccessDenied />}
+            />
+             <Route
+              path="/survey"
+              element={userinfo?.roleid ? <Survey /> : <AccessDenied />}
             />
             <Route path="*" element={<NotFound />} />
           </Routes>
