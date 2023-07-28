@@ -6,6 +6,7 @@ import { Card, Col, Row, Avatar, Table } from "antd";
 import useUserInfo from "../../system/useUserInfo";
 import VolunteerList from "./VolunteerList";
 import ReportList from "./ReportList";
+import ProjectList from "./ProjectList";
 const { Meta } = Card;
 
 export default function Home() {
@@ -14,6 +15,7 @@ export default function Home() {
   const { volunteerid } = useParams();
   const [volList, setVolList] = useState(false);
   const [report, setReport] = useState(false);
+  const [project, setProject] = useState(false);
   const [griddata, setGridData] = useState();
 
   const fetchData = useCallback(() => {
@@ -59,6 +61,7 @@ useEffect(() => {
 
   if(volList) return <VolunteerList setVolList={setVolList}/>;
   if(report) return <ReportList setReport={setReport}/>;
+  if(project) return <ProjectList setProject={setProject}/>;
   return userinfo.roleid === 5 ? (
     <>
           <Row gutter={16}>
@@ -206,6 +209,7 @@ useEffect(() => {
         <Col xs={24} lg={{ span: 8 }}>
           <Card
             hoverable={true}
+            onClick={() => setProject(true)}
             style={{
               textAlign: "center",
               backgroundColor: "#FAFAFA",
