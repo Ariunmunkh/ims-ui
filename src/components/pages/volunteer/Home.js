@@ -1,12 +1,39 @@
-import React, { useState } from "react";
+import React, { useState,useEffect,useRef,useCallback } from "react";
 import { UserOutlined } from "@ant-design/icons";
+import { useParams } from "react-router-dom";
+import { api } from "../../system/api";
 import { Card, Col, Row, Avatar, Table } from "antd";
 import useUserInfo from "../../system/useUserInfo";
+import VolunteerList from "./VolunteerList";
+import ReportList from "./ReportList";
 const { Meta } = Card;
 
 export default function Home() {
   const [loading, setLoading] = useState(false);
   const { userinfo } = useUserInfo();
+  const { volunteerid } = useParams();
+  const [volList, setVolList] = useState(false);
+  const [report, setReport] = useState(false);
+  const [griddata, setGridData] = useState();
+
+  const fetchData = useCallback(() => {
+    setLoading(true);
+    api.get(`/api/Volunteer/get_VolunteerVoluntaryWork_list?id=${volunteerid ?? userinfo.volunteerid}`)
+        .then((res) => {
+            if (res?.status === 200 && res?.data?.rettype === 0) {
+                setGridData(res?.data?.retdata);
+            }
+        })
+        .finally(() => {
+            setLoading(false);
+        });
+
+}, [volunteerid, userinfo.volunteerid]);
+
+useEffect(() => {
+  fetchData();
+}, [fetchData])
+
   const gridcolumns = [
     {
       title: "Сайн дурын ажлын төрөл",
@@ -24,7 +51,14 @@ export default function Home() {
       title: "Нэмэлт мэдээлэл",
       dataIndex: "note",
     },
+    {
+      title: "Төлөв",
+      dataIndex: "status",
+    },
   ];
+
+  if(volList) return <VolunteerList setVolList={setVolList}/>;
+  if(report) return <ReportList setReport={setReport}/>;
   return userinfo.roleid === 5 ? (
     <>
           <Row gutter={16}>
@@ -113,6 +147,7 @@ export default function Home() {
             )}
             loading={loading}
             bordered
+            dataSource={griddata}
             columns={gridcolumns}
             pagination={true}
           ></Table>
@@ -134,7 +169,6 @@ export default function Home() {
           >
             <Meta
               style={{ textAlign: "center" }}
-              // title={<Title ellipsis={true} autos level={4}>Баянзүрх дүүргийн улаан загалмайн хороо</Title>}
               title={
                 <h6 className="text-primary font-weight-bold">
                   Баянзүрх дүүргийн улаан загалмайн хороо
@@ -207,6 +241,7 @@ export default function Home() {
             )}
             loading={loading}
             bordered
+            dataSource={griddata}
             columns={gridcolumns}
             pagination={true}
           ></Table>
@@ -221,6 +256,7 @@ export default function Home() {
               textAlign: "center",
               backgroundColor: "#FAFAFA",
             }}
+            onClick={() => setVolList(true)}
             extra={
               <Avatar
                 style={{
@@ -242,6 +278,7 @@ export default function Home() {
         <Col xs={24} lg={{ span: 8 }}>
         <Card
             hoverable={true}
+            onClick={() => setVolList(true)}
             style={{
               textAlign: "center",
               backgroundColor: "#FAFAFA",
@@ -267,6 +304,7 @@ export default function Home() {
         <Col xs={24} lg={{ span: 8 }}>
         <Card
             hoverable={true}
+            onClick={() => setReport(true)}
             style={{
               textAlign: "center",
               backgroundColor: "#FAFAFA",

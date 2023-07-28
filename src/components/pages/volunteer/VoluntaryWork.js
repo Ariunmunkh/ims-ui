@@ -315,7 +315,6 @@ export default function VoluntaryWork() {
                     </Space>
                 }
             >
-                <Divider />
                 <Form
                     form={formdata}
                     labelCol={{ span: 8 }}
