@@ -12,13 +12,12 @@ export default function Project() {
     const [griddata, setGridData] = useState();
     const [loading, setLoading] = useState(true);
     const [formtitle] = useState('Хэрэгжүүлж буй төсөл, хөтөлбөр');
-    const [formtype] = useState('voluntarywork');
     const [formdata] = Form.useForm();
 
     const fetchData = useCallback(async () => {
         setLoading(true);
         await api
-            .get(`/api/record/base/get_dropdown_item_list?type=${formtype}`)
+            .get(`/api/record/base/get_Project_list`)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setGridData(res?.data?.retdata);
@@ -27,7 +26,7 @@ export default function Project() {
             .finally(() => {
                 setLoading(false);
             });
-    }, [formtype]);
+    }, []);
 
     const tableOnRow = (record, rowIndex) => {
         return {
@@ -36,13 +35,11 @@ export default function Project() {
             },
         };
     };
-    const programidChange = (value) => {
-        formdata.setFieldValue("coachid", null);
-    };
+    
     useEffect(() => {
         fetchData();
     }, [fetchData]);
-
+    
     const [searchText, setSearchText] = useState("");
     const [searchedColumn, setSearchedColumn] = useState("");
     const searchInput = useRef(null);
@@ -161,26 +158,26 @@ export default function Project() {
     const gridcolumns = [
         {
             title: "Хөтөлбөр",
-            dataIndex: "program",
-            ...getColumnSearchProps("program"),
+            dataIndex: "programid",
+            ...getColumnSearchProps("programid"),
         },
         {
             title: "Төслийн нэр",
-            dataIndex: "pname",
-            ...getColumnSearchProps("pname"),
+            dataIndex: "name",
+            ...getColumnSearchProps("name"),
         },
         {
             title: "Санхүүжүүлэгч",
-            dataIndex: "funding",
-            ...getColumnSearchProps("funding"),
+            dataIndex: "funder",
+            ...getColumnSearchProps("funder"),
         },
         {
             title: "Төслийн товч мэдээлэл, зорилтот бүлэг, хүрэх үр дүн",
-            dataIndex: "description",
+            dataIndex: "note",
         },
         {
             title: "Хүрсэн үр дүн ",
-            dataIndex: "reach",
+            dataIndex: "results",
         },
     ];
     const [programlist] = useState([
@@ -236,7 +233,7 @@ export default function Project() {
     const onDelete = async () => {
         await api
             .delete(
-                `/api/record/base/delete_dropdown_item?id=${formdata.getFieldValue("id")}&type=${formtype}`
+                `/api/record/base/delete_Project?id=${formdata.getFieldValue("id")}`
             )
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
@@ -248,7 +245,7 @@ export default function Project() {
 
     const onFinish = async (values) => {
         await api
-            .post(`/api/record/base/set_dropdown_item`, formdata.getFieldsValue())
+            .post(`/api/record/base/set_Project`, formdata.getFieldsValue())
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setIsModalOpen(false);
@@ -258,7 +255,7 @@ export default function Project() {
     };
 
     const getFormData = async (id) => {
-        await api.get(`/api/record/base/get_dropdown_item?id=${id}&type=${formtype}`).then((res) => {
+        await api.get(`/api/record/base/get_Project?id=${id}`).then((res) => {
             if (res?.status === 200 && res?.data?.rettype === 0) {
                 formdata.setFieldsValue(res?.data?.retdata[0]);
                 showModal();
@@ -267,7 +264,7 @@ export default function Project() {
     };
 
     const newFormData = async () => {
-        formdata.setFieldsValue({ id: 0, name: null, type: formtype });
+        formdata.setFieldsValue({ id: 0, name: null });
         showModal();
     };
 
@@ -326,27 +323,26 @@ export default function Project() {
                     labelCol={{ span: 8 }}
                     wrapperCol={{ span: 14 }}
                 >
-                    <Form.Item name="programid" label="Дугаар" hidden={true}>
+                    <Form.Item name="id" label="Дугаар" hidden={true}>
                         <Input />
                     </Form.Item>
                     
-                    <Form.Item name="program" label="Хөтөлбөр" rules={[{ required: true }]}>
+                    <Form.Item name="programid" label="Хөтөлбөр" rules={[{ required: true }]}>
                         <Select
-                            onChange={programidChange}
                             options={programlist}
                         />
                     </Form.Item>
 
-                    <Form.Item name="pname" label="Төслийн нэр" rules={[{ required: true }]}>
+                    <Form.Item name="name" label="Төслийн нэр" rules={[{ required: true }]}>
                         <Input />
                     </Form.Item>
-                    <Form.Item name="funding" label="Санхүүжүүлэгч" rules={[{ required: true }]}>
+                    <Form.Item name="funder" label="Санхүүжүүлэгч" rules={[{ required: true }]}>
                         <Input />
                     </Form.Item>
-                    <Form.Item name="description" label="Төслийн товч мэдээлэл" rules={[{ required: true }]}>
+                    <Form.Item name="note" label="Төслийн товч мэдээлэл" rules={[{ required: true }]}>
                         <TextArea  />
                     </Form.Item>
-                    <Form.Item name="reach" label="Хүрсэн үр дүн" >
+                    <Form.Item name="results" label="Хүрсэн үр дүн" >
                         <Input />
                     </Form.Item>
                 </Form>
