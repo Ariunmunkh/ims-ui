@@ -7,18 +7,11 @@ import { SearchOutlined } from "@ant-design/icons";
 import Highlighter from "react-highlight-words";
 const { confirm } = Modal;
 export default function UserListPage() {
-    const nulldata = {
-        userid: 0,
-        roleid: 1,
-        username: null,
-        email: null,
-        password: null,
-        coach: null,
-        districtid: null,
-    };
+
     const [griddata, setGridData] = useState();
     const [loading, setLoading] = useState(true);
     const [formdata] = Form.useForm();
+    const [committee, setcommittee] = useState([]);
     const [rolelist] = useState([
         {
             value: 1,
@@ -49,6 +42,13 @@ export default function UserListPage() {
 
     const fetchData = async () => {
         setLoading(true);
+
+        await api.get(`/api/record/base/get_dropdown_item_list?type=committee`)
+            .then((res) => {
+                if (res?.status === 200 && res?.data?.rettype === 0) {
+                    setcommittee(res?.data?.retdata);
+                }
+            });
         await api
             .get(`/api/systems/User/get_user_list`)
             .then((res) => {
@@ -207,6 +207,11 @@ export default function UserListPage() {
             onFilter: (value, record) => record.roleid === value,
         },
         {
+            title: "Дунд шатны хороо",
+            dataIndex: "committeename",
+            ...getColumnSearchProps("committeename"),
+        },
+        {
             title: "Нэвтрэх нэр",
             dataIndex: "username",
             ...getColumnSearchProps("username"),
@@ -286,7 +291,15 @@ export default function UserListPage() {
     };
 
     const newFormData = async () => {
-        formdata.setFieldsValue(nulldata);
+        formdata.setFieldsValue(
+            {
+                userid: 0,
+                roleid: 1,
+                committeeid: null,
+                username: null,
+                email: null,
+                password: null,
+            });
         showModal();
     };
 
@@ -351,6 +364,13 @@ export default function UserListPage() {
                     <Form.Item name="userid" label="Дугаар" hidden={true}>
                         <Input />
                     </Form.Item>
+
+                    <Form.Item name="committeeid" label="Дунд шатны хороо" >
+                        <Select style={{ width: "100%" }}>
+                            {committee?.map((t, i) => (<Select.Option key={i} value={t.id}>{t.name}</Select.Option>))}
+                        </Select>
+                    </Form.Item>
+
                     <Form.Item name="roleid" label="Үүрэг" rules={[{ required: true }]}>
                         <Select
                             onChange={roleidChange}
