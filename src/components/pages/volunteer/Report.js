@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { api } from "../../system/api";
+import useUserInfo from "../../system/useUserInfo";
 import { Form, Popconfirm, Col, Row, Steps, Divider, Table, Input, DatePicker, Typography } from "antd";
 
 const { Text } = Typography;
@@ -40,7 +41,7 @@ const EditableCell = ({
 export default function Report() {
 
     const [form] = Form.useForm();
-
+    const { userinfo } = useUserInfo();
     const [reportdata, setreportdata] = useState([]);
     const [reportid, setreportid] = useState(1);
     const [reportdate, setreportdate] = useState();
@@ -79,7 +80,7 @@ export default function Report() {
                     dtls.push({
                         id: 0,
                         reportid: reportid,
-                        programid: 0,
+                        programid: userinfo.committeeid,
                         indicatorid: editingKey,
                         agegroupid: agegroupid,
                         male: 0,
@@ -91,7 +92,7 @@ export default function Report() {
                     dtls.push({
                         id: 0,
                         reportid: reportid,
-                        programid: 0,
+                        programid: userinfo.committeeid,
                         indicatorid: editingKey,
                         agegroupid: agegroupid,
                         male: row[item],

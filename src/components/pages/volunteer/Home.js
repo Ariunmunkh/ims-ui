@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { UserOutlined } from "@ant-design/icons";
-import { useParams } from "react-router-dom";
+import { UserOutlined, SearchOutlined } from "@ant-design/icons";
 import { api } from "../../system/api";
-import { Card, Col, Row, Avatar, Table } from "antd";
+import { Card, Col, Row, Avatar, Table, Input, Space,Button } from "antd";
 import useUserInfo from "../../system/useUserInfo";
 import VolunteerList from "./VolunteerList";
 import ReportList from "./ReportList";
 import ProjectList from "./ProjectList";
+import Highlighter from "react-highlight-words";
 const { Meta } = Card;
 
 export default function Home() {
@@ -16,6 +16,7 @@ export default function Home() {
     const [report, setReport] = useState(false);
     const [project, setProject] = useState(false);
     const [griddata, setGridData] = useState();
+    const [griddata1, setGridData1] = useState();
 
     const fetchData = useCallback(async () => {
 
@@ -27,34 +28,174 @@ export default function Home() {
                     }
                 });
 
-    }, [userinfo.volunteerid]);
+        await api
+            .get(`/api/Committee/get_report_list`)
+            .then((res) => {
+                if (res?.status === 200 && res?.data?.rettype === 0) {
+                    setGridData1(res?.data?.retdata);
+                }
+            }).finally(() => {
+                setLoading(false);
+            });
 
+    }, [userinfo.volunteerid]);
     useEffect(() => {
         fetchData();
     }, [fetchData])
-
+    const [searchText, setSearchText] = useState("");
+    const [searchedColumn, setSearchedColumn] = useState("");
+    const searchInput = useRef(null);
+    const handleSearch = (selectedKeys, confirm, dataIndex) => {
+      confirm();
+      setSearchText(selectedKeys[0]);
+      setSearchedColumn(dataIndex);
+    };
+    const handleReset = (clearFilters) => {
+      clearFilters();
+      setSearchText("");
+    };
+    const getColumnSearchProps = (dataIndex) => ({
+      filterDropdown: ({
+        setSelectedKeys,
+        selectedKeys,
+        confirm,
+        clearFilters,
+        close,
+      }) => (
+        <div
+          style={{
+            padding: 8,
+          }}
+          onKeyDown={(e) => e.stopPropagation()}
+        >
+          <Input
+            ref={searchInput}
+            placeholder={`Search ${dataIndex}`}
+            value={selectedKeys[0]}
+            onChange={(e) =>
+              setSelectedKeys(e.target.value ? [e.target.value] : [])
+            }
+            onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+            style={{
+              marginBottom: 8,
+              display: "block",
+            }}
+          />
+          <Space>
+            <Button
+              type="primary"
+              onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+              icon={<SearchOutlined />}
+              size="small"
+              style={{
+                width: 90,
+              }}
+            >
+              Хайх
+            </Button>
+            <Button
+              onClick={() => clearFilters && handleReset(clearFilters)}
+              size="small"
+              style={{
+                width: 90,
+              }}
+            >
+              Шинэчлэх
+            </Button>
+            <Button
+              type="link"
+              size="small"
+              onClick={() => {
+                confirm({
+                  closeDropdown: false,
+                });
+                setSearchText(selectedKeys[0]);
+                setSearchedColumn(dataIndex);
+              }}
+            >
+              Шүүлтүүр
+            </Button>
+            <Button
+              type="link"
+              size="small"
+              onClick={() => {
+                close();
+              }}
+            >
+              Хаах
+            </Button>
+          </Space>
+        </div>
+      ),
+      filterIcon: (filtered) => (
+        <SearchOutlined
+          style={{
+            color: filtered ? "#1890ff" : undefined,
+          }}
+        />
+      ),
+      onFilter: (value, record) =>
+        record[dataIndex]?.toString().toLowerCase().includes(value.toLowerCase()),
+      onFilterDropdownOpenChange: (visible) => {
+        if (visible) {
+          setTimeout(() => searchInput.current?.select(), 100);
+        }
+      },
+      render: (text) =>
+        searchedColumn === dataIndex ? (
+          <Highlighter
+            highlightStyle={{
+              backgroundColor: "#ffc069",
+              padding: 0,
+            }}
+            searchWords={[searchText]}
+            autoEscape
+            textToHighlight={text ? text.toString() : ""}
+          />
+        ) : (
+          text
+        ),
+    });
+    const gridcolumns1 = [
+        {
+          title: "Салбар",
+          dataIndex: "committeeid",
+          ...getColumnSearchProps("committeeid"),
+        },
+        {
+          title: "Тайлан он/сар",
+          dataIndex: "reportdate",
+          ...getColumnSearchProps("reportdate"),
+        },
+        {
+          title: "Тайлан илгээсэн огноо",
+          dataIndex: "updated",
+          ...getColumnSearchProps("updated"),
+        },
+      ];
     const gridcolumns = [
         {
-            title: "Сайн дурын ажлын төрөл",
-            dataIndex: "voluntarywork",
+          title: "Овог",
+          dataIndex: "lastname",
+          key: "lastname",
+          ...getColumnSearchProps("lastname"),
         },
         {
-            title: "Хугацаа",
-            dataIndex: "duration",
+          title: "Нэр",
+          dataIndex: "firstname",
+          ...getColumnSearchProps("firstname"),
         },
         {
-            title: "Огноо",
-            dataIndex: "voluntaryworkdate",
+          title: "Регистрийн дугаар",
+          dataIndex: "regno",
+          ...getColumnSearchProps("regno"),
         },
         {
-            title: "Нэмэлт мэдээлэл",
-            dataIndex: "note",
+          title: "Утас дугаар",
+          dataIndex: "phone",
+          ...getColumnSearchProps("phone"),
         },
-        {
-            title: "Төлөв",
-            dataIndex: "status",
-        },
-    ];
+      ];
 
     if (volList) return <VolunteerList setVolList={setVolList} />;
     if (report) return <ReportList setReport={setReport} />;
@@ -265,7 +406,8 @@ export default function Home() {
                         )}
                         loading={loading}
                         bordered
-                        columns={gridcolumns}
+                        dataSource={griddata1}
+                        columns={gridcolumns1}
                         pagination={true}
                     ></Table>
                 </Col>

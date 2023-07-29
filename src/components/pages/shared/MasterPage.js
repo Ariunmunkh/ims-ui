@@ -45,22 +45,24 @@ export default function MasterPage() {
             label: "Суурь бүртгэл",
           },
           {
-            key: "volunteer",
+            key: "home",
             icon: <HomeOutlined />,
             label: "Нүүр",
           },
-        ];
-      case "2":
-        return [];
-      case "3":
-        return [];
-      case "5":
-        return [
           {
-            key: "admin",
-            icon: <SettingOutlined />,
-            label: "Суурь бүртгэл",
+            key: "report",
+            icon: <BarChartOutlined />,
+            label: "ДШХ-ны сарын тайлан",
           },
+          
+          {
+            key: "survey",
+            icon: <InfoCircleOutlined />,
+            label: "ДШХ-ны судалгаа",
+          },
+       ];
+      case "2":
+        return [
           {
             key: "home",
             icon: <HomeOutlined />,
@@ -71,15 +73,27 @@ export default function MasterPage() {
             icon: <BarChartOutlined />,
             label: "ДШХ-ны сарын тайлан",
           },
-          {
-            key: "volunteer",
-            icon: <UserSwitchOutlined />,
-            label: "Үндсэн мэдээлэл",
-          },
+          
           {
             key: "survey",
             icon: <InfoCircleOutlined />,
             label: "ДШХ-ны судалгаа",
+          },
+      ];
+      case "3":
+        return [];
+      case "5":
+        return [
+
+          {
+            key: "home",
+            icon: <HomeOutlined />,
+            label: "Нүүр",
+          },
+          {
+            key: "volunteer",
+            icon: <UserSwitchOutlined />,
+            label: "Үндсэн мэдээлэл",
           },
         ];
       default:
@@ -105,7 +119,7 @@ export default function MasterPage() {
             alt="logo"
             width={40}
             className="text-center"
-            style={{ paddingBottom: 5, paddingTop:10 }}
+            style={{ paddingBottom: 5, paddingTop: 10 }}
           ></img>
           <h5 className="text-white text-center" onClick={() => navigate("/")}>
             IMS систем
@@ -187,11 +201,11 @@ export default function MasterPage() {
               path="/report"
               element={userinfo?.roleid ? <Report /> : <AccessDenied />}
             />
-             <Route
+            <Route
               path="/volunteer"
               element={userinfo?.roleid ? <VolunteerPage /> : <AccessDenied />}
             />
-             <Route
+            <Route
               path="/survey"
               element={userinfo?.roleid ? <Survey /> : <AccessDenied />}
             />
