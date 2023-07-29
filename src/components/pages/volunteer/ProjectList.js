@@ -19,7 +19,7 @@ export default function ProjectList() {
   const fetchData = useCallback(async () => {
     setLoading(true);
     await api
-      .get(`/api/Volunteer/get_Volunteer_list`)
+      .get(`/api/record/base/get_Project_list`)
       .then((res) => {
         if (res?.status === 200 && res?.data?.rettype === 0) {
           setGridData(res?.data?.retdata);
@@ -62,8 +62,8 @@ export default function ProjectList() {
           <Row gutter={16} >
             {currentPageData.map((item) => (
               <Col span={8} className="pb-3">
-                <Card title={item.id} key={item.id} bordered={true}>
-                  {item.id}
+                <Card title={`Төслийн нэр: ${item.name}`} key={item.id} bordered={true}>
+                  {`Хөтөлбөр: ${item.programid}`} <br/> {`Санхүүжүүлэгч: ${item.funder}`} <br/> {`Төслийн танилцуулга: ${item.note}`}
                 </Card>
               </Col>
             ))}

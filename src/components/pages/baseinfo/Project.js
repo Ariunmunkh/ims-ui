@@ -13,6 +13,7 @@ export default function Project() {
     const [loading, setLoading] = useState(true);
     const [formtitle] = useState('Хэрэгжүүлж буй төсөл, хөтөлбөр');
     const [formdata] = Form.useForm();
+    const [program, setprogram] = useState([]);
 
     const fetchData = useCallback(async () => {
         setLoading(true);
@@ -21,6 +22,13 @@ export default function Project() {
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setGridData(res?.data?.retdata);
+                }
+            })
+        await api
+            .get(`/api/record/base/get_dropdown_item_list?type=program`)
+            .then((res) => {
+                if (res?.status === 200 && res?.data?.rettype === 0) {
+                    setprogram(res?.data?.retdata);
                 }
             })
             .finally(() => {
@@ -35,11 +43,11 @@ export default function Project() {
             },
         };
     };
-    
+
     useEffect(() => {
         fetchData();
     }, [fetchData]);
-    
+
     const [searchText, setSearchText] = useState("");
     const [searchedColumn, setSearchedColumn] = useState("");
     const searchInput = useRef(null);
@@ -180,28 +188,6 @@ export default function Project() {
             dataIndex: "results",
         },
     ];
-    const [programlist] = useState([
-        {
-            value: 1,
-            label: "Уур амьсгалын өөрчлөлт, гамшгийн удирдлагын хөтөлбөр",
-        },
-        {
-            value: 2,
-            label: "Нийгмийн эрүүл мэндийг дэмжих хөтөлбөр",
-        },
-        {
-            value: 3,
-            label: "Нийгмийн халамж, оролцоог дэмжих хөтөлбөр",
-        },
-        {
-            value: 4,
-            label: "Хүүхэд, залуучуудын хөгжлийн хөтөлбөр",
-        },
-        {
-            value: 5,
-            label: "Байгууллагын хөгжил",
-        },
-    ]);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -326,11 +312,11 @@ export default function Project() {
                     <Form.Item name="id" label="Дугаар" hidden={true}>
                         <Input />
                     </Form.Item>
-                    
+
                     <Form.Item name="programid" label="Хөтөлбөр" rules={[{ required: true }]}>
-                        <Select
-                            options={programlist}
-                        />
+                        <Select style={{ width: "100%" }}>
+                            {program?.map((t, i) => (<Select.Option key={i} value={t.id}>{t.name}</Select.Option>))}
+                        </Select>
                     </Form.Item>
 
                     <Form.Item name="name" label="Төслийн нэр" rules={[{ required: true }]}>
@@ -340,7 +326,7 @@ export default function Project() {
                         <Input />
                     </Form.Item>
                     <Form.Item name="note" label="Төслийн товч мэдээлэл" rules={[{ required: true }]}>
-                        <TextArea  />
+                        <TextArea />
                     </Form.Item>
                     <Form.Item name="results" label="Хүрсэн үр дүн" >
                         <Input />
