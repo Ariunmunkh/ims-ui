@@ -40,6 +40,7 @@ export default function Login({ setToken }) {
             setLoading(false);
             if (token) {
                 window.location.reload(false);
+                window.location.assign('/home');
             } else {
                 message.error("Нэвтрэх нэр эсвэл нууц үг буруу байна");
             }

@@ -7,13 +7,11 @@ import {
 import { api } from "../../system/api";
 import { Card, Col, Row, Avatar, Table, Button, Input, Space } from "antd";
 import useUserInfo from "../../system/useUserInfo";
-import { useNavigate } from "react-router-dom";
 import Highlighter from "react-highlight-words";
 import Home from "./Home";
 const { Meta } = Card;
 
-export default function ReportList() {
-  const navigate = useNavigate();
+export default function ReportView() {
   const [loading, setLoading] = useState(false);
   const { userinfo } = useUserInfo();
   const [griddata, setGridData] = useState();
@@ -22,7 +20,7 @@ export default function ReportList() {
   const fetchData = useCallback(async () => {
     setLoading(true);
     await api
-      .get(`/api/Committee/get_report_list?id=${userinfo.committeeid}`)
+      .get(`/api/Committee/get_report_list`)
       .then((res) => {
         if (res?.status === 200 && res?.data?.rettype === 0) {
           setGridData(res?.data?.retdata);
@@ -169,42 +167,26 @@ export default function ReportList() {
       ...getColumnSearchProps("updated"),
     },
   ];
+
   if (back) return <Home setBack={setBack} />;
-  const tableOnRow = (record, rowIndex) => {
-    return {
-      onClick: (event) => {
-        navigate(`/report/${record.id}`);
-      },
-    };
-  };
-  return userinfo.roleid != 5 ? (
+
+  return (
     <>
-      <Row>
-        <Col xs={24} lg={24}>
-          <Button
-            type="primary"
-            icon={<ArrowLeftOutlined />}
-            onClick={() => setBack(true)}
-          />
-          <Table
-            size="small"
-            title={() => (
-              <h5 className="font-weight-light text-secondary text-uppercase">
-                ДШХ-ны сарын тайлан илгээсэн байдал
-              </h5>
-            )}
-            loading={loading}
-            dataSource={griddata}
-            bordered
-            columns={gridcolumns}
-            pagination={true}
-            onRow={tableOnRow}
-            rowKey={(record) => record.volunteerid}
-          ></Table>
-        </Col>
-      </Row>
+      <Table
+        size="small"
+        title={() => (
+          <h5 className="font-weight-light text-secondary text-uppercase">
+            ДШХ-ны сарын тайлан
+          </h5>
+        )}
+        loading={loading}
+        bordered
+        dataSource={griddata}
+        columns={gridcolumns}
+        pagination={{
+          pageSize: 50,
+        }}
+      ></Table>
     </>
-  ) : (
-    <></>
   );
 }

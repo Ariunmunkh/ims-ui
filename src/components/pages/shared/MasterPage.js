@@ -9,9 +9,9 @@ import {
   LogoutOutlined,
   BarChartOutlined,
   UserSwitchOutlined,
-  InfoCircleOutlined
+  InfoCircleOutlined,
 } from "@ant-design/icons";
-import { Layout, Menu, theme, Space, Button, Typography } from "antd";
+import { Layout, Menu, theme, Space, Button, Typography, Divider } from "antd";
 
 import AdminPage from "./AdminPage";
 import VolunteerPage from "../volunteer/VolunteerPage";
@@ -23,6 +23,7 @@ import Home from "../volunteer/Home";
 import logo from "../../../assets/images/logo.png";
 import Report from "../volunteer/Report";
 import Survey from "../information/Survey";
+import ReportView from "../volunteer/ReportView";
 
 const { Header, Sider, Content } = Layout;
 const { Text } = Typography;
@@ -37,7 +38,7 @@ export default function MasterPage() {
 
   const getMenu = () => {
     switch (userinfo?.roleid) {
-      case "1":
+      case "1": // Main administration
         return [
           {
             key: "admin",
@@ -54,14 +55,14 @@ export default function MasterPage() {
             icon: <BarChartOutlined />,
             label: "ДШХ-ны сарын тайлан",
           },
-          
+
           {
             key: "survey",
             icon: <InfoCircleOutlined />,
             label: "ДШХ-ны судалгаа",
           },
-       ];
-      case "2":
+        ];
+      case "2": //Салбар
         return [
           {
             key: "home",
@@ -73,18 +74,17 @@ export default function MasterPage() {
             icon: <BarChartOutlined />,
             label: "ДШХ-ны сарын тайлан",
           },
-          
+
           {
             key: "survey",
             icon: <InfoCircleOutlined />,
             label: "ДШХ-ны судалгаа",
           },
-      ];
+        ];
       case "3":
         return [];
-      case "5":
+      case "5": //Volunteers
         return [
-
           {
             key: "home",
             icon: <HomeOutlined />,
@@ -109,12 +109,12 @@ export default function MasterPage() {
     setToken({ access_token: null });
     window.location.reload();
   };
-
   return (
     <Layout>
-      <Sider trigger={null} collapsible collapsed={collapsed}>
+      <Sider trigger={null} collapsible collapsed={collapsed} style={{backgroundColor: userinfo.roleid == 5 ? '#0065B2' : '#BA0001'}}>
         <div className="text-center">
           <img
+            onClick={() => navigate("/")}
             src={logo}
             alt="logo"
             width={40}
@@ -126,10 +126,10 @@ export default function MasterPage() {
           </h5>
         </div>
 
-        <hr className="text-white" />
+        <Divider style={{backgroundColor: 'white'}} />
         <Menu
           style={{ position: "sticky", top: 0, zIndex: 1 }}
-          theme="dark"
+          theme="transparent"
           mode="inline"
           onClick={onClick}
           items={menuitem}
@@ -157,7 +157,7 @@ export default function MasterPage() {
           <Space direction="vertical">
             <Space>
               <Text code>
-                Хэрэглэгч: <b>{userinfo?.username}</b>
+                {userinfo.roleid == 5 ? 'Хэрэглэгч: ' : (userinfo.roleid == 1) ? 'Админ: ' : 'Салбар: ' }  <b>{userinfo?.username}</b>
               </Text>
             </Space>
           </Space>
@@ -188,6 +188,10 @@ export default function MasterPage() {
             <Route
               path="/volunteer/:volunteerid"
               element={userinfo?.roleid ? <VolunteerPage /> : <AccessDenied />}
+            />
+            <Route
+              path="/report/:id"
+              element={userinfo?.roleid ? <ReportView /> : <AccessDenied />}
             />
             <Route
               path="/admin"

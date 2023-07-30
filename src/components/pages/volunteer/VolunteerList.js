@@ -4,6 +4,7 @@ import {
   ArrowLeftOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
 import { api } from "../../system/api";
 import { Card, Col, Row, Avatar, Table, Button, Input, Space } from "antd";
 import useUserInfo from "../../system/useUserInfo";
@@ -12,6 +13,7 @@ import Home from "./Home";
 const { Meta } = Card;
 
 export default function VolunteerList() {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [exceldata, setexceldata] = useState([]);
   const { userinfo } = useUserInfo();
@@ -175,6 +177,14 @@ export default function VolunteerList() {
   ];
   if (back) return <Home setBack={setBack} />;
 
+  const tableOnRow = (record, rowIndex) => {
+    return {
+      onClick: (event) => {
+        navigate(`/volunteer/${record.id}`);
+      },
+    };
+  };
+
   return userinfo.roleid === 5 ? (
     <>
       <Row gutter={16}>
@@ -292,6 +302,8 @@ export default function VolunteerList() {
             pagination={{
               pageSize: 50,
             }}
+            onRow={tableOnRow}
+            rowKey={(record) => record.id}
           ></Table>
         </Col>
       </Row>
