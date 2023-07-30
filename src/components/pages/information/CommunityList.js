@@ -1,16 +1,17 @@
 import React, { useState, useCallback, useEffect, useRef } from "react";
 import {
+  UserOutlined,
   ArrowLeftOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
-import { api } from "../../system/api";
-import { Col, Row, Table, Button, Input, Space } from "antd";
-import useUserInfo from "../../system/useUserInfo";
 import { useNavigate } from "react-router-dom";
+import { api } from "../../system/api";
+import { Card, Col, Row, Avatar, Table, Button, Input, Space } from "antd";
+import useUserInfo from "../../system/useUserInfo";
 import Highlighter from "react-highlight-words";
-import Home from "./Home";
+const { Meta } = Card;
 
-export default function ReportList() {
+export default function CommunityList() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const { userinfo } = useUserInfo();
@@ -20,7 +21,7 @@ export default function ReportList() {
   const fetchData = useCallback(async () => {
     setLoading(true);
     await api
-      .get(`/api/Committee/get_report_list?id=${userinfo.committeeid}`)
+      .get(`/api/Committee/get_LocalInfo_list`)
       .then((res) => {
         if (res?.status === 200 && res?.data?.rettype === 0) {
           setGridData(res?.data?.retdata);
@@ -29,7 +30,7 @@ export default function ReportList() {
       .finally(() => {
         setLoading(false);
       });
-  }, [userinfo.committeeid]);
+  }, []);
 
   useEffect(() => {
     fetchData();
@@ -149,60 +150,51 @@ export default function ReportList() {
         text
       ),
   });
-
   const gridcolumns = [
     {
       title: "Салбар",
       dataIndex: "committeeid",
+      key: "committeeid",
       ...getColumnSearchProps("committeeid"),
     },
     {
-      title: "Тайлан он/сар",
-      dataIndex: "reportdate",
-      ...getColumnSearchProps("reportdate"),
-    },
-    {
-      title: "Тайлан илгээсэн огноо",
+      title: "Мэдээлэл илгээсэн огноо",
       dataIndex: "updated",
       ...getColumnSearchProps("updated"),
     },
   ];
-  if (back) return <Home setBack={setBack} />;
+
   const tableOnRow = (record, rowIndex) => {
     return {
       onClick: (event) => {
-        navigate(`/report/${record.id}`);
+        navigate(`/survey/${record.id}`);
       },
     };
   };
-  return userinfo.roleid !== 5 ? (
+
+  return (
     <>
-      <Row>
+      <Row gutter={16}>
         <Col xs={24} lg={24}>
-          <Button
-            type="primary"
-            icon={<ArrowLeftOutlined />}
-            onClick={() => setBack(true)}
-          />
           <Table
             size="small"
             title={() => (
               <h5 className="font-weight-light text-secondary text-uppercase">
-                ДШХ-ны сарын тайлан илгээсэн байдал
+                Орон нутгийн мэдээлэл илгээсэн Дунд шатны хорооны жагсаалт
               </h5>
             )}
             loading={loading}
-            dataSource={griddata}
             bordered
+            dataSource={griddata}
             columns={gridcolumns}
-            pagination={true}
+            pagination={{
+              pageSize: 50,
+            }}
             onRow={tableOnRow}
-            rowKey={(record) => record.volunteerid}
+            rowKey={(record) => record.id}
           ></Table>
         </Col>
       </Row>
     </>
-  ) : (
-    <></>
   );
 }

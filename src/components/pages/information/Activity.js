@@ -35,23 +35,7 @@ export default function Branch() {
   const [isEditMode, setIsEditMode] = useState(false);
 
   const fetchData = useCallback(() => {
-    //setLoading(true);
 
-    //api
-    //  .get(
-    //    `/api/Volunteer/get_Volunteer?id=${volunteerid ?? userinfo.volunteerid}`
-    //  )
-    //  .then((res) => {
-    //    let fdata = res?.data?.retdata[0];
-    //    if (fdata.birthday === "0001-01-01T00:00:00") fdata.birthday = null;
-    //    else fdata.birthday = dayjs(fdata.birthday, dateFormat);
-    //    fdata.birthday = null;
-    //    fdata.joindate = null;
-    //    formdata.setFieldsValue(fdata);
-    //  })
-    //  .finally(() => {
-    //    setLoading(false);
-    //  });
   }, [volunteerid, userinfo.volunteerid, formdata]);
 
   useEffect(() => {

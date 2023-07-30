@@ -24,6 +24,7 @@ import logo from "../../../assets/images/logo.png";
 import Report from "../volunteer/Report";
 import Survey from "../information/Survey";
 import ReportView from "../volunteer/ReportView";
+import SurveyList from "../information/SurveyList";
 
 const { Header, Sider, Content } = Layout;
 const { Text } = Typography;
@@ -57,7 +58,7 @@ export default function MasterPage() {
           },
 
           {
-            key: "survey",
+            key: "survies",
             icon: <InfoCircleOutlined />,
             label: "ДШХ-ны судалгаа",
           },
@@ -111,7 +112,7 @@ export default function MasterPage() {
   };
   return (
     <Layout>
-      <Sider trigger={null} collapsible collapsed={collapsed} style={{backgroundColor: userinfo.roleid == 5 ? '#0065B2' : '#BA0001'}}>
+      <Sider trigger={null} collapsible collapsed={collapsed} style={{backgroundColor: userinfo.roleid === 5 ? '#0065B2' : '#BA0001'}}>
         <div className="text-center">
           <img
             onClick={() => navigate("/")}
@@ -210,8 +211,12 @@ export default function MasterPage() {
               element={userinfo?.roleid ? <VolunteerPage /> : <AccessDenied />}
             />
             <Route
-              path="/survey"
+              path="/survey/:id"
               element={userinfo?.roleid ? <Survey /> : <AccessDenied />}
+            />
+             <Route
+              path="/survies"
+              element={userinfo?.roleid == 1 ? <SurveyList /> : <AccessDenied />}
             />
             <Route path="*" element={<NotFound />} />
           </Routes>

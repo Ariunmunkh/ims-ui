@@ -1,0 +1,10 @@
+/* MyComponent.css */
+.ant-descriptions-item-label {
+    width: 20%; /* Adjust the width as needed */
+  }
+  
+  /* Optional: To align the labels to the right, add the following */
+  .ant-descriptions-item-label {
+    text-align: right;
+  }
+  
