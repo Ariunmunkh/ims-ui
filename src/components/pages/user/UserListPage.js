@@ -296,6 +296,7 @@ export default function UserListPage() {
                 userid: 0,
                 roleid: 1,
                 committeeid: null,
+                volunteerid: null,
                 username: null,
                 email: null,
                 password: null,
@@ -364,7 +365,7 @@ export default function UserListPage() {
                     <Form.Item name="userid" label="Дугаар" hidden={true}>
                         <Input />
                     </Form.Item>
-
+                    
                     <Form.Item name="committeeid" label="Дунд шатны хороо" >
                         <Select style={{ width: "100%" }}>
                             {committee?.map((t, i) => (<Select.Option key={i} value={t.id}>{t.name}</Select.Option>))}
@@ -378,6 +379,11 @@ export default function UserListPage() {
                             options={rolelist}
                         />
                     </Form.Item>
+
+                    <Form.Item name="volunteerid" label="Сайн дурын идэвхтэн" hidden={true}>
+                        <Input />
+                    </Form.Item>
+
                     <Form.Item
                         name="username"
                         label="Нэвтрэх нэр"
