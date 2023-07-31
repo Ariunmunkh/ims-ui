@@ -24,7 +24,7 @@ import logo from "../../../assets/images/logo.png";
 import Report from "../volunteer/Report";
 import Survey from "../information/Survey";
 import ReportView from "../volunteer/ReportView";
-import SurveyList from "../information/SurveyList";
+import Survies from "../information/Survies";
 
 const { Header, Sider, Content } = Layout;
 const { Text } = Typography;
@@ -216,7 +216,11 @@ export default function MasterPage() {
             />
              <Route
               path="/survies"
-              element={userinfo?.roleid == 1 ? <SurveyList /> : <AccessDenied />}
+              element={userinfo?.roleid == 1 ? <Survies /> : <AccessDenied />}
+            />
+             <Route
+              path="/survey"
+              element={userinfo?.roleid == 2 ? <Survey /> : <AccessDenied />}
             />
             <Route path="*" element={<NotFound />} />
           </Routes>

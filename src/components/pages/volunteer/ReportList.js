@@ -16,6 +16,7 @@ export default function ReportList() {
   const { userinfo } = useUserInfo();
   const [griddata, setGridData] = useState();
   const [back, setBack] = useState(false);
+  const [committeeid, setcommitteeid] = useState(null);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -24,6 +25,11 @@ export default function ReportList() {
       .then((res) => {
         if (res?.status === 200 && res?.data?.rettype === 0) {
           setGridData(res?.data?.retdata);
+          const firstItem = res.data.retdata[0];
+          if (firstItem) {
+            // Extract the committeeid from the first object and set it in state
+            setcommitteeid(firstItem.committeeid);
+          }
         }
       })
       .finally(() => {
@@ -171,7 +177,7 @@ export default function ReportList() {
   const tableOnRow = (record, rowIndex) => {
     return {
       onClick: (event) => {
-        navigate(`/report/${record.id}`);
+        navigate(`/report/${record.id}`, { state: { committeeid: record.committeeid } });
       },
     };
   };

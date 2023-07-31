@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { api } from "../../system/api";
 import useUserInfo from "../../system/useUserInfo";
 import { Form, Popconfirm, Col, Row, Steps, Divider, Table, Input, DatePicker, Typography } from "antd";
-
+import { useLocation } from "react-router-dom";
 const { Text } = Typography;
 const EditableCell = ({
     editing,
@@ -51,8 +51,11 @@ export default function Report() {
     const [program, setprogram] = useState([]);
     const [indicator, setindicator] = useState([]);
     const [agegroup, setagegroup] = useState([]);
-
+    const currentDate = new Date();
+    const formattedDate = currentDate.toLocaleDateString();
     const [editingKey, setEditingKey] = useState('');
+    const location = useLocation();
+    const { committeeid } = location.state || {};
 
     const isEditing = (record) => {
         return record.key === editingKey;
@@ -74,7 +77,6 @@ export default function Report() {
             let agegroupid = 0;
 
             Object.keys(row).forEach((item) => {
-                debugger;
                 if (item.includes('female')) {
                     agegroupid = item.replace(/[^0-9]/g, '');
                     dtls.push({
@@ -105,8 +107,8 @@ export default function Report() {
             await api
                 .post(`/api/Committee/set_report`, {
                     id: reportid,
-                    committeeid: 0,
-                    reportdate: '2022.07.16',
+                    committeeid: userinfo.committeeid || 0,
+                    reportdate: formattedDate,
                     dtls: dtls
                 })
                 .then((res) => {
@@ -124,7 +126,7 @@ export default function Report() {
         setLoading(true);
 
         await api
-            .get(`/api/Committee/get_report?id=1`)
+            .get(`/api/Committee/get_report?id=${userinfo.committeeid || committeeid}`)
             .then(async (res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     let tprogram = res?.data?.retdata?.program;
@@ -239,6 +241,7 @@ export default function Report() {
 
     return (
         <>
+        
             <Row>
                 <Divider>
                     <Col>

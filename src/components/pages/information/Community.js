@@ -13,21 +13,25 @@ import useUserInfo from "../../system/useUserInfo";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import "./MyComponent.css";
+import { useLocation } from "react-router-dom";
 
 dayjs.extend(customParseFormat);
 const dateFormat = "YYYY/MM/DD";
 
-export default function Community() {
+export default function Community(props) {
   const { userinfo } = useUserInfo();
   const [formdata] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
 
+  const location = useLocation();
+  const { committeeid } = location.state || {};
+
   const fetchData = useCallback(async () => {
     setLoading(true);
 
     api
-      .get(`/api/Committee/get_LocalInfo?id=${userinfo.committeeid}`)
+      .get(`/api/Committee/get_LocalInfo?id=${committeeid || userinfo.committeeid}`)
       .then((res) => {
         let fdata = res?.data?.retdata[0];
         formdata.setFieldsValue(fdata);
@@ -54,6 +58,7 @@ export default function Community() {
         }
       });
   };
+
   return (
     <div>
       <Spin spinning={loading}>

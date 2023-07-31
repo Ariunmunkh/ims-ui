@@ -169,16 +169,19 @@ export default function Home() {
     {
       title: "Салбар",
       dataIndex: "committeeid",
+      key: "committeeid",
       ...getColumnSearchProps("committeeid"),
     },
     {
       title: "Тайлан он/сар",
       dataIndex: "reportdate",
+      key: "reportdate",
       ...getColumnSearchProps("reportdate"),
     },
     {
       title: "Тайлан илгээсэн огноо",
       dataIndex: "updated",
+      key: "updated",
       ...getColumnSearchProps("updated"),
     },
   ];
@@ -192,16 +195,19 @@ export default function Home() {
     {
       title: "Нэр",
       dataIndex: "firstname",
+      key: "firstname",
       ...getColumnSearchProps("firstname"),
     },
     {
       title: "Регистрийн дугаар",
       dataIndex: "regno",
+      key: "regno",
       ...getColumnSearchProps("regno"),
     },
     {
       title: "Утас дугаар",
       dataIndex: "phone",
+      key: "phone",
       ...getColumnSearchProps("phone"),
     },
   ];
@@ -280,7 +286,11 @@ export default function Home() {
           >
             <Meta
               style={{ textAlign: "center" }}
-              title={<h5 className="text-primary font-weight-bold">{NumProject.length}</h5>}
+              title={
+                <h5 className="text-primary font-weight-bold">
+                  {NumProject.length}
+                </h5>
+              }
               description="Хэрэгжүүлж буй төсөл, хөтөлбөрийн тоо"
             />
           </Card>
@@ -405,6 +415,7 @@ export default function Home() {
             bordered
             columns={gridcolumns}
             pagination={true}
+            rowKey={(record) => record.id}
           ></Table>
         </Col>
       </Row>
@@ -423,6 +434,7 @@ export default function Home() {
             dataSource={griddata1}
             columns={gridcolumns1}
             pagination={true}
+            rowKey={(record) => record.id}
           ></Table>
         </Col>
       </Row>

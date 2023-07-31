@@ -18,6 +18,7 @@ import useUserInfo from "../../system/useUserInfo";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import TextArea from "antd/es/input/TextArea";
+import { useLocation } from "react-router-dom";
 
 dayjs.extend(customParseFormat);
 const dateFormat = "YYYY/MM/DD";
@@ -30,11 +31,12 @@ export default function Branch() {
   const formattedDateCorrect = dayjs(formdata.getFieldValue("c2_2"))
     .locale("en")
     .format("YYYY-MM-DD");
-
+    const location = useLocation();
+    const { committeeid } = location.state || {};
   const fetchData = useCallback(async () => {
     setLoading(true);
     await api
-      .get(`/api/Committee/get_CommitteeInfo?id=${userinfo.committeeid}`)
+      .get(`/api/Committee/get_CommitteeInfo?id=${committeeid || userinfo.committeeid}`)
       .then((res) => {
         let fdata = res?.data?.retdata[0];
         formdata.setFieldsValue(fdata);
