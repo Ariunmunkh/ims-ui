@@ -275,6 +275,7 @@ export default function UserListPage() {
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setIsModalOpen(false);
+                    
                     fetchData();
                 }
             });

@@ -25,6 +25,7 @@ import Report from "../volunteer/Report";
 import Survey from "../information/Survey";
 import ReportView from "../volunteer/ReportView";
 import Survies from "../information/Survies";
+import VolunteerList from "../volunteer/VolunteerList";
 
 const { Header, Sider, Content } = Layout;
 const { Text } = Typography;
@@ -71,6 +72,11 @@ export default function MasterPage() {
             label: "Нүүр",
           },
           {
+            key: "volunteers",
+            icon: <UserSwitchOutlined />,
+            label: "Сайн дурын идэвхтний жагсаалт",
+          },
+          {
             key: "report",
             icon: <BarChartOutlined />,
             label: "ДШХ-ны сарын тайлан",
@@ -92,7 +98,7 @@ export default function MasterPage() {
             label: "Нүүр",
           },
           {
-            key: "volunteer",
+            key: 'volunteer',
             icon: <UserSwitchOutlined />,
             label: "Үндсэн мэдээлэл",
           },
@@ -112,7 +118,7 @@ export default function MasterPage() {
   };
   return (
     <Layout>
-      <Sider trigger={null} collapsible collapsed={collapsed} style={{backgroundColor: userinfo.roleid === 5 ? '#0065B2' : '#BA0001'}}>
+      <Sider trigger={null} collapsible collapsed={collapsed} style={{backgroundColor: userinfo.roleid == 5 ? '#0065B2' : '#BA0001'}}>
         <div className="text-center">
           <img
             onClick={() => navigate("/")}
@@ -207,8 +213,8 @@ export default function MasterPage() {
               element={userinfo?.roleid ? <Report /> : <AccessDenied />}
             />
             <Route
-              path="/volunteer"
-              element={userinfo?.roleid ? <VolunteerPage /> : <AccessDenied />}
+              path="/volunteers"
+              element={userinfo?.roleid ? <VolunteerList /> : <AccessDenied />}
             />
             <Route
               path="/survey/:id"

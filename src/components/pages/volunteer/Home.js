@@ -211,7 +211,33 @@ export default function Home() {
       ...getColumnSearchProps("phone"),
     },
   ];
-
+  const gridcolumns3 = [
+    {
+        title: "Сайн дурын ажлын төрөл",
+        dataIndex: "voluntarywork",
+        ...getColumnSearchProps("voluntarywork"),
+    },
+    {
+        title: "Хугацаа",
+        dataIndex: "duration",
+        ...getColumnSearchProps("duration"),
+    },
+    {
+        title: "Огноо",
+        dataIndex: "voluntaryworkdate",
+        ...getColumnSearchProps("voluntaryworkdate"),
+    },
+    {
+        title: "Нэмэлт мэдээлэл",
+        dataIndex: "note",
+        ...getColumnSearchProps("note"),
+    },
+    {
+      title: "Төлөв",
+      dataIndex: "note",
+      ...getColumnSearchProps("note"),
+  }
+];
   if (volList) return <VolunteerList setVolList={setVolList} />;
   if (report) return <ReportList setReport={setReport} />;
   if (project) return <ProjectList setProject={setProject} />;
@@ -309,7 +335,7 @@ export default function Home() {
             loading={loading}
             bordered
             dataSource={griddata}
-            columns={gridcolumns}
+            columns={gridcolumns3}
             pagination={true}
           ></Table>
         </Col>
