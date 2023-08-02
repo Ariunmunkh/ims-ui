@@ -27,6 +27,7 @@ export default function Volunteer() {
   const { userinfo } = useUserInfo();
   const [formdata] = Form.useForm();
   const [educationlevel, seteducationlevel] = useState([]);
+  const [branch, setBranch] = useState();
   const [loading, setLoading] = useState(false);
 
   const fetchData = useCallback(() => {
@@ -55,6 +56,13 @@ export default function Volunteer() {
       .then((res) => {
         if (res?.status === 200 && res?.data?.rettype === 0) {
           seteducationlevel(res?.data?.retdata);
+        }
+      });
+      api
+      .get(`/api/record/base/get_Committee_list`)
+      .then((res) => {
+        if (res?.status === 200 && res?.data?.rettype === 0) {
+          setBranch(res?.data?.retdata);
         }
       });
     fetchData();
@@ -107,7 +115,7 @@ export default function Volunteer() {
           style={{ paddingBottom: 30 }}
         >
           <Descriptions.Item label="Харьяалагдах улаан загалмайн хороо">
-            {formdata.getFieldValue("id")}
+            {formdata.getFieldValue("committeeid")}
           </Descriptions.Item>
           <Descriptions.Item label="Ургийн овог">
             {formdata.getFieldValue("familyname")}
@@ -182,10 +190,15 @@ export default function Volunteer() {
             <InputNumber min={0} readOnly />
           </Form.Item>
 
-          <Form.Item name="coachid" label="Харьяалагдах улаан загалмайн хороо">
-            <Input />
+          <Form.Item name="committeeid" label="Харьяалагдах улаан загалмайн хороо">
+          <Select style={{ width: "100%" }}>
+              {branch?.map((t, i) => (
+                <Select.Option key={i} value={t.id}>
+                  {t.name}
+                </Select.Option>
+              ))}
+            </Select>
           </Form.Item>
-
           <Form.Item name="familyname" label="Ургийн овог">
             <Input />
           </Form.Item>

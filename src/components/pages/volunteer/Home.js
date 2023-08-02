@@ -23,7 +23,7 @@ export default function Home() {
     if (userinfo.volunteerid)
       await api
         .get(
-          `/api/Volunteer/get_VolunteerVoluntaryWork_list?id=${userinfo.volunteerid}`
+          `/api/Volunteer/get_VolunteerVoluntaryWork_list?id=${userinfo?.volunteerid}`
         )
         .then((res) => {
           if (res?.status === 200 && res?.data?.rettype === 0) {
@@ -234,13 +234,15 @@ export default function Home() {
     },
     {
       title: "Төлөв",
-      dataIndex: "note",
-      ...getColumnSearchProps("note"),
+      dataIndex: "status",
+      ...getColumnSearchProps("status"),
   }
 ];
   if (volList) return <VolunteerList setVolList={setVolList} />;
   if (report) return <ReportList setReport={setReport} />;
   if (project) return <ProjectList setProject={setProject} />;
+
+  console.log(userinfo);
   return userinfo.roleid === "5" ? (
     <>
       <Row gutter={16}>
@@ -259,7 +261,7 @@ export default function Home() {
               // title={<Title ellipsis={true} autos level={4}>Баянзүрх дүүргийн улаан загалмайн хороо</Title>}
               title={
                 <h6 className="text-primary font-weight-bold">
-                  Баянзүрх дүүргийн улаан загалмайн хороо
+                  {userinfo?.committee}
                 </h6>
               }
               description="7777-0508"
@@ -286,7 +288,8 @@ export default function Home() {
           >
             <Meta
               style={{ textAlign: "center" }}
-              title={<h5 className="text-primary font-weight-bold">12</h5>}
+              title={<h5 className="text-primary font-weight-bold">
+                {griddata?.length}</h5>}
               description="Хийсэн сайн дурын ажлын тоо"
             />
           </Card>
@@ -314,7 +317,7 @@ export default function Home() {
               style={{ textAlign: "center" }}
               title={
                 <h5 className="text-primary font-weight-bold">
-                  {NumProject.length}
+                  {NumProject?.length}
                 </h5>
               }
               description="Хэрэгжүүлж буй төсөл, хөтөлбөрийн тоо"
@@ -337,6 +340,7 @@ export default function Home() {
             dataSource={griddata}
             columns={gridcolumns3}
             pagination={true}
+            rowKey={(record) => record.id}
           ></Table>
         </Col>
       </Row>
@@ -365,7 +369,7 @@ export default function Home() {
           >
             <Meta
               style={{ textAlign: "center" }}
-              title={<h5 className="text-success font-weight-bold">12</h5>}
+              title={<h5 className="text-success font-weight-bold">{griddata?.length}</h5>}
               description="Бүртгэлтэй сайн дурын идэвхтний тоо"
             />
           </Card>

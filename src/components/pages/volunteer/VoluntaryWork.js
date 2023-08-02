@@ -185,6 +185,11 @@ export default function VoluntaryWork() {
             title: "Нэмэлт мэдээлэл",
             dataIndex: "note",
             ...getColumnSearchProps("note"),
+        },
+        {
+            title: "Төлөв",
+            dataIndex: "status",
+            ...getColumnSearchProps("status"),
         }
     ];
 
@@ -227,6 +232,7 @@ export default function VoluntaryWork() {
     const onFinish = async (values) => {
         let fdata = formdata.getFieldsValue();
         fdata.voluntaryworkdate = fdata.voluntaryworkdate.format('YYYY.MM.DD HH:mm:ss');
+        fdata.status = 0;
         await api
             .post(`/api/Volunteer/set_VolunteerVoluntaryWork`, fdata)
             .then((res) => {
@@ -258,6 +264,7 @@ export default function VoluntaryWork() {
             duration: null,
             voluntaryworkdate: null,
             note: null,
+            status: 0
         });
         showModal();
     };

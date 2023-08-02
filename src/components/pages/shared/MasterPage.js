@@ -192,6 +192,10 @@ export default function MasterPage() {
               path="/"
               element={userinfo?.roleid ? <Home /> : <AccessDenied />}
             />
+             <Route
+              path="/volunteer"
+              element={userinfo?.roleid ? <VolunteerPage /> : <AccessDenied />}
+            />
             <Route
               path="/volunteer/:volunteerid"
               element={userinfo?.roleid ? <VolunteerPage /> : <AccessDenied />}
