@@ -8,9 +8,13 @@ import Languages from "./Languages";
 import EmergencyContact from "./EmergencyContact";
 import Volunteer from "./Volunteer";
 import { ArrowLeftOutlined } from "@ant-design/icons";
+import { useLocation } from 'react-router-dom';
 
 export default function VolunteerPage() {
   const [back, setBack] = useState(false);
+  const location = useLocation();
+  const tabKey = new URLSearchParams(location.search).get('tab') || '1';
+
   return (
     <div>
       <Button
@@ -19,7 +23,7 @@ export default function VolunteerPage() {
         onClick={() => setBack(true)}
       />
       <Tabs
-        defaultActiveKey="1"
+        defaultActiveKey={tabKey}
         items={[
           {
             label: `Үндсэн мэдээлэл`,

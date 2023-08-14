@@ -190,7 +190,7 @@ export default function Volunteer() {
             <InputNumber min={0} readOnly />
           </Form.Item>
 
-          <Form.Item name="committeeid" label="Харьяалагдах улаан загалмайн хороо">
+          <Form.Item key="committeeid" label="Харьяалагдах улаан загалмайн хороо">
           <Select style={{ width: "100%" }}>
               {branch?.map((t, i) => (
                 <Select.Option key={i} value={t.id}>

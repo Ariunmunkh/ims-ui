@@ -1,51 +1,62 @@
-import React, { useState, useCallback, useEffect, useRef } from "react";
-import {
-  UserOutlined,
-  ArrowLeftOutlined,
-  SearchOutlined,
-} from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import { UserOutlined, SearchOutlined } from "@ant-design/icons";
 import { api } from "../../system/api";
-import { Card, Col, Row, Avatar, Table, Button, Input, Space, Tag } from "antd";
+import { Card, Col, Row, Avatar, Table, Input, Space, Button, Tag } from "antd";
 import useUserInfo from "../../system/useUserInfo";
+import VolunteerList from "./VolunteerList";
+import ReportList from "./ReportList";
+import ProjectList from "./ProjectList";
 import Highlighter from "react-highlight-words";
-import Home from "./Home";
+import HomeVolunteer from "./HomeVolunteer";
 const { Meta } = Card;
 
-export default function VolunteerList() {
-  const navigate = useNavigate();
+export default function HomeBranch() {
   const [loading, setLoading] = useState(false);
-  const [exceldata, setexceldata] = useState([]);
   const { userinfo } = useUserInfo();
-  const [griddata, setGridData] = useState();
-  const [back, setBack] = useState(false);
-  const [branchid, setBranchid] = useState();
+  const [volList, setVolList] = useState(false);
+  const [report, setReport] = useState(false);
+  const [project, setProject] = useState(false);
+  const [activeVol, setActiveVol] = useState();
+  const [pendingVol, setPendingVol] = useState();
+  const [griddata1, setGridData1] = useState();
+  const [NumProject, setNumProject] = useState(0);
 
-  const fetchData = useCallback(async () => {
-    setLoading(true);
-    await api
-      .get(`/api/Volunteer/get_Volunteer_list`)
-      .then((res) => {
+  const fetchData = useCallback(
+    async () => {
+      await api
+        .get(`/api/Committee/get_report_list?committeeid=${userinfo.committeeid}`)
+        .then((res) => {
+          if (res?.status === 200 && res?.data?.rettype === 0) {
+            setGridData1(res?.data?.retdata);
+          }
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+      await api.get(`/api/Volunteer/get_Volunteer_list`).then((res) => {
         if (res?.status === 200 && res?.data?.rettype === 0) {
           if (userinfo.committeeid) {
             const filteredData = res.data.retdata.filter(
-              (item) => item.committeeid == userinfo.committeeid
+              (item) =>
+                item.committeeid == userinfo.committeeid && item.status == 1
             );
-            setGridData(filteredData);
-          } else {
-            setGridData(res?.data?.retdata);
+            const filteredData1 = res.data.retdata.filter(
+              (item) =>
+                item.committeeid == userinfo.committeeid && item.status == 0
+            );
+            setPendingVol(filteredData1);
+            setActiveVol(filteredData);
           }
         }
-      })
-      .finally(() => {
-        setLoading(false);
       });
-  }, []);
+    },
+    [userinfo.committeeid],
+    []
+  );
 
   useEffect(() => {
     fetchData();
   }, [fetchData]);
-
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef(null);
@@ -160,9 +171,29 @@ export default function VolunteerList() {
         text
       ),
   });
+  const gridcolumns1 = [
+    {
+      title: "Салбар",
+      dataIndex: "committeeid",
+      key: "committeeid",
+      ...getColumnSearchProps("committeeid"),
+    },
+    {
+      title: "Тайлан он/сар",
+      dataIndex: "reportdate",
+      key: "reportdate",
+      ...getColumnSearchProps("reportdate"),
+    },
+    {
+      title: "Тайлан илгээсэн огноо",
+      dataIndex: "updated",
+      key: "updated",
+      ...getColumnSearchProps("updated"),
+    },
+  ];
   const statusTagColors = {
-    1: 'green',
-    0: 'red',
+    1: "green",
+    0: "red",
   };
   const gridcolumns = [
     {
@@ -174,37 +205,36 @@ export default function VolunteerList() {
     {
       title: "Нэр",
       dataIndex: "firstname",
+      key: "firstname",
       ...getColumnSearchProps("firstname"),
     },
     {
       title: "Регистрийн дугаар",
       dataIndex: "regno",
+      key: "regno",
       ...getColumnSearchProps("regno"),
     },
     {
       title: "Утас дугаар",
       dataIndex: "phone",
+      key: "phone",
       ...getColumnSearchProps("phone"),
     },
     {
       title: "Төлөв",
       dataIndex: "status",
       render: (status) => (
-        <Tag color={statusTagColors[status]}>{(status == '1') ? 'ДШХ-нд бүртгэлтэй' : 'Хүлээгдэж байна'}</Tag>
+        <Tag color={statusTagColors[status]}>
+          {status == '1' ? "ДШХ-нд бүртгэлтэй" : "Хүлээгдэж байна"}
+        </Tag>
       ),
     },
   ];
-  if (back) return <Home setBack={setBack} />;
-
-  const tableOnRow = (record, rowIndex) => {
-    return {
-      onClick: (event) => {
-        navigate(`/volunteer/${record.id}`);
-      },
-    };
-  };
-
-  return userinfo.roleid === 5 ? (
+  console.log(activeVol)
+  if (volList) return <VolunteerList setVolList={setVolList} />;
+  if (report) return <ReportList setReport={setReport} />;
+  if (project) return <ProjectList setProject={setProject} />;
+  return (
     <>
       <Row gutter={16}>
         <Col xs={24} lg={{ span: 8 }}>
@@ -214,24 +244,33 @@ export default function VolunteerList() {
               textAlign: "center",
               backgroundColor: "#FAFAFA",
             }}
-            extra={<Avatar shape="circle" icon={<UserOutlined />} />}
-            title="Харьяа дунд шатны хороо"
+            onClick={() => setVolList(true)}
+            extra={
+              <Avatar
+                style={{
+                  backgroundColor: "#1677FF",
+                }}
+              >
+                K
+              </Avatar>
+            }
+            title="Бүртгэлтэй: Сайн дурын идэвхтэн"
           >
             <Meta
               style={{ textAlign: "center" }}
-              // title={<Title ellipsis={true} autos level={4}>Баянзүрх дүүргийн улаан загалмайн хороо</Title>}
               title={
-                <h6 className="text-primary font-weight-bold">
-                  Баянзүрх дүүргийн улаан загалмайн хороо
-                </h6>
+                <h5 className="text-success font-weight-bold">
+                  {activeVol?.length ? activeVol?.length : 0}
+                </h5>
               }
-              description="7777-0508"
+              description="Бүртгэлтэй сайн дурын идэвхтний тоо"
             />
           </Card>
         </Col>
         <Col xs={24} lg={{ span: 8 }}>
           <Card
             hoverable={true}
+            onClick={() => setVolList(true)}
             style={{
               textAlign: "center",
               backgroundColor: "#FAFAFA",
@@ -245,18 +284,23 @@ export default function VolunteerList() {
                 K
               </Avatar>
             }
-            title="Сайн дурын ажлын мэдээлэл"
+            title="Бүртгэлгүй: Сайн дурын идэвхтэн"
           >
             <Meta
               style={{ textAlign: "center" }}
-              title={<h5 className="text-primary font-weight-bold">12</h5>}
-              description="Хийсэн сайн дурын ажлын тоо"
+              title={
+                <h5 className="text-warning font-weight-bold">
+                  {pendingVol?.length ? pendingVol?.length : 0}
+                </h5>
+              }
+              description="Хүсэлтээ илгээсэн сайн дурын идэвхтний тоо"
             />
           </Card>
         </Col>
         <Col xs={24} lg={{ span: 8 }}>
           <Card
             hoverable={true}
+            onClick={() => setReport(true)}
             style={{
               textAlign: "center",
               backgroundColor: "#FAFAFA",
@@ -270,12 +314,16 @@ export default function VolunteerList() {
                 K
               </Avatar>
             }
-            title="МУЗН-ийн хэрэгжүүлж буй төсөл, хөтөлбөрүүд"
+            title="ДШХ-ны сарын тайлан"
           >
             <Meta
               style={{ textAlign: "center" }}
-              title={<h5 className="text-primary font-weight-bold">5</h5>}
-              description="Хэрэгжүүлж буй төсөл, хөтөлбөрийн тоо"
+              title={
+                <h5 className="text-danger font-weight-bold">
+                  5 сарын тайлан явуулаагүй
+                </h5>
+              }
+              description="ДШХ-ны сар бүрийн тайлан"
             />
           </Card>
         </Col>
@@ -287,44 +335,35 @@ export default function VolunteerList() {
             size="small"
             title={() => (
               <h5 className="font-weight-light text-secondary text-uppercase">
-                Сайн дурын ажлын жагсаалт
+                Бүртгэлтэй: Сайн дурын идэвхтний жагсаалт
               </h5>
             )}
             loading={loading}
+            dataSource={activeVol}
             bordered
             columns={gridcolumns}
             pagination={true}
+            rowKey={(record) => record.id}
           ></Table>
         </Col>
       </Row>
-    </>
-  ) : (
-    <>
-      <Row gutter={16}>
+      <br />
+      <Row>
         <Col xs={24} lg={24}>
-          <Button
-            type="primary"
-            icon={<ArrowLeftOutlined />}
-            onClick={() => setBack(true)}
-          />
           <Table
             size="small"
             title={() => (
               <h5 className="font-weight-light text-secondary text-uppercase">
-                Сайн дурын идэвхтний жагсаалт
+                ДШХ-ны сарын тайлан илгээсэн байдал
               </h5>
             )}
             loading={loading}
             bordered
-            dataSource={griddata}
-            columns={gridcolumns}
-            pagination={{
-              pageSize: 50,
-            }}
-            onRow={tableOnRow}
+            dataSource={griddata1}
+            columns={gridcolumns1}
+            pagination={true}
             rowKey={(record) => record.id}
-          >
-          </Table>
+          ></Table>
         </Col>
       </Row>
     </>

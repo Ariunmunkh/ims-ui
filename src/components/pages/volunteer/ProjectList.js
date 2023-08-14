@@ -42,9 +42,6 @@ export default function ProjectList() {
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
-
-  console.log(currentPageData);
-
   if (back) return <Home setBack={setBack} />;
 
   return (
@@ -60,7 +57,7 @@ export default function ProjectList() {
           <Divider></Divider>
           <Row gutter={16} >
             {currentPageData.map((item) => (
-              <Col span={8} className="pb-3">
+              <Col span={8} className="pb-3" key={item.id}>
                 <Card title={`Төслийн нэр: ${item.name}`} key={item.id} bordered={true}>
                   {`Хөтөлбөр: ${item.programid}`} <br/> {`Санхүүжүүлэгч: ${item.funder}`} <br/> {`Төслийн танилцуулга: ${item.note}`}
                 </Card>
