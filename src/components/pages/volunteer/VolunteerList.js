@@ -12,35 +12,60 @@ import Highlighter from "react-highlight-words";
 import Home from "./Home";
 const { Meta } = Card;
 
-export default function VolunteerList() {
+export default function VolunteerList({ Lstatus }) {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [exceldata, setexceldata] = useState([]);
   const { userinfo } = useUserInfo();
   const [griddata, setGridData] = useState();
   const [back, setBack] = useState(false);
-  const [branchid, setBranchid] = useState();
+  const [activeVol, setActiveVol] = useState();
+  const [pendingVol, setPendingVol] = useState();
 
-  const fetchData = useCallback(async () => {
-    setLoading(true);
-    await api
-      .get(`/api/Volunteer/get_Volunteer_list`)
-      .then((res) => {
-        if (res?.status === 200 && res?.data?.rettype === 0) {
-          if (userinfo.committeeid) {
-            const filteredData = res.data.retdata.filter(
-              (item) => item.committeeid == userinfo.committeeid
-            );
-            setGridData(filteredData);
-          } else {
-            setGridData(res?.data?.retdata);
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  const hasSelected = selectedRowKeys.length > 0;
+
+  const fetchData = useCallback(
+    async () => {
+      setLoading(true);
+      await api
+        .get(`/api/Volunteer/get_Volunteer_list`)
+        .then((res) => {
+          if (res?.status === 200 && res?.data?.rettype === 0) {
+            if (userinfo.committeeid && Lstatus === "active") {
+              const filteredData = res.data.retdata.filter(
+                (item) =>
+                  item.committeeid == userinfo.committeeid && item.status == "1"
+              );
+              setGridData(filteredData);
+            } else if (userinfo.committeeid && Lstatus === "passive") {
+              const filteredData = res.data.retdata.filter(
+                (item) =>
+                  item.committeeid == userinfo.committeeid && item.status == "0"
+              );
+              setGridData(filteredData);
+            } else if (userinfo.roleid == 1 && Lstatus === "active") {
+              const filteredData = res.data.retdata.filter(
+                (item) => item.status == 1
+              );
+              setGridData(filteredData);
+            }
+            else if (userinfo.roleid == 1 && Lstatus === "passive") {
+              const filteredData = res.data.retdata.filter(
+                (item) => item.status == 0 || item.status == null
+              );
+              setGridData(filteredData);
+            }
           }
-        }
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, []);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    },
+    [Lstatus],
+    [userinfo?.committeeid],
+    [userinfo?.roleid]
+  );
 
   useEffect(() => {
     fetchData();
@@ -161,10 +186,27 @@ export default function VolunteerList() {
       ),
   });
   const statusTagColors = {
-    1: 'green',
-    0: 'red',
+    1: "green",
+    0: "red",
   };
   const gridcolumns = [
+   
+    {
+      title: "Үйлдэл",
+      key: "action",
+      render: (text, record) => (
+        <Button type="link" onClick={() => navigate(`/volunteer/${record.id}`)}>
+          Дэлгэрэнгүй мэдээлэл харах
+        </Button>
+      ),
+    },
+    userinfo.roleid === '1' ? 
+    {
+      title: "Салбар",
+      dataIndex: "committeeid",
+      key: "committeeid",
+      ...getColumnSearchProps("committeeid"),
+    } : null ,
     {
       title: "Овог",
       dataIndex: "lastname",
@@ -190,115 +232,50 @@ export default function VolunteerList() {
       title: "Төлөв",
       dataIndex: "status",
       render: (status) => (
-        <Tag color={statusTagColors[status]}>{(status == '1') ? 'ДШХ-нд бүртгэлтэй' : 'Хүлээгдэж байна'}</Tag>
+        <Tag color={statusTagColors[status]}>
+          {status == "1" ? "ДШХ-нд бүртгэлтэй" : "Хүлээгдэж байна"}
+        </Tag>
       ),
     },
   ];
-  if (back) return <Home setBack={setBack} />;
+  const onFinish = async () => {
+    setLoading(true);
 
-  const tableOnRow = (record, rowIndex) => {
-    return {
-      onClick: (event) => {
-        navigate(`/volunteer/${record.id}`);
-      },
-    };
+    const updateRequests = selectedRowKeys.map(async (volunteerId) => {
+      const payload = {
+        id: volunteerId,
+        committeeid: userinfo.committeeid,
+        status: 1,
+      };
+
+      return api.post(`/api/Volunteer/update_Volunteer`, payload);
+    });
+
+    try {
+      await Promise.all(updateRequests);
+
+      // After all requests are completed, update data and reset selectedRowKeys
+      setSelectedRowKeys([]);
+      fetchData(); // Assuming fetchData fetches the updated data
+    } catch (error) {
+      console.error("Error updating volunteer status:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  return userinfo.roleid === 5 ? (
-    <>
-      <Row gutter={16}>
-        <Col xs={24} lg={{ span: 8 }}>
-          <Card
-            hoverable={true}
-            style={{
-              textAlign: "center",
-              backgroundColor: "#FAFAFA",
-            }}
-            extra={<Avatar shape="circle" icon={<UserOutlined />} />}
-            title="Харьяа дунд шатны хороо"
-          >
-            <Meta
-              style={{ textAlign: "center" }}
-              // title={<Title ellipsis={true} autos level={4}>Баянзүрх дүүргийн улаан загалмайн хороо</Title>}
-              title={
-                <h6 className="text-primary font-weight-bold">
-                  Баянзүрх дүүргийн улаан загалмайн хороо
-                </h6>
-              }
-              description="7777-0508"
-            />
-          </Card>
-        </Col>
-        <Col xs={24} lg={{ span: 8 }}>
-          <Card
-            hoverable={true}
-            style={{
-              textAlign: "center",
-              backgroundColor: "#FAFAFA",
-            }}
-            extra={
-              <Avatar
-                style={{
-                  backgroundColor: "#1677FF",
-                }}
-              >
-                K
-              </Avatar>
-            }
-            title="Сайн дурын ажлын мэдээлэл"
-          >
-            <Meta
-              style={{ textAlign: "center" }}
-              title={<h5 className="text-primary font-weight-bold">12</h5>}
-              description="Хийсэн сайн дурын ажлын тоо"
-            />
-          </Card>
-        </Col>
-        <Col xs={24} lg={{ span: 8 }}>
-          <Card
-            hoverable={true}
-            style={{
-              textAlign: "center",
-              backgroundColor: "#FAFAFA",
-            }}
-            extra={
-              <Avatar
-                style={{
-                  backgroundColor: "#1677FF",
-                }}
-              >
-                K
-              </Avatar>
-            }
-            title="МУЗН-ийн хэрэгжүүлж буй төсөл, хөтөлбөрүүд"
-          >
-            <Meta
-              style={{ textAlign: "center" }}
-              title={<h5 className="text-primary font-weight-bold">5</h5>}
-              description="Хэрэгжүүлж буй төсөл, хөтөлбөрийн тоо"
-            />
-          </Card>
-        </Col>
-      </Row>
-      <br />
-      <Row>
-        <Col xs={24} lg={24}>
-          <Table
-            size="small"
-            title={() => (
-              <h5 className="font-weight-light text-secondary text-uppercase">
-                Сайн дурын ажлын жагсаалт
-              </h5>
-            )}
-            loading={loading}
-            bordered
-            columns={gridcolumns}
-            pagination={true}
-          ></Table>
-        </Col>
-      </Row>
-    </>
-  ) : (
+  const onSelectChange = (newSelectedRowKeys) => {
+    console.log("selectedRowKeys changed: ", newSelectedRowKeys);
+    setSelectedRowKeys(newSelectedRowKeys);
+  };
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: onSelectChange,
+  };
+
+  if (back) return <Home setBack={setBack} />;
+
+  return (
     <>
       <Row gutter={16}>
         <Col xs={24} lg={24}>
@@ -307,6 +284,23 @@ export default function VolunteerList() {
             icon={<ArrowLeftOutlined />}
             onClick={() => setBack(true)}
           />
+          {userinfo.roleid === '2' ? 
+          <Button
+            className="ml-3"
+            type="primary"
+            onClick={onFinish}
+            disabled={!hasSelected}
+            loading={loading}
+          >
+            ДШХ-нд бүртгэж авах 
+          </Button> : null}
+          <span
+            style={{
+              marginLeft: 8,
+            }}
+          >
+            {hasSelected ? `Сонгогдсон ${selectedRowKeys.length} мөр` : ""}
+          </span> 
           <Table
             size="small"
             title={() => (
@@ -318,13 +312,12 @@ export default function VolunteerList() {
             bordered
             dataSource={griddata}
             columns={gridcolumns}
+            {...userinfo.roleid === '2' ? rowSelection={rowSelection} : null}
             pagination={{
               pageSize: 50,
             }}
-            onRow={tableOnRow}
             rowKey={(record) => record.id}
-          >
-          </Table>
+          ></Table>
         </Col>
       </Row>
     </>

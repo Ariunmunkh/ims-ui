@@ -3,6 +3,7 @@ import { UserOutlined, SearchOutlined } from "@ant-design/icons";
 import { api } from "../../system/api";
 import { Card, Col, Row, Avatar, Table, Input, Space, Button, Tag } from "antd";
 import useUserInfo from "../../system/useUserInfo";
+import { useNavigate } from "react-router-dom";
 import VolunteerList from "./VolunteerList";
 import ReportList from "./ReportList";
 import ProjectList from "./ProjectList";
@@ -11,6 +12,7 @@ import HomeVolunteer from "./HomeVolunteer";
 const { Meta } = Card;
 
 export default function HomeAdmin() {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const { userinfo } = useUserInfo();
   const [volList, setVolList] = useState(false);
@@ -19,7 +21,7 @@ export default function HomeAdmin() {
   const [activeVol, setActiveVol] = useState();
   const [pendingVol, setPendingVol] = useState();
   const [griddata1, setGridData1] = useState();
-  const [NumProject, setNumProject] = useState(0);
+  const [Lstatus, setLstatus] = useState();
 
   const fetchData = useCallback(
     async () => {
@@ -193,6 +195,21 @@ export default function HomeAdmin() {
   };
   const gridcolumns = [
     {
+      title: "Үйлдэл",
+      key: "action",
+      render: (text, record) => (
+        <Button type="link" onClick={() => navigate(`/volunteer/${record.id}`)}>
+          Дэлгэрэнгүй мэдээлэл харах
+        </Button>
+      ),
+    },
+    {
+      title: "Салбар",
+      dataIndex: "committeeid",
+      key: "committeeid",
+      ...getColumnSearchProps("committeeid"),
+    },
+    {
       title: "Овог",
       dataIndex: "lastname",
       key: "lastname",
@@ -221,12 +238,12 @@ export default function HomeAdmin() {
       dataIndex: "status",
       render: (status) => (
         <Tag color={statusTagColors[status]}>
-          {status == '1' ? "Хүлээн зөвшөөрсөн" : "Хүлээгдэж байна"}
+          {status == '1' ? "ДШХ-нд бүртгэлтэй" : "Хүлээгдэж байна"}
         </Tag>
       ),
     },
   ];
-  if (volList) return <VolunteerList setVolList={setVolList} />;
+  if (volList) return <VolunteerList Lstatus={Lstatus} setLstatus={setLstatus} setVolList={setVolList} />;
   if (report) return <ReportList setReport={setReport} />;
   if (project) return <ProjectList setProject={setProject} />;
 
@@ -240,16 +257,7 @@ export default function HomeAdmin() {
               textAlign: "center",
               backgroundColor: "#FAFAFA",
             }}
-            onClick={() => setVolList(true)}
-            extra={
-              <Avatar
-                style={{
-                  backgroundColor: "#1677FF",
-                }}
-              >
-                K
-              </Avatar>
-            }
+            onClick={() => {setVolList(true); setLstatus('active')}}
             title="Бүртгэлтэй: Сайн дурын идэвхтэн"
           >
             <Meta
@@ -266,20 +274,12 @@ export default function HomeAdmin() {
         <Col xs={24} lg={{ span: 8 }}>
           <Card
             hoverable={true}
-            onClick={() => setVolList(true)}
+            onClick={() => {setVolList(true); setLstatus('passive')}}
             style={{
               textAlign: "center",
               backgroundColor: "#FAFAFA",
             }}
-            extra={
-              <Avatar
-                style={{
-                  backgroundColor: "#1677FF",
-                }}
-              >
-                K
-              </Avatar>
-            }
+           
             title="Бүртгэлгүй: Сайн дурын идэвхтэн"
           >
             <Meta
@@ -301,15 +301,7 @@ export default function HomeAdmin() {
               textAlign: "center",
               backgroundColor: "#FAFAFA",
             }}
-            extra={
-              <Avatar
-                style={{
-                  backgroundColor: "#1677FF",
-                }}
-              >
-                K
-              </Avatar>
-            }
+          
             title="ДШХ-ны сарын тайлан"
           >
             <Meta

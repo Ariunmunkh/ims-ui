@@ -14,6 +14,7 @@ export default function HomeBranch() {
   const [loading, setLoading] = useState(false);
   const { userinfo } = useUserInfo();
   const [volList, setVolList] = useState(false);
+  const [Lstatus, setLstatus] = useState();
   const [report, setReport] = useState(false);
   const [project, setProject] = useState(false);
   const [activeVol, setActiveVol] = useState();
@@ -24,7 +25,9 @@ export default function HomeBranch() {
   const fetchData = useCallback(
     async () => {
       await api
-        .get(`/api/Committee/get_report_list?committeeid=${userinfo.committeeid}`)
+        .get(
+          `/api/Committee/get_report_list?committeeid=${userinfo.committeeid}`
+        )
         .then((res) => {
           if (res?.status === 200 && res?.data?.rettype === 0) {
             setGridData1(res?.data?.retdata);
@@ -50,8 +53,7 @@ export default function HomeBranch() {
         }
       });
     },
-    [userinfo.committeeid],
-    []
+    [userinfo.committeeid]
   );
 
   useEffect(() => {
@@ -225,13 +227,12 @@ export default function HomeBranch() {
       dataIndex: "status",
       render: (status) => (
         <Tag color={statusTagColors[status]}>
-          {status == '1' ? "ДШХ-нд бүртгэлтэй" : "Хүлээгдэж байна"}
+          {status == "1" ? "ДШХ-нд бүртгэлтэй" : "Хүлээгдэж байна"}
         </Tag>
       ),
     },
   ];
-  console.log(activeVol)
-  if (volList) return <VolunteerList setVolList={setVolList} />;
+  if (volList) return <VolunteerList Lstatus={Lstatus} setLstatus={setLstatus} setVolList={setVolList} />;
   if (report) return <ReportList setReport={setReport} />;
   if (project) return <ProjectList setProject={setProject} />;
   return (
@@ -244,16 +245,8 @@ export default function HomeBranch() {
               textAlign: "center",
               backgroundColor: "#FAFAFA",
             }}
-            onClick={() => setVolList(true)}
-            extra={
-              <Avatar
-                style={{
-                  backgroundColor: "#1677FF",
-                }}
-              >
-                K
-              </Avatar>
-            }
+            onClick={() => {setVolList(true); setLstatus('active'
+            )}}
             title="Бүртгэлтэй: Сайн дурын идэвхтэн"
           >
             <Meta
@@ -270,20 +263,11 @@ export default function HomeBranch() {
         <Col xs={24} lg={{ span: 8 }}>
           <Card
             hoverable={true}
-            onClick={() => setVolList(true)}
+            onClick={() => {setVolList(true); setLstatus('passive')}}
             style={{
               textAlign: "center",
               backgroundColor: "#FAFAFA",
             }}
-            extra={
-              <Avatar
-                style={{
-                  backgroundColor: "#1677FF",
-                }}
-              >
-                K
-              </Avatar>
-            }
             title="Бүртгэлгүй: Сайн дурын идэвхтэн"
           >
             <Meta
@@ -305,15 +289,6 @@ export default function HomeBranch() {
               textAlign: "center",
               backgroundColor: "#FAFAFA",
             }}
-            extra={
-              <Avatar
-                style={{
-                  backgroundColor: "#1677FF",
-                }}
-              >
-                K
-              </Avatar>
-            }
             title="ДШХ-ны сарын тайлан"
           >
             <Meta
