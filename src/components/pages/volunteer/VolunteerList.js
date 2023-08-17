@@ -1,26 +1,21 @@
 import React, { useState, useCallback, useEffect, useRef } from "react";
 import {
-  UserOutlined,
   ArrowLeftOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { api } from "../../system/api";
-import { Card, Col, Row, Avatar, Table, Button, Input, Space, Tag } from "antd";
+import { Card, Col, Row, Table, Button, Input, Space, Tag } from "antd";
 import useUserInfo from "../../system/useUserInfo";
 import Highlighter from "react-highlight-words";
 import Home from "./Home";
-const { Meta } = Card;
 
 export default function VolunteerList({ Lstatus }) {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [exceldata, setexceldata] = useState([]);
   const { userinfo } = useUserInfo();
   const [griddata, setGridData] = useState();
   const [back, setBack] = useState(false);
-  const [activeVol, setActiveVol] = useState();
-  const [pendingVol, setPendingVol] = useState();
 
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const hasSelected = selectedRowKeys.length > 0;
@@ -49,8 +44,7 @@ export default function VolunteerList({ Lstatus }) {
                 (item) => item.status == 1
               );
               setGridData(filteredData);
-            }
-            else if (userinfo.roleid == 1 && Lstatus === "passive") {
+            } else if (userinfo.roleid == 1 && Lstatus === "passive") {
               const filteredData = res.data.retdata.filter(
                 (item) => item.status == 0 || item.status == null
               );
@@ -63,10 +57,9 @@ export default function VolunteerList({ Lstatus }) {
         });
     },
     [Lstatus],
-    [userinfo?.committeeid],
-    [userinfo?.roleid]
+    [userinfo.committeeid],
+    [userinfo.roleid]
   );
-
   useEffect(() => {
     fetchData();
   }, [fetchData]);
@@ -190,7 +183,6 @@ export default function VolunteerList({ Lstatus }) {
     0: "red",
   };
   const gridcolumns = [
-   
     {
       title: "Үйлдэл",
       key: "action",
@@ -200,13 +192,14 @@ export default function VolunteerList({ Lstatus }) {
         </Button>
       ),
     },
-    userinfo.roleid === '1' ? 
-    {
-      title: "Салбар",
-      dataIndex: "committeeid",
-      key: "committeeid",
-      ...getColumnSearchProps("committeeid"),
-    } : null ,
+    userinfo.roleid === "1"
+      ? {
+          title: "Салбар",
+          dataIndex: "committeeid",
+          key: "committeeid",
+          ...getColumnSearchProps("committeeid"),
+        }
+      : {},
     {
       title: "Овог",
       dataIndex: "lastname",
@@ -284,23 +277,24 @@ export default function VolunteerList({ Lstatus }) {
             icon={<ArrowLeftOutlined />}
             onClick={() => setBack(true)}
           />
-          {userinfo.roleid === '2' ? 
-          <Button
-            className="ml-3"
-            type="primary"
-            onClick={onFinish}
-            disabled={!hasSelected}
-            loading={loading}
-          >
-            ДШХ-нд бүртгэж авах 
-          </Button> : null}
+          {userinfo.roleid === "2" ? (
+            <Button
+              className="ml-3"
+              type="primary"
+              onClick={onFinish}
+              disabled={!hasSelected}
+              loading={loading}
+            >
+              ДШХ-нд бүртгэж авах
+            </Button>
+          ) : null}
           <span
             style={{
               marginLeft: 8,
             }}
           >
             {hasSelected ? `Сонгогдсон ${selectedRowKeys.length} мөр` : ""}
-          </span> 
+          </span>
           <Table
             size="small"
             title={() => (
@@ -312,7 +306,7 @@ export default function VolunteerList({ Lstatus }) {
             bordered
             dataSource={griddata}
             columns={gridcolumns}
-            {...userinfo.roleid === '2' ? rowSelection={rowSelection} : null}
+            rowSelection={rowSelection}
             pagination={{
               pageSize: 50,
             }}
