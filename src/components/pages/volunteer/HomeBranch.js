@@ -21,7 +21,6 @@ export default function HomeBranch() {
   const [pendingVol, setPendingVol] = useState();
   const [griddata1, setGridData1] = useState();
   const [NumProject, setNumProject] = useState(0);
-
   const fetchData = useCallback(
     async () => {
       await api

@@ -277,7 +277,7 @@ export default function VolunteerList({ Lstatus }) {
             icon={<ArrowLeftOutlined />}
             onClick={() => setBack(true)}
           />
-          {userinfo.roleid === "2" ? (
+          {userinfo.roleid === "2" && Lstatus === 'passive' ? (
             <Button
               className="ml-3"
               type="primary"

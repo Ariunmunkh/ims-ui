@@ -164,7 +164,7 @@ export default function MasterPage() {
           <Space direction="vertical">
             <Space>
               <Text code>
-                {userinfo.roleid == 5 ? 'Хэрэглэгч: ' : (userinfo.roleid == 1) ? 'Админ: ' : 'Салбар: ' }  <b>{userinfo?.username}</b>
+                {userinfo.roleid == 5 ? `Хэрэглэгч: ${userinfo?.username}` : (userinfo.roleid == 1) ? 'Админ: Админ' : `Салбар: ${userinfo?.committee}` }  
               </Text>
             </Space>
           </Space>
