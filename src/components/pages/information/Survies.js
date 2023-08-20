@@ -41,8 +41,8 @@ export default function Survies() {
   const gridcolumns = [
     {
       title: "Салбар",
-      dataIndex: "committeeid",
-      key: "committeeid",
+      dataIndex: "committee",
+      key: "committee",
     },
     {
       title: "Мэдээлэл илгээсэн огноо",

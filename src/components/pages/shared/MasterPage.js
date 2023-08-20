@@ -10,6 +10,7 @@ import {
   BarChartOutlined,
   UserSwitchOutlined,
   InfoCircleOutlined,
+  UnorderedListOutlined
 } from "@ant-design/icons";
 import { Layout, Menu, theme, Space, Button, Typography, Divider } from "antd";
 
@@ -26,6 +27,7 @@ import Survey from "../information/Survey";
 import ReportView from "../volunteer/ReportView";
 import Survies from "../information/Survies";
 import VolunteerList from "../volunteer/VolunteerList";
+import WorkList from "../volunteer/WorkList";
 
 const { Header, Sider, Content } = Layout;
 const { Text } = Typography;
@@ -72,9 +74,9 @@ export default function MasterPage() {
             label: "Нүүр",
           },
           {
-            key: "volunteers",
-            icon: <UserSwitchOutlined />,
-            label: "Сайн дурын идэвхтний жагсаалт",
+            key: "list",
+            icon: <UnorderedListOutlined />,
+            label: "Сайн дурын ажил",
           },
           {
             key: "report",
@@ -231,6 +233,10 @@ export default function MasterPage() {
              <Route
               path="/survey"
               element={userinfo?.roleid == 2 ? <Survey /> : <AccessDenied />}
+            />
+            <Route
+              path="/list"
+              element={userinfo?.roleid == 2 ? <WorkList /> : <AccessDenied />}
             />
             <Route path="*" element={<NotFound />} />
           </Routes>

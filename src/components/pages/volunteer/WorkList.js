@@ -1,53 +1,51 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
-import { UserOutlined, SearchOutlined } from "@ant-design/icons";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import React, { useState, useCallback, useEffect, useRef } from "react";
+import { ArrowLeftOutlined, SearchOutlined } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
 import { api } from "../../system/api";
-import { Card, Col, Row, Avatar, Table, Input, Space, Button, Tag } from "antd";
+import { Card, Col, Row, Table, Button, Input, Space, Tag } from "antd";
 import useUserInfo from "../../system/useUserInfo";
-import VolunteerList from "./VolunteerList";
-import ReportList from "./ReportList";
 import Highlighter from "react-highlight-words";
-import ProjectList from "./ProjectList";
-const { Meta } = Card;
+import Home from "./Home";
 
-export default function HomeVolunteer() {
+export default function WorkList({ Lstatus }) {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const { userinfo } = useUserInfo();
-  const [volList, setVolList] = useState(false);
-  const [report, setReport] = useState(false);
-  const [project, setProject] = useState(false);
   const [griddata, setGridData] = useState();
-  const [griddata1, setGridData1] = useState();
-  const [NumProject, setNumProject] = useState(0);
+  const [back, setBack] = useState(false);
 
-  const fetchData = useCallback(async () => {
-    if (userinfo.volunteerid)
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  const hasSelected = selectedRowKeys.length > 0;
+
+  const fetchData = useCallback(
+    async () => {
+      setLoading(true);
       await api
         .get(
-          `/api/Volunteer/get_VolunteerVoluntaryWork_list?id=${userinfo?.volunteerid}`
+          `/api/Volunteer/get_VolunteerVoluntaryWork_list?committeeid=${userinfo.committeeid}`
         )
         .then((res) => {
           if (res?.status === 200 && res?.data?.rettype === 0) {
-            setGridData(res?.data?.retdata);
-            const filteredData = res.data.retdata.filter(
-              (item) =>
-                item.status == "1"
-            );
-            setGridData1(filteredData);
+            if (userinfo.committeeid) {
+              const filteredData = res.data.retdata.filter(
+                (item) => item.status == "0" || item.status == null
+              );
+              setGridData(filteredData);
+            }
           }
-          
+        })
+        .finally(() => {
+          setLoading(false);
         });
-    await api.get(`/api/record/base/get_Project_list`).then((res) => {
-      if (res?.status === 200 && res?.data?.rettype === 0) {
-        setNumProject(res?.data?.retdata);
-      }
-    });
-  }, [userinfo.volunteerid]);
-
+    },
+    [Lstatus],
+    [userinfo.committeeid],
+    [userinfo.roleid]
+  );
   useEffect(() => {
     fetchData();
   }, [fetchData]);
+
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef(null);
@@ -163,10 +161,30 @@ export default function HomeVolunteer() {
       ),
   });
   const statusTagColors = {
+    null: "red",
     1: "green",
     0: "red",
   };
-  const gridcolumns3 = [
+  const gridcolumns = [
+    {
+      title: "Үйлдэл",
+      key: "action",
+      render: (text, record) => (
+        <Button type="link" onClick={() => navigate(`/volunteer/${record.id}`)}>
+          Дэлгэрэнгүй мэдээлэл харах
+        </Button>
+      ),
+    },
+    {
+      title: "Овог",
+      dataIndex: "lastname",
+      ...getColumnSearchProps("lastname"),
+    },
+    {
+      title: "Нэр",
+      dataIndex: "firstname",
+      ...getColumnSearchProps("firstname"),
+    },
     {
       title: "Сайн дурын ажлын төрөл",
       dataIndex: "voluntarywork",
@@ -197,95 +215,83 @@ export default function HomeVolunteer() {
       ),
     },
   ];
-  if (volList) return <VolunteerList setVolList={setVolList} />;
-  if (report) return <ReportList setReport={setReport} />;
-  if (project) return <ProjectList setProject={setProject} />;
-  console.log(userinfo);
+  const onFinish = async () => {
+    setLoading(true);
+
+    const updateRequests = selectedRowKeys.map(async (volunteerId) => {
+      const payload = {
+        id: volunteerId,
+        status: 1,
+      };
+
+      return api.post(`/api/Volunteer/update_VolunteerVoluntaryWork`, payload);
+    });
+
+    try {
+      await Promise.all(updateRequests);
+
+      // After all requests are completed, update data and reset selectedRowKeys
+      setSelectedRowKeys([]);
+      fetchData(); // Assuming fetchData fetches the updated data
+    } catch (error) {
+      console.error("Error updating volunteer status:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const onSelectChange = (newSelectedRowKeys) => {
+    console.log("selectedRowKeys changed: ", newSelectedRowKeys);
+    setSelectedRowKeys(newSelectedRowKeys);
+  };
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: onSelectChange,
+  };
+
+  if (back) return <Home setBack={setBack} />;
+
   return (
     <>
       <Row gutter={16}>
-        <Col xs={24} lg={{ span: 8 }}>
-          <Card
-            hoverable={false}
-            style={{
-              textAlign: "center",
-              backgroundColor: "#FAFAFA",
-            }}
-            extra={<Avatar shape="circle" icon={<UserOutlined />} />}
-            title="Харьяа дунд шатны хороо"
-          >
-            <Meta
-              style={{ textAlign: "center" }}
-              // title={<Title ellipsis={true} autos level={4}>Баянзүрх дүүргийн улаан загалмайн хороо</Title>}
-              title={
-                <h6 className="text-primary font-weight-bold">
-                  {userinfo?.committee
-                    ? userinfo?.committee
-                    : "Салбар сонгогдоогүй"}
-                </h6>
-              }
-              description="7777-0508"
-            />
-          </Card>
-        </Col>
-        <Col xs={24} lg={{ span: 8 }}>
-          <Card
-            hoverable={true}
-            onClick={() => navigate("/volunteer?tab=2")}
-            style={{
-              textAlign: "center",
-              backgroundColor: "#FAFAFA",
-            }}
-            title="Сайн дурын ажлын мэдээлэл"
-          >
-            <Meta
-              style={{ textAlign: "center" }}
-              title={
-                <h5 className="text-primary font-weight-bold">
-                  {griddata1?.length ? griddata1?.length : 0}
-                </h5>
-              }
-              description="Хийсэн сайн дурын ажлын тоо"
-            />
-          </Card>
-        </Col>
-        <Col xs={24} lg={{ span: 8 }}>
-          <Card
-            hoverable={true}
-            onClick={() => setProject(true)}
-            style={{
-              textAlign: "center",
-              backgroundColor: "#FAFAFA",
-            }}
-            title="МУЗН-ийн хэрэгжүүлж буй төсөл, хөтөлбөрүүд"
-          >
-            <Meta
-              style={{ textAlign: "center" }}
-              title={
-                <h5 className="text-primary font-weight-bold">
-                  {NumProject?.length ? NumProject?.length : 0}
-                </h5>
-              }
-              description="Хэрэгжүүлж буй төсөл, хөтөлбөрийн тоо"
-            />
-          </Card>
-        </Col>
-      </Row>
-      <br />
-      <Row>
         <Col xs={24} lg={24}>
+          <Button
+            type="primary"
+            icon={<ArrowLeftOutlined />}
+            onClick={() => setBack(true)}
+          />
+          <Button
+            className="ml-3"
+            type="primary"
+            onClick={onFinish}
+            disabled={!hasSelected}
+            loading={loading}
+          >
+            Хийсэн сайн дурын ажлыг хүлээн зөвшөөрөх
+          </Button>
+
+          <span
+            style={{
+              marginLeft: 8,
+            }}
+          >
+            {hasSelected ? `Сонгогдсон ${selectedRowKeys.length} мөр` : ""}
+          </span>
           <Table
             size="small"
             title={() => (
               <h5 className="font-weight-light text-secondary text-uppercase">
-                Сайн дурын ажлын жагсаалт
+                Сайн дурын идэвхтний жагсаалт
               </h5>
             )}
             loading={loading}
             bordered
             dataSource={griddata}
-            columns={gridcolumns3}
-            pagination={true}
+            columns={gridcolumns}
+            rowSelection={rowSelection}
+            pagination={{
+              pageSize: 50,
+            }}
             rowKey={(record) => record.id}
           ></Table>
         </Col>

@@ -175,9 +175,9 @@ export default function HomeBranch() {
   const gridcolumns1 = [
     {
       title: "Салбар",
-      dataIndex: "committeeid",
-      key: "committeeid",
-      ...getColumnSearchProps("committeeid"),
+      dataIndex: "committee",
+      key: "committee",
+      ...getColumnSearchProps("committee"),
     },
     {
       title: "Тайлан он/сар",

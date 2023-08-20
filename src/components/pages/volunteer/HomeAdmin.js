@@ -172,9 +172,9 @@ export default function HomeAdmin() {
   const gridcolumns1 = [
     {
       title: "Салбар",
-      dataIndex: "committeeid",
-      key: "committeeid",
-      ...getColumnSearchProps("committeeid"),
+      dataIndex: "committee",
+      key: "committee",
+      ...getColumnSearchProps("committee"),
     },
     {
       title: "Тайлан он/сар",
@@ -205,9 +205,9 @@ export default function HomeAdmin() {
     },
     {
       title: "Салбар",
-      dataIndex: "committeeid",
-      key: "committeeid",
-      ...getColumnSearchProps("committeeid"),
+      dataIndex: "committee",
+      key: "committee",
+      ...getColumnSearchProps("committee"),
     },
     {
       title: "Овог",
