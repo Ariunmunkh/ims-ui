@@ -28,6 +28,7 @@ import ReportView from "../volunteer/ReportView";
 import Survies from "../information/Survies";
 import VolunteerList from "../volunteer/VolunteerList";
 import WorkList from "../volunteer/WorkList";
+import CertificateForm from "../volunteer/CertificateForm";
 
 const { Header, Sider, Content } = Layout;
 const { Text } = Typography;
@@ -238,6 +239,7 @@ export default function MasterPage() {
               path="/list"
               element={userinfo?.roleid == 2 ? <WorkList /> : <AccessDenied />}
             />
+            
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Content>
