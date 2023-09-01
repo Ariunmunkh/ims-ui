@@ -195,9 +195,9 @@ export default function VolunteerList({ Lstatus }) {
     userinfo.roleid === "1"
       ? {
           title: "Салбар",
-          dataIndex: "committeeid",
-          key: "committeeid",
-          ...getColumnSearchProps("committeeid"),
+          dataIndex: "committee",
+          key: "committee",
+          ...getColumnSearchProps("committee"),
         }
       : {},
     {
