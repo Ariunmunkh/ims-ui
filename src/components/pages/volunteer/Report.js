@@ -65,8 +65,6 @@ export default function Report() {
     const [program, setprogram] = useState([]);
     const [indicator, setindicator] = useState([]);
     const [agegroup, setagegroup] = useState([]);
-    const currentDate = new Date();
-    const formattedDate = currentDate.toLocaleDateString();
     const [editingKey, setEditingKey] = useState("");
     const location = useLocation();
     const [griddata1, setGridData1] = useState();
@@ -208,26 +206,39 @@ export default function Report() {
             Object.keys(row).forEach((item) => {
                 if (item.includes("female")) {
                     agegroupid = item.replace(/[^0-9]/g, "");
-                    dtls.push({
-                        id: 0,
-                        reportid: reportid,
-                        programid: userinfo.committeeid,
-                        indicatorid: editingKey,
-                        agegroupid: agegroupid,
-                        male: 0,
-                        female: row[item],
-                    });
+
+                    const found = dtls.find((element) => element.agegroupid === agegroupid);
+                    if (found) {
+                        found.female = row[item];
+                    }
+                    else {
+                        dtls.push({
+                            id: 0,
+                            reportid: reportid,
+                            programid: userinfo.committeeid,
+                            indicatorid: editingKey,
+                            agegroupid: agegroupid,
+                            male: 0,
+                            female: row[item],
+                        });
+                    }
                 } else if (item.includes("male")) {
                     agegroupid = item.replace(/[^0-9]/g, "");
-                    dtls.push({
-                        id: 0,
-                        reportid: reportid,
-                        programid: userinfo.committeeid,
-                        indicatorid: editingKey,
-                        agegroupid: agegroupid,
-                        male: row[item],
-                        female: 0,
-                    });
+                    const found = dtls.find((element) => element.agegroupid === agegroupid);
+                    if (found) {
+                        found.male = row[item];
+                    }
+                    else {
+                        dtls.push({
+                            id: 0,
+                            reportid: reportid,
+                            programid: userinfo.committeeid,
+                            indicatorid: editingKey,
+                            agegroupid: agegroupid,
+                            male: row[item],
+                            female: 0,
+                        });
+                    }
                 }
             });
 
@@ -235,7 +246,7 @@ export default function Report() {
                 .post(`/api/Committee/set_report`, {
                     id: reportid,
                     committeeid: userinfo.committeeid || 0,
-                    reportdate: formattedDate,
+                    reportdate: reportdate?.format('YYYY.MM'),
                     dtls: dtls,
                 })
                 .then((res) => {
@@ -266,7 +277,7 @@ export default function Report() {
 
         await api
             .get(
-                `/api/Committee/get_report?id=${userinfo.committeeid || committeeid}`
+                `/api/Committee/get_report?committeeid=${userinfo.committeeid || committeeid}&reportdate=${reportdate?.format('YYYY.MM') }`
             )
             .then(async (res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
@@ -341,7 +352,7 @@ export default function Report() {
             .finally(() => {
                 setLoading(false);
             });
-    }, [editingKey]);
+    }, [editingKey, reportdate]);
 
     useEffect(() => {
         fetchData();
