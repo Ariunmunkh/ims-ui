@@ -8,9 +8,11 @@ import ReportList from "./ReportList";
 import ProjectList from "./ProjectList";
 import Highlighter from "react-highlight-words";
 import HomeVolunteer from "./HomeVolunteer";
+import { useNavigate } from "react-router-dom";
 const { Meta } = Card;
 
 export default function HomeBranch() {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const { userinfo } = useUserInfo();
   const [volList, setVolList] = useState(false);
@@ -231,6 +233,26 @@ export default function HomeBranch() {
       ),
     },
   ];
+  const tableOnRow = (record, rowIndex) => {
+
+    return {
+      onClick: (event) => {
+        navigate(`/volunteer/${record.id}`);
+      
+      },
+
+    };
+  };
+  const tableOnRow2 = (record, rowIndex) => {
+
+    return {
+      onClick: (event) => {
+        navigate(`/report/${record.id}`, { state: { committeeid: record.committeeid, udur: record.reportdate } });
+      
+      },
+
+    };
+  };
   if (volList) return <VolunteerList Lstatus={Lstatus} setLstatus={setLstatus} setVolList={setVolList} />;
   if (report) return <ReportList setReport={setReport} />;
   if (project) return <ProjectList setProject={setProject} />;
@@ -317,6 +339,7 @@ export default function HomeBranch() {
             bordered
             columns={gridcolumns}
             pagination={true}
+            onRow={tableOnRow}
             rowKey={(record) => record.id}
           ></Table>
         </Col>
@@ -336,6 +359,7 @@ export default function HomeBranch() {
             dataSource={griddata1}
             columns={gridcolumns1}
             pagination={true}
+            onRow={tableOnRow2}
             rowKey={(record) => record.id}
           ></Table>
         </Col>

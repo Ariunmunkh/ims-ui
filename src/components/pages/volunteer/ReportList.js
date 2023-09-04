@@ -175,8 +175,6 @@ export default function ReportList() {
   ];
   if (back) return <Home setBack={setBack} />;
   const tableOnRow = (record, rowIndex) => {
-    console.log(record.reportdate)
-
     return {
       onClick: (event) => {
         navigate(`/report/${record.id}`, { state: { committeeid: record.committeeid, udur: record.reportdate } });
