@@ -171,6 +171,15 @@ export default function HomeAdmin() {
   });
   const gridcolumns1 = [
     {
+      title: "Үйлдэл",
+      key: "action",
+      render: (text, record) => (
+        <Button type="link" onClick={() => navigate(`/report/${record.id}`, { state: { committeeid: record.committeeid, udur: record.reportdate } })}>
+          Дэлгэрэнгүй тайлан харах
+        </Button>
+      ),
+    },
+    {
       title: "Салбар",
       dataIndex: "committee",
       key: "committee",
@@ -243,6 +252,9 @@ export default function HomeAdmin() {
       ),
     },
   ];
+
+
+  
   if (volList) return <VolunteerList Lstatus={Lstatus} setLstatus={setLstatus} setVolList={setVolList} />;
   if (report) return <ReportList setReport={setReport} />;
   if (project) return <ProjectList setProject={setProject} />;
