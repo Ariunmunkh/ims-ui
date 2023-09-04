@@ -277,7 +277,7 @@ export default function Report() {
 
         await api
             .get(
-                `/api/Committee/get_report?committeeid=${userinfo.committeeid || committeeid}&reportdate=${reportdate?.format('YYYY.MM') }`
+                `/api/Committee/get_report?committeeid=${userinfo.committeeid || committeeid}`
             )
             .then(async (res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {

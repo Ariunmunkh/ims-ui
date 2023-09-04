@@ -159,8 +159,8 @@ export default function ReportList() {
   const gridcolumns = [
     {
       title: "Салбар",
-      dataIndex: "committeeid",
-      ...getColumnSearchProps("committeeid"),
+      dataIndex: "committee",
+      ...getColumnSearchProps("committee"),
     },
     {
       title: "Тайлан он/сар",
@@ -175,10 +175,14 @@ export default function ReportList() {
   ];
   if (back) return <Home setBack={setBack} />;
   const tableOnRow = (record, rowIndex) => {
+    console.log(record.reportdate)
+
     return {
       onClick: (event) => {
-        navigate(`/report/${record.id}`, { state: { committeeid: record.committeeid } });
+        navigate(`/report/${record.id}`, { state: { committeeid: record.committeeid, udur: record.reportdate } });
+      
       },
+
     };
   };
   return userinfo.roleid !== 5 ? (
@@ -203,7 +207,7 @@ export default function ReportList() {
             columns={gridcolumns}
             pagination={true}
             onRow={tableOnRow}
-            rowKey={(record) => record.volunteerid}
+            rowKey={(record) => record.id}
           ></Table>
         </Col>
       </Row>

@@ -44,7 +44,6 @@ export default function ReportView() {
     const { userinfo } = useUserInfo();
     const [reportdata, setreportdata] = useState([]);
     const [reportid, setreportid] = useState(1);
-    const [reportdate, setreportdate] = useState();
     const [programid, setprogramid] = useState(0);
     const [title, settitle] = useState();
     const [loading, setLoading] = useState(false);
@@ -55,7 +54,10 @@ export default function ReportView() {
     const [editingKey, setEditingKey] = useState('');
     const location = useLocation();
     const { committeeid } = location.state || {};
-  
+    const { udur } = location.state || {};
+    const [reportdate, setreportdate] = useState();
+
+    console.log(udur);
     const isEditing = (record) => {
         return record.key === editingKey;
     };
@@ -125,7 +127,7 @@ export default function ReportView() {
         setLoading(true);
 
         await api
-            .get(`/api/Committee/get_report?id=${userinfo.committeeid || committeeid}`)
+            .get(`/api/Committee/get_report?committeeid=${userinfo.committeeid || committeeid}&reportdate=${udur}`)
             .then(async (res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     let tprogram = res?.data?.retdata?.program;
@@ -240,7 +242,6 @@ export default function ReportView() {
 
     return (
         <>
-        <h2>{committeeid}</h2>
             <Row>
                 <Divider>
                     <Col>
@@ -288,6 +289,7 @@ export default function ReportView() {
                                 bordered
                                 dataSource={reportdata.filter(i => i.key === t.id)}
                                 columns={mergedColumns}
+                                rowKey={(record) => record.id}
                                 rowClassName="editable-row"
                                 pagination={{
                                     onChange: cancel,
