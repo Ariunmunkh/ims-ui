@@ -281,7 +281,7 @@ export default function Report() {
         if (userinfo.roleid == 2) {
             await api
                 .get(
-                    `/api/Committee/get_report?committeeid=${committeeid}`
+                    `/api/Committee/get_report?committeeid=${committeeid}&reportdate=${reportdate.format("YYYY.MM")}`
                 )
                 .then(async (res) => {
                     if (res?.status === 200 && res?.data?.rettype === 0) {
@@ -427,6 +427,7 @@ export default function Report() {
                     <Col>
                         <DatePicker
                             picker="month"
+                            allowClear={false}
                             value={reportdate}
                             onChange={(date, dateString) => {
                                 setreportdate(date);
