@@ -115,7 +115,7 @@ export default function Volunteer() {
           style={{ paddingBottom: 30 }}
         >
           <Descriptions.Item label="Харьяалагдах улаан загалмайн хороо">
-            {formdata.getFieldValue("committeeid")}
+            {formdata.getFieldValue("committee")}
           </Descriptions.Item>
           <Descriptions.Item label="Ургийн овог">
             {formdata.getFieldValue("familyname")}
@@ -190,7 +190,7 @@ export default function Volunteer() {
             <InputNumber min={0} readOnly />
           </Form.Item>
 
-          <Form.Item key="committeeid" label="Харьяалагдах улаан загалмайн хороо">
+          <Form.Item key="committeeid" name="committeeid" label="Харьяалагдах улаан загалмайн хороо">
           <Select style={{ width: "100%" }}>
               {branch?.map((t, i) => (
                 <Select.Option key={i} value={t.id}>

@@ -320,7 +320,7 @@ export default function HomeAdmin() {
               style={{ textAlign: "center" }}
               title={
                 <h5 className="text-danger font-weight-bold">
-                  5 сарын тайлан явуулаагүй
+                 ДШХ-ны тайлан илгээсэн байдал
                 </h5>
               }
               description="ДШХ-ны сар бүрийн тайлан"

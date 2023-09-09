@@ -1,10 +1,7 @@
 import React, { useState, useCallback, useEffect, useRef } from "react";
-import {
-  ArrowLeftOutlined,
-  SearchOutlined,
-} from "@ant-design/icons";
+import { ArrowLeftOutlined, SearchOutlined } from "@ant-design/icons";
 import { api } from "../../system/api";
-import { Col, Row, Table, Button, Input, Space } from "antd";
+import { Col, Row, Table, Button, Input, Space, Select } from "antd";
 import useUserInfo from "../../system/useUserInfo";
 import { useNavigate } from "react-router-dom";
 import Highlighter from "react-highlight-words";
@@ -17,6 +14,7 @@ export default function ReportList() {
   const [griddata, setGridData] = useState();
   const [back, setBack] = useState(false);
   const [committeeid, setcommitteeid] = useState(null);
+  const [committee, setcommittee] = useState([]);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -25,6 +23,9 @@ export default function ReportList() {
       .then((res) => {
         if (res?.status === 200 && res?.data?.rettype === 0) {
           setGridData(res?.data?.retdata);
+          if (userinfo.roleid === "1") {
+            setcommittee(res?.data?.retdata);
+          }
           const firstItem = res.data.retdata[0];
           if (firstItem) {
             // Extract the committeeid from the first object and set it in state
@@ -160,12 +161,14 @@ export default function ReportList() {
     {
       title: "Салбар",
       dataIndex: "committee",
-      ...getColumnSearchProps("committee"),
+      filters: committee,
+      onFilter: (value, record) => record?.committeeid === value,
     },
     {
       title: "Тайлан он/сар",
       dataIndex: "reportdate",
-      ...getColumnSearchProps("reportdate"),
+      filters: griddata,
+      onFilter: (value, record) => record?.reportdate === value,
     },
     {
       title: "Тайлан илгээсэн огноо",
@@ -177,10 +180,10 @@ export default function ReportList() {
   const tableOnRow = (record, rowIndex) => {
     return {
       onClick: (event) => {
-        navigate(`/report/${record.id}`, { state: { committeeid: record.committeeid, udur: record.reportdate } });
-      
+        navigate(`/report/${record.id}`, {
+          state: { committeeid: record.committeeid, udur: record.reportdate },
+        });
       },
-
     };
   };
   return userinfo.roleid !== 5 ? (

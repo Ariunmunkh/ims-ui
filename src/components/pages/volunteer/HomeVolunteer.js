@@ -200,7 +200,6 @@ export default function HomeVolunteer() {
   if (volList) return <VolunteerList setVolList={setVolList} />;
   if (report) return <ReportList setReport={setReport} />;
   if (project) return <ProjectList setProject={setProject} />;
-  console.log(userinfo);
   return (
     <>
       <Row gutter={16}>
