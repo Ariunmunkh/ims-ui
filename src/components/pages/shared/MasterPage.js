@@ -24,7 +24,6 @@ import Home from "../volunteer/Home";
 import logo from "../../../assets/images/logo.png";
 import Report from "../volunteer/Report";
 import Survey from "../information/Survey";
-import ReportView from "../volunteer/ReportView";
 import Survies from "../information/Survies";
 import VolunteerList from "../volunteer/VolunteerList";
 import WorkList from "../volunteer/WorkList";
@@ -201,10 +200,6 @@ export default function MasterPage() {
             <Route
               path="/volunteer/:volunteerid"
               element={userinfo?.roleid ? <VolunteerPage /> : <AccessDenied />}
-            />
-            <Route
-              path="/report/:id"
-              element={userinfo?.roleid ? <ReportView /> : <AccessDenied />}
             />
             <Route
               path="/admin"

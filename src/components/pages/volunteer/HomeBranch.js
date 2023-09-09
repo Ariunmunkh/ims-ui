@@ -247,7 +247,7 @@ export default function HomeBranch() {
 
     return {
       onClick: (event) => {
-        navigate(`/report/${record.id}`, { state: { committeeid: record.committeeid, udur: record.reportdate } });
+        navigate(`/report`, { state: { committeeid: record.committeeid, udur: record.reportdate } });
       
       },
 
