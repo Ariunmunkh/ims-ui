@@ -1,8 +1,23 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { UserOutlined, SearchOutlined } from "@ant-design/icons";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import {
+  UserOutlined,
+  SearchOutlined,
+  DownloadOutlined,
+} from "@ant-design/icons";
+import { Routes, Route, useNavigate, Link } from "react-router-dom";
 import { api } from "../../system/api";
-import { Card, Col, Row, Avatar, Table, Input, Space, Button, Tag } from "antd";
+import {
+  Card,
+  Col,
+  Row,
+  Avatar,
+  Table,
+  Input,
+  Space,
+  Button,
+  Tag,
+  Tooltip,
+} from "antd";
 import useUserInfo from "../../system/useUserInfo";
 import VolunteerList from "./VolunteerList";
 import ReportList from "./ReportList";
@@ -31,12 +46,10 @@ export default function HomeVolunteer() {
           if (res?.status === 200 && res?.data?.rettype === 0) {
             setGridData(res?.data?.retdata);
             const filteredData = res.data.retdata.filter(
-              (item) =>
-                item.status == "1"
+              (item) => item.status == "1"
             );
             setGridData1(filteredData);
           }
-          
         });
     await api.get(`/api/record/base/get_Project_list`).then((res) => {
       if (res?.status === 200 && res?.data?.rettype === 0) {
@@ -210,12 +223,10 @@ export default function HomeVolunteer() {
               textAlign: "center",
               backgroundColor: "#FAFAFA",
             }}
-            extra={<Avatar shape="circle" icon={<UserOutlined />} />}
             title="Харьяа дунд шатны хороо"
           >
             <Meta
               style={{ textAlign: "center" }}
-              // title={<Title ellipsis={true} autos level={4}>Баянзүрх дүүргийн улаан загалмайн хороо</Title>}
               title={
                 <h6 className="text-primary font-weight-bold">
                   {userinfo?.committee
@@ -230,15 +241,33 @@ export default function HomeVolunteer() {
         <Col xs={24} lg={{ span: 8 }}>
           <Card
             hoverable={true}
-            onClick={() => navigate("/volunteer?tab=2")}
+            
             style={{
               textAlign: "center",
               backgroundColor: "#FAFAFA",
             }}
+            extra={
+              <Tooltip title="Гэрчилгээ татах">
+                <Link
+                  to={`http://157.230.241.237:8080/api/Volunteer/get_certificate?id=${userinfo.volunteerid}`}
+                >
+                  <Button type="link">
+                    <Avatar
+                      shape="circle"
+                      style={{
+                        backgroundColor: "#ed1c24",
+                      }}
+                      icon={<DownloadOutlined />}
+                    />
+                  </Button>
+                </Link>
+              </Tooltip>
+            }
             title="Сайн дурын ажлын мэдээлэл"
           >
             <Meta
               style={{ textAlign: "center" }}
+              onClick={() => navigate("/volunteer?tab=2")}
               title={
                 <h5 className="text-primary font-weight-bold">
                   {griddata1?.length ? griddata1?.length : 0}
