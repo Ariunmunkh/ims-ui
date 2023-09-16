@@ -14,6 +14,7 @@ import {
   DatePicker,
   Select,
   Divider,
+  InputNumber,
 } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { PlusOutlined } from "@ant-design/icons";
@@ -381,7 +382,7 @@ export default function VoluntaryWork() {
           </Form.Item>
 
           <Form.Item name="duration" label="Хугацаа">
-            <Input />
+            <InputNumber />
           </Form.Item>
 
           <Form.Item name="voluntaryworkdate" label="Огноо">
