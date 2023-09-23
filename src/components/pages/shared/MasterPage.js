@@ -35,7 +35,7 @@ export default function MasterPage() {
     const navigate = useNavigate();
     const { setToken } = useToken();
     const { userinfo } = useUserInfo();
-    const [collapsed, setCollapsed] = useState(true);
+    const [collapsed, setCollapsed] = useState(false);
     const {
         token: { colorBgContainer },
     } = theme.useToken();
@@ -130,9 +130,9 @@ export default function MasterPage() {
                         className="text-center"
                         style={{ paddingBottom: 5, paddingTop: 10 }}
                     ></img>
-                    <h5 className="text-white text-center" onClick={() => navigate("/")}>
-                        IMS систем
-                    </h5>
+                    <h6 className="text-white text-center" onClick={() => navigate("/")}>
+                        IMS Мэдээллийн удирдлагын систем
+                    </h6>
                 </div>
 
                 <Divider style={{ backgroundColor: 'white' }} />

@@ -91,32 +91,7 @@ export default function Languages() {
                 );
             },
         },
-        {
-            title: "Сурсан хугацаа /Жилээр/",
-            dataIndex: "studyyear",
-        },
-        {
-            title: "Түвшин шалгасан оноотой эсэх",
-            dataIndex: "isscore",
-            render: (text, record, index) => {
-                return (
-                    <Select
-                        value={record?.isscore}
-                        disabled
-                        bordered={false}
-                        options={[{ value: true, label: "Тийм", }, { value: false, label: "Үгүй" }]}
-                    />
-                );
-            },
-        },
-        {
-            title: "Шалгалтын нэр",
-            dataIndex: "testname",
-        },
-        {
-            title: "Шалгалтын оноо",
-            dataIndex: "testscore",
-        },
+       
     ];
 
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -201,7 +176,7 @@ export default function Languages() {
                 icon={<PlusOutlined />}
                 onClick={(e) => newFormData()}
             >
-                Боловсрол нэмэх
+                Гадаад хэл нэмэх
             </Button>
 
             <Table
@@ -272,7 +247,7 @@ export default function Languages() {
                         </Select>
                     </Form.Item>
 
-                    <Form.Item name="studyyear" label="Сурсан хугацаа /Жилээр/">
+                    <Form.Item name="studyyear" label="Сурсан хугацаа /Жилээр/" hidden={true} >
                         <InputNumber
                             style={{ width: "100%" }}
                             placeholder="Сурсан хугацаа /Жилээр/"
@@ -283,6 +258,7 @@ export default function Languages() {
                         name="isscore"
                         label="Түвшин шалгасан оноотой эсэх"
                         valuePropName="checked"
+                        hidden={true}
                     >
                         <Switch
                             checkedChildren="Тийм"
@@ -291,19 +267,19 @@ export default function Languages() {
                         />
                     </Form.Item>
 
-                    <Form.Item name="testname" label="Шалгалтын нэр">
+                    <Form.Item name="testname" label="Шалгалтын нэр" hidden={true} >
                         <Input style={{ width: "100%" }} placeholder="Шалгалтын нэр" />
                     </Form.Item>
 
 
-                    <Form.Item name="testscore" label="Шалгалтын оноо">
+                    <Form.Item name="testscore" label="Шалгалтын оноо" hidden={true} >
                         <InputNumber
                             style={{ width: "100%" }}
                             placeholder="Шалгалтын оноо"
                         />
                     </Form.Item>
 
-                    <Form.Item name="note" label="Нэмэлт мэдээлэл">
+                    <Form.Item name="note" label="Нэмэлт мэдээлэл" hidden={true} >
                         <Input style={{ width: "100%" }} placeholder="Нэмэлт мэдээлэл" />
                     </Form.Item>
                 </Form>

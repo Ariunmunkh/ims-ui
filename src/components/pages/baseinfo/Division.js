@@ -1,29 +1,21 @@
 import React, { useRef, useState, useEffect, useCallback } from "react";
 import { api } from "../../system/api";
-import { Table, Modal, Drawer, Form, Space, Button, Input, Select } from "antd";
+import { Table, Modal, Drawer, Form, Space, Button, Input } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { PlusOutlined } from "@ant-design/icons";
 import { SearchOutlined } from "@ant-design/icons";
 import Highlighter from "react-highlight-words";
 const { confirm } = Modal;
-export default function District() {
+export default function Division() {
 
     const [griddata, setGridData] = useState();
     const [loading, setLoading] = useState(true);
-    const [division, setdivision] = useState([]);
-    const [formtitle] = useState('Сум, Дүүрэг');
-    const [formtype] = useState('district');
+    const [formtitle] = useState('Аймаг, Хот');
+    const [formtype] = useState('division');
     const [formdata] = Form.useForm();
 
     const fetchData = useCallback(async () => {
         setLoading(true);
-        await api
-            .get(`/api/record/base/get_dropdown_item_list?type=division`)
-            .then((res) => {
-                if (res?.status === 200 && res?.data?.rettype === 0) {
-                    setdivision(res?.data?.retdata);
-                }
-            });
         await api
             .get(`/api/record/base/get_dropdown_item_list?type=${formtype}`)
             .then((res) => {
@@ -166,25 +158,6 @@ export default function District() {
     const gridcolumns = [
         {
             title: "Аймаг, Хот",
-            dataIndex: "divisionid",
-            render: (text, record, index) => {
-                return (
-                    <Select
-                        value={record?.divisionid}
-                        disabled
-                        bordered={false}
-                        options={division}
-                    >
-                    </Select>
-                );
-            },
-
-            filters: division,
-            onFilter: (value, record) => record.divisionid === value,
-            sorter: (a, b) => a.divisionid - b.divisionid,
-        },
-        {
-            title: "Сум, Дүүрэг",
             dataIndex: "name",
             ...getColumnSearchProps("name"),
         },
@@ -256,7 +229,7 @@ export default function District() {
     };
 
     const newFormData = async () => {
-        formdata.setFieldsValue({ id: 0, name: null, type: formtype, divisionid: null });
+        formdata.setFieldsValue({ id: 0, name: null, type: formtype });
         showModal();
     };
 
@@ -322,13 +295,7 @@ export default function District() {
                         <Input />
                     </Form.Item>
 
-                    <Form.Item name="divisionid" label="Аймаг, Хот" rules={[{ required: true, message: "Утга оруулна уу!" }]} >
-                        <Select style={{ width: "100%" }}>
-                            {division?.map((t, i) => (<Select.Option key={i} value={t.id}>{t.name}</Select.Option>))}
-                        </Select>
-                    </Form.Item>
-
-                    <Form.Item name="name" label="Сум, Дүүрэг" rules={[{ required: true, message: "Утга оруулна уу!" }]}>
+                    <Form.Item name="name" label="Нэр" >
                         <Input />
                     </Form.Item>
 

@@ -1,6 +1,7 @@
 import React from "react";
 import { Tabs } from "antd";
 import UserListPage from "../user/UserListPage";
+import Division from "../baseinfo/Division";
 import District from "../baseinfo/District";
 import Committee from "../baseinfo/Committee";
 import EducationLevel from "../baseinfo/EducationLevel";
@@ -26,8 +27,13 @@ export default function AdminPage() {
                         children: <UserListPage />,
                     },
                     {
-                        label: `Сум, Дүүрэг`,
+                        label: `Аймаг, Хот`,
                         key: "2",
+                        children: <Division />,
+                    },
+                    {
+                        label: `Сум, Дүүрэг`,
+                        key: "21",
                         children: <District />,
                     },
                     {
