@@ -26,7 +26,6 @@ export default function VolunteerPage() {
                                 <Volunteer />
                                 <Education />
                                 <Languages />
-                                <Employment />
                                 <EmergencyContact />
                             </>),
                     },

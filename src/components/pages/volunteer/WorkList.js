@@ -200,8 +200,8 @@ export default function WorkList({ Lstatus }) {
     },
     {
       title: "Огноо",
-      dataIndex: "voluntaryworkdate",
-      ...getColumnSearchProps("voluntaryworkdate"),
+      dataIndex: "begindate",
+      ...getColumnSearchProps("begindate"),
     },
     {
       title: "Нэмэлт мэдээлэл",

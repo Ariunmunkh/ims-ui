@@ -156,9 +156,24 @@ export default function Committee() {
 
     const gridcolumns = [
         {
-            title: "Нэр",
+            title: "Салбар нэгжүүд",
             dataIndex: "name",
             ...getColumnSearchProps("name"),
+        },
+        {
+            title: "Хороодын дарга нарын нэр",
+            dataIndex: "bossname",
+            ...getColumnSearchProps("bossname"),
+        },
+        {
+            title: "Утасны дугаар",
+            dataIndex: "phone",
+            ...getColumnSearchProps("phone"),
+        },
+        {
+            title: "Байршил",
+            dataIndex: "location",
+            ...getColumnSearchProps("location"),
         },
         {
             title: "Огноо",

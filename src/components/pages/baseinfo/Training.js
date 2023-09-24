@@ -10,7 +10,7 @@ export default function Training() {
 
     const [griddata, setGridData] = useState();
     const [loading, setLoading] = useState(true);
-    const [formtitle] = useState('Хамрагдах боломжтой сургалт');
+    const [formtitle] = useState('Сургалтын төрөл');
     const [formtype] = useState('training');
     const [formdata] = Form.useForm();
 

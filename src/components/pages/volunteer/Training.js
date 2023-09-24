@@ -12,13 +12,12 @@ import {
     DatePicker,
     Select,
     Divider,
-    InputNumber,
+    Switch,
     Input,
 } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { PlusOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
-import TextArea from "antd/es/input/TextArea";
 const { confirm } = Modal;
 
 export default function Training() {
@@ -28,20 +27,6 @@ export default function Training() {
     const [training, settraining] = useState([]);
     const [loading, setLoading] = useState(true);
     const [formdata] = Form.useForm();
-    const [levelList] = useState([
-        {
-            value: 1,
-            label: "Анхан шат",
-        },
-        {
-            value: 2,
-            label: "Дунд шат"
-        },
-        {
-            value: 3,
-            label: "Ахисан шат",
-        }
-    ]);
 
     const fetchData = useCallback(() => {
         setLoading(true);
@@ -77,34 +62,32 @@ export default function Training() {
 
     const gridcolumns = [
         {
-            title: "Сургалтын нэр",
+            title: "Сургалтын төрөл",
             dataIndex: "training",
         },
         {
-            title: "Түвшин",
-            dataIndex: "levelid",
-            render: (text, record, index) => {
-                return (
-                    <Select
-                        value={record?.levelid}
-                        disabled
-                        bordered={false}
-                        options={levelList}
-                    />
-                );
-            },
+            title: "Сургалтын нэр",
+            dataIndex: "name",
         },
         {
-            title: "Сургалтад хамрагдсан өдөр",
-            dataIndex: "duration",
+            title: "Зохион байгуулагч",
+            dataIndex: "organizer",
         },
         {
-            title: "Сургалтад хамрагдсан байршил",
+            title: "Сургалт эхэлсэн огноо",
+            dataIndex: "begindate2",
+        },
+        {
+            title: "Сургалт дууссан огноо",
+            dataIndex: "enddate2",
+        },
+        {
+            title: "Сургалтын байршил",
             dataIndex: "location",
         },
         {
-            title: "Нэмэлт мэдээлэл",
-            dataIndex: "note",
+            title: "Гэрчилгээтэй эсэх",
+            dataIndex: "iscertificate2",
         },
     ];
 
@@ -144,7 +127,8 @@ export default function Training() {
 
     const onFinish = async (values) => {
         let fdata = formdata.getFieldsValue();
-        fdata.trainingdate = fdata.trainingdate.format("YYYY.MM.DD HH:mm:ss");
+        fdata.begindate = fdata.begindate.format("YYYY.MM.DD HH:mm:ss");
+        fdata.enddate = fdata.enddate.format("YYYY.MM.DD HH:mm:ss");
         await api.post(`/api/Volunteer/set_VolunteerTraining`, fdata).then((res) => {
             if (res?.status === 200 && res?.data?.rettype === 0) {
                 setIsModalOpen(false);
@@ -159,7 +143,8 @@ export default function Training() {
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     let fdata = res?.data?.retdata[0];
-                    fdata.trainingdate = dayjs(fdata.trainingdate, "YYYY.MM.DD HH:mm:ss");
+                    fdata.begindate = dayjs(fdata.begindate, "YYYY.MM.DD HH:mm:ss");
+                    fdata.enddate = dayjs(fdata.enddate, "YYYY.MM.DD HH:mm:ss");
                     formdata.setFieldsValue(fdata);
                     showModal();
                 }
@@ -171,11 +156,12 @@ export default function Training() {
             id: 0,
             volunteerid: volunteerid ?? userinfo.volunteerid,
             trainingid: null,
-            levelid: null,
-            trainingdate: null,
+            name: null,
+            organizer: null,
+            begindate: null,
+            enddate: null,
             location: null,
-            duration: null,
-            note: null
+            iscertificate: null
         });
         showModal();
     };
@@ -241,43 +227,36 @@ export default function Training() {
                         <Input />
                     </Form.Item>
 
-                    <Form.Item name="trainingid" label="Сургалтын нэр">
+                    <Form.Item name="trainingid" label="Сургалтын төрөл" rules={[{ required: true, message: "Утга оруулна уу!" }]}>
                         <Select style={{ width: "100%" }}>
                             {training?.map((t, i) => (<Select.Option key={i} value={t.id}>{t.name}</Select.Option>))}
                         </Select>
                     </Form.Item>
 
-                    <Form.Item name="levelid" label="Түвшин">
-                        <Select
-                            style={{ width: "100%" }}
-                            options={levelList}>
-                        </Select>
-                    </Form.Item>
-
-                    <Form.Item
-                        name="trainingdate"
-                        label="Сургалтад хамрагдсан өдөр"
-                    >
-                        <DatePicker style={{ width: "100%" }} placeholder="Өдөр сонгох" />
-                    </Form.Item>
-
-                    <Form.Item name="duration" label="Сургалтад хамрагдсан өдөр">
-                        <InputNumber
-                            placeholder="Хугацаа"
-                            min={1}
-                            style={{ width: "100%" }}
-                        />
-                    </Form.Item>
-                    <Form.Item name="location" label="Сургалтад хамрагдсан байршил">
+                    <Form.Item name="name" label="Сургалтын нэр" rules={[{ required: true, message: "Утга оруулна уу!" }]}>
                         <Input />
                     </Form.Item>
 
-                    <Form.Item
-                        name="note"
-                        label="Нэмэлт мэдээлэл"
-                    >
-                        <TextArea />
+                    <Form.Item name="organizer" label="Зохион байгуулагч" rules={[{ required: true, message: "Утга оруулна уу!" }]}>
+                        <Input />
                     </Form.Item>
+
+                    <Form.Item name="begindate" label="Сургалт эхэлсэн огноо" rules={[{ required: true, message: "Утга оруулна уу!" }]}>
+                        <DatePicker style={{ width: "100%" }} placeholder="Өдөр сонгох" />
+                    </Form.Item>
+
+                    <Form.Item name="enddate" label="Сургалт дууссан огноо" rules={[{ required: true, message: "Утга оруулна уу!" }]}>
+                        <DatePicker style={{ width: "100%" }} placeholder="Өдөр сонгох" />
+                    </Form.Item>
+
+                    <Form.Item name="location" label="Сургалтын байршил" rules={[{ required: true, message: "Утга оруулна уу!" }]}>
+                        <Input />
+                    </Form.Item>
+
+                    <Form.Item name="iscertificate" label="Гэрчилгээтэй эсэх" rules={[{ required: true, message: "Утга оруулна уу!" }]}>
+                        <Switch style={{ width: "100%" }} checkedChildren="Тийм" unCheckedChildren="Үгүй" />
+                    </Form.Item>
+
                 </Form>
             </Drawer>
         </div>

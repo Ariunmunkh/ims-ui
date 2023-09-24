@@ -14,6 +14,8 @@ import {
     InputNumber,
     Descriptions,
     DatePicker,
+    Row,
+    Col,
 } from "antd";
 import { UploadOutlined } from '@ant-design/icons';
 import useUserInfo from "../../system/useUserInfo";
@@ -107,6 +109,8 @@ export default function Volunteer() {
 
     const showModal = () => {
         setIsModalOpen(true);
+
+        setdistrictcopy(district?.filter(row => row?.divisionid === formdata?.getFieldValue("divisionid")));
     };
 
     const handleCancel = () => {
@@ -137,23 +141,6 @@ export default function Volunteer() {
         return found?.label;
     };
 
-    const props = {
-        name: 'file',
-        action: 'https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188',
-        headers: {
-            authorization: 'authorization-text',
-        },
-        onChange(info) {
-            if (info.file.status !== 'uploading') {
-                console.log(info.file, info.fileList);
-            }
-            if (info.file.status === 'done') {
-                message.success(`${info.file.name} file uploaded successfully`);
-            } else if (info.file.status === 'error') {
-                message.error(`${info.file.name} file upload failed.`);
-            }
-        },
-    };
 
     return (
         <div>
@@ -165,9 +152,6 @@ export default function Volunteer() {
                         src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
                     />
 
-                    <Upload {...props}>
-                        <Button icon={<UploadOutlined />}>Зураг оруулах</Button>
-                    </Upload>
 
                 </Space>
 
@@ -193,70 +177,87 @@ export default function Volunteer() {
                     style={{ paddingBottom: 30 }}
                 >
 
-                    <Descriptions.Item label="Сайн дурын идэвхтний төрөл">
-                        {getname(formdata.getFieldValue("type"), type)}
+                    <Descriptions.Item span={3} label="Харьяалагдах дунд шатны хороо">
+                        {formdata.getFieldValue("committee")}
                     </Descriptions.Item>
-                    <Descriptions.Item label="Харьяалагдах аймаг, хот">
+
+                    <Descriptions.Item span={2} label="Харьяалагдах аймаг, хот">
                         {getname(formdata.getFieldValue("divisionid"), division)}
                     </Descriptions.Item>
-                    <Descriptions.Item label="Харьяалагдах сум, дүүрэг">
+                    <Descriptions.Item span={2} label="Харьяалагдах сум, дүүрэг">
                         {getname(formdata.getFieldValue("districtid"), district)}
                     </Descriptions.Item>
-                    <Descriptions.Item label="Ургийн овог">
+
+                    <Descriptions.Item span={2} label="Сайн дурын идэвхтний төрөл">
+                        {getname(formdata.getFieldValue("type"), type)}
+                    </Descriptions.Item>
+                    <Descriptions.Item span={2} label="Ургийн овог">
                         {formdata.getFieldValue("familyname")}
                     </Descriptions.Item>
-                    <Descriptions.Item label="Эцэг, эхийн нэр">
+
+                    <Descriptions.Item span={2} label="Эцэг, эхийн нэр">
                         {formdata.getFieldValue("lastname")}
                     </Descriptions.Item>
-                    <Descriptions.Item label="Нэр">
+                    <Descriptions.Item span={2} label="Нэр">
                         {formdata.getFieldValue("firstname")}
                     </Descriptions.Item>
-                    <Descriptions.Item label="Хүйс">
-                        {getname(formdata.getFieldValue("gender"), genders)}
-                    </Descriptions.Item>
-                    <Descriptions.Item label="Нас">
-                        {formdata.getFieldValue("birthday")?.format("YYYY.MM.DD")}
-                    </Descriptions.Item>
-                    <Descriptions.Item label="Регистрийн дугаар">
+
+                    <Descriptions.Item span={2} label="Регистрийн дугаар">
                         {formdata.getFieldValue("regno")}
                     </Descriptions.Item>
-                    <Descriptions.Item label="Утас">
-                        {formdata.getFieldValue("phone")}
+                    <Descriptions.Item span={2} label="Хүйс">
+                        {getname(formdata.getFieldValue("gender"), genders)}
                     </Descriptions.Item>
-                    <Descriptions.Item label="И-мэйл">
-                        {formdata.getFieldValue("householdgroupname")}
+
+                    <Descriptions.Item span={2} label="Төрсөн огноо">
+                        {formdata.getFieldValue("birthday")?.format("YYYY.MM.DD")}
                     </Descriptions.Item>
-                    <Descriptions.Item label="Гэрийн хаяг">
-                        {formdata.getFieldValue("address")}
-                    </Descriptions.Item>
-                    <Descriptions.Item label="Элссэн огноо /улаан загалмайд/">
+                    <Descriptions.Item span={2} label="Элссэн огноо /улаан загалмайд/">
                         {formdata.getFieldValue("joindate")?.format("YYYY.MM.DD")}
                     </Descriptions.Item>
-                    <Descriptions.Item label="Төрсөн газар">
-                        {formdata.getFieldValue("householdgroupname")}
-                    </Descriptions.Item>
-                    <Descriptions.Item label="Цусны бүлэг">
-                        {getname(formdata.getFieldValue("bloodgroupid"), bloodgroup)}
-                    </Descriptions.Item>
-                    <Descriptions.Item label="Мэргэжил">
+
+                    <Descriptions.Item span={2} label="Мэргэжил">
                         {formdata.getFieldValue("jobname")}
                     </Descriptions.Item>
-                    <Descriptions.Item label="Боловсролын түвшин">
+                    <Descriptions.Item span={2} label="Боловсролын түвшин">
                         {formdata.getFieldValue("educationlevelid")}
                     </Descriptions.Item>
-                    <Descriptions.Item label="Хөгжлийн бэрхшээлтэй эсэх">
+
+                    <Descriptions.Item span={2} label="Төрсөн газар">
+                        {formdata.getFieldValue("birthplace")}
+                    </Descriptions.Item>
+                    <Descriptions.Item span={2} label="Цусны бүлэг">
+                        {getname(formdata.getFieldValue("bloodgroupid"), bloodgroup)}
+                    </Descriptions.Item>
+
+                    <Descriptions.Item span={2} label="Утас">
+                        {formdata.getFieldValue("phone")}
+                    </Descriptions.Item>
+                    <Descriptions.Item span={2} label="И-мэйл">
+                        {formdata.getFieldValue("email")}
+                    </Descriptions.Item>
+
+                    <Descriptions.Item span={2} label="Хөгжлийн бэрхшээлтэй эсэх">
                         {formdata.getFieldValue("isdisabled") ? "Тийм" : "Үгүй"}
                     </Descriptions.Item>
-                    <Descriptions.Item label="Фэйсбүүк хаяг">
-                        {formdata.getFieldValue("reason")}
+                    <Descriptions.Item span={2} label="Фэйсбүүк хаяг">
+                        {formdata.getFieldValue("facebook")}
                     </Descriptions.Item>
+
+                    <Descriptions.Item span={2} label="Одоо эрхлэж буй ажил">
+                        {formdata.getFieldValue("employment")}
+                    </Descriptions.Item>
+                    <Descriptions.Item span={2} label="Гэрийн хаяг">
+                        {formdata.getFieldValue("address")}
+                    </Descriptions.Item>
+
                 </Descriptions>
             </Spin>
             <Drawer
                 forceRender
                 title="Сайн дурын идэвхтний мэдээлэл засах"
                 open={isModalOpen}
-                width={720}
+                width={1000}
                 onClose={handleCancel}
                 bodyStyle={{ paddingBottom: 80 }}
                 extra={
@@ -264,7 +265,7 @@ export default function Volunteer() {
                         <Button key="cancel" onClick={handleCancel}>
                             Болих
                         </Button>
-                        <Button key="save" type="primary" onClick={onFinish}>
+                        <Button key="save" type="primary" onClick={() => { formdata.submit() }}>
                             Хадгалах
                         </Button>
                     </Space>
@@ -272,6 +273,7 @@ export default function Volunteer() {
             >
                 <Form
                     form={formdata}
+                    onFinish={onFinish}
                     labelCol={{ span: 8 }}
                     wrapperCol={{ span: 14 }}
                     labelAlign="left"
@@ -286,7 +288,9 @@ export default function Volunteer() {
 
                     }}
                 >
-                    <Form.Item name="id" label="Бүртгэлийн дугаар">
+
+
+                    <Form.Item name="id" label="Бүртгэлийн дугаар" hidden={true}>
                         <InputNumber min={0} readOnly />
                     </Form.Item>
 
@@ -300,115 +304,167 @@ export default function Volunteer() {
                         </Select>
                     </Form.Item>
 
+                    <Row>
+                        <Col span={12}>
+                            <Form.Item name="divisionid" label="Харьяалагдах аймаг, хот" rules={[{ required: true, message: "Утга оруулна уу!" }]} >
+                                <Select style={{ width: "100%" }}>
+                                    {division?.map((t, i) => (
+                                        <Select.Option key={i} value={t.id}>
+                                            {t.name}
+                                        </Select.Option>
+                                    ))}
+                                </Select>
+                            </Form.Item>
+                        </Col>
+                        <Col span={12}>
+                            <Form.Item name="districtid" label="Харьяалагдах сум, дүүрэг" rules={[{ required: true, message: "Утга оруулна уу!" }]}>
+                                <Select style={{ width: "100%" }}>
+                                    {districtcopy?.map((t, i) => (
+                                        <Select.Option key={i} value={t.id}>
+                                            {t.name}
+                                        </Select.Option>
+                                    ))}
+                                </Select>
+                            </Form.Item>
+                        </Col>
+                    </Row>
 
-                    <Form.Item name="divisionid" label="Харьяалагдах аймаг, хот" >
-                        <Select style={{ width: "100%" }}>
-                            {division?.map((t, i) => (
-                                <Select.Option key={i} value={t.id}>
-                                    {t.name}
-                                </Select.Option>
-                            ))}
-                        </Select>
-                    </Form.Item>
+                    <Row>
+                        <Col span={12}>
+                            <Form.Item name="type" label="Сайн дурын идэвхтний төрөл" rules={[{ required: true, message: "Утга оруулна уу!" }]}>
+                                <Select
+                                    options={type}
+                                    style={{ width: "100%" }}>
 
-                    <Form.Item name="districtid" label="Харьяалагдах сум, дүүрэг" >
-                        <Select style={{ width: "100%" }}>
-                            {districtcopy?.map((t, i) => (
-                                <Select.Option key={i} value={t.id}>
-                                    {t.name}
-                                </Select.Option>
-                            ))}
-                        </Select>
-                    </Form.Item>
+                                </Select>
+                            </Form.Item>
+                        </Col>
+                        <Col span={12}>
+
+                            <Form.Item name="familyname" label="Ургийн овог" rules={[{ required: true, message: "Утга оруулна уу!" }]}>
+                                <Input />
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col span={12}>
+                            <Form.Item name="lastname" label="Эцэг, эхийн нэр" rules={[{ required: true, message: "Утга оруулна уу!" }]}>
+                                <Input />
+                            </Form.Item>
+                        </Col>
+
+                        <Col span={12}>
+                            <Form.Item name="firstname" label="Өөрийн нэр" rules={[{ required: true, message: "Утга оруулна уу!" }]}>
+                                <Input />
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col span={12}>
+                            <Form.Item name="regno" label="Регистрийн дугаар" rules={[{ required: true, message: "Утга оруулна уу!" }]}>
+                                <Input />
+                            </Form.Item>
+                        </Col>
+                        <Col span={12}>
+                            <Form.Item name="gender" label="Хүйс" rules={[{ required: true, message: "Утга оруулна уу!" }]}>
+                                <Select
+                                    style={{ width: "100%" }}
+                                    options={genders}
+                                ></Select>
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col span={12}>
+                            <Form.Item name="birthday" label="Төрсөн огноо" rules={[{ required: true, message: "Утга оруулна уу!" }]}>
+                                <DatePicker
+                                    disabledDate={disabledDate}
+                                    style={{ width: "100%" }}
+                                    placeholder="Өдөр сонгох"
+                                />
+                            </Form.Item>
+                        </Col>
+                        <Col span={12}>
+                            <Form.Item name="joindate" label="Элссэн огноо /улаан загалмайд/" rules={[{ required: true, message: "Утга оруулна уу!" }]}>
+                                <DatePicker
+                                    disabledDate={disabledDate}
+                                    style={{ width: "100%" }}
+                                    placeholder="Өдөр сонгох"
+                                />
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col span={12}>
+                            <Form.Item name="jobname" label="Мэргэжил" rules={[{ required: true, message: "Утга оруулна уу!" }]}>
+                                <Input />
+                            </Form.Item>
+                        </Col>
+                        <Col span={12}>
+                            <Form.Item name="educationlevelid" label="Боловсролын түвшин" rules={[{ required: true, message: "Утга оруулна уу!" }]}>
+                                <Select style={{ width: "100%" }}>
+                                    {educationlevel?.map((t, i) => (
+                                        <Select.Option key={i} value={t.id}>
+                                            {t.name}
+                                        </Select.Option>
+                                    ))}
+                                </Select>
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col span={12}>
+                            <Form.Item name="birthplace" label="Төрсөн газар" rules={[{ required: true, message: "Утга оруулна уу!" }]}>
+                                <Input />
+                            </Form.Item>
+                        </Col>
+                        <Col span={12}>
+                            <Form.Item name="bloodgroupid" label="Цусны бүлэг" rules={[{ required: true, message: "Утга оруулна уу!" }]}>
+                                <Select style={{ width: "100%" }}
+                                    options={bloodgroup}
+                                ></Select>
+                            </Form.Item>
+                        </Col>
+                    </Row>
 
 
-                    <Form.Item name="type" label="Сайн дурын идэвхтний төрөл">
-                        <Select
-                            options={type}
-                            style={{ width: "100%" }}>
+                    <Row>
+                        <Col span={12}>
+                            <Form.Item name="phone" label="Утас" rules={[{ required: true, message: "Утга оруулна уу!" }]}>
+                                <Input />
+                            </Form.Item>
+                        </Col>
+                        <Col span={12}>
+                            <Form.Item name="email" label="Имэйл" readOnly={true} rules={[{ required: true, message: "Утга оруулна уу!" }]}>
+                                <Input />
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col span={12}>
+                            <Form.Item name="isdisabled" label="Хөгжлийн бэрхшээлтэй эсэх" rules={[{ required: true, message: "Утга оруулна уу!" }]}>
+                                <Switch style={{ width: "100%" }} checkedChildren="Тийм" unCheckedChildren="Үгүй" />
+                            </Form.Item>
+                        </Col>
+                        <Col span={12}>
+                            <Form.Item name="facebook" label="Фэйсбүүк хаяг" rules={[{ required: true, message: "Утга оруулна уу!" }]}>
+                                <Input />
+                            </Form.Item>
+                        </Col>
+                    </Row>
 
-                        </Select>
-                    </Form.Item>
-                    <Form.Item name="familyname" label="Ургийн овог">
-                        <Input />
-                    </Form.Item>
-                    <Form.Item name="lastname" label="Эцэг, эхийн нэр">
-                        <Input />
-                    </Form.Item>
-                    <Form.Item name="firstname" label="Өөрийн нэр">
-                        <Input />
-                    </Form.Item>
-
-                    <Form.Item name="gender" label="Хүйс">
-                        <Select
-                            style={{ width: "100%" }}
-                            options={genders}
-                        ></Select>
-                    </Form.Item>
-
-                    <Form.Item name="birthday" label="Төрсөн огноо">
-                        <DatePicker
-                            disabledDate={disabledDate}
-                            style={{ width: "100%" }}
-                            placeholder="Өдөр сонгох"
-                        />
-                    </Form.Item>
-
-                    <Form.Item name="regno" label="Регистрийн дугаар">
-                        <Input />
-                    </Form.Item>
-
-                    <Form.Item name="phone" label="Утас">
-                        <Input />
-                    </Form.Item>
-
-                    <Form.Item name="email" label="Имэйл">
-                        <Input />
-                    </Form.Item>
-
-                    <Form.Item name="address" label="Гэрийн хаяг">
-                        <Input />
-                    </Form.Item>
-
-                    <Form.Item name="joindate" label="Элссэн огноо /улаан загалмайд/">
-                        <DatePicker
-                            disabledDate={disabledDate}
-                            style={{ width: "100%" }}
-                            placeholder="Өдөр сонгох"
-                        />
-                    </Form.Item>
-
-                    <Form.Item name="birthplace" label="Төрсөн газар">
-                        <Input />
-                    </Form.Item>
-
-                    <Form.Item name="bloodgroupid" label="Цусны бүлэг">
-                        <Select style={{ width: "100%" }}
-                            options={bloodgroup}
-                        ></Select>
-                    </Form.Item>
-
-                    <Form.Item name="jobname" label="Мэргэжил">
-                        <Input />
-                    </Form.Item>
-
-                    <Form.Item name="educationlevelid" label="Боловсролын түвшин">
-                        <Select style={{ width: "100%" }}>
-                            {educationlevel?.map((t, i) => (
-                                <Select.Option key={i} value={t.id}>
-                                    {t.name}
-                                </Select.Option>
-                            ))}
-                        </Select>
-                    </Form.Item>
-
-                    <Form.Item name="isdisabled" label="Хөгжлийн бэрхшээлтэй эсэх">
-                        <Switch style={{ width: "100%" }} checkedChildren="Тийм" unCheckedChildren="Үгүй" />
-                    </Form.Item>
-
-                    <Form.Item name="facebook" label="Фэйсбүүк хаяг">
-                        <Input />
-                    </Form.Item>
+                    <Row>
+                        <Col span={12}>
+                            <Form.Item name="employment" label="Одоо эрхлэж буй ажил" rules={[{ required: true, message: "Утга оруулна уу!" }]}>
+                                <Input />
+                            </Form.Item>
+                        </Col>
+                        <Col span={12}>
+                            <Form.Item name="address" label="Гэрийн хаяг" rules={[{ required: true, message: "Утга оруулна уу!" }]}>
+                                <Input.TextArea />
+                            </Form.Item>
+                        </Col>
+                    </Row>
                 </Form>
             </Drawer>
         </div>

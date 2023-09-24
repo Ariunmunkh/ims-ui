@@ -8,6 +8,7 @@ import {
     Row,
     Steps,
     Divider,
+    Tabs,
     Table,
     Input,
     DatePicker,
@@ -268,77 +269,97 @@ export default function Report() {
         };
     });
 
+    const disabledDate = (current) => {
+        return current && current < dayjs().add(-2, 'month').endOf('day');
+    };
+
     return (
-        <>
-            <Row>
-                <Divider>
-                    <Col>
-                        <h5 className="font-weight-bold text-secondary text-uppercase">{location?.state?.committee}</h5>
-                    </Col>
-                    <Col>
-                        <Text>Тайлангийн огноо:</Text>
-                    </Col>
+        <div>
+            <Tabs
+                items={[
+                    {
+                        label: `Сарын тоон мэдээлэл`,
+                        key: "1",
+                        children: (
+                            <>
+                                <Row>
+                                    <Divider>
+                                        <Col>
+                                            <h5 className="font-weight-bold text-secondary text-uppercase">{location?.state?.committee}</h5>
+                                        </Col>
+                                        <Col>
+                                            <Text>Тайлангийн огноо:</Text>
+                                        </Col>
 
-                    <Col>
-                        <DatePicker
-                            picker="month"
-                            allowClear={false}
-                            value={reportdate}
-                            onChange={(date, dateString) => {
-                                setreportdate(date);
-                            }}
-                        />
-                    </Col>
-                </Divider>
-            </Row>
-            <Row>
-                <Steps
-                    progressDot
-                    current={programid}
-                    onChange={(value) => {
-                        setprogramid(value);
-                        settitle(program[value]?.name);
-                    }}
-                >
-                    {program?.map((t, i) => (
-                        <Steps.Item key={t.id} title={t.name} />
-                    ))}
-                </Steps>
-                <Divider />
-                <h5 className="text-primary text-uppercase">{title}</h5>
-            </Row>
-
-            <Row>
-                <Col xs={24} lg={24}>
-                    <Form form={form} component={false}>
-                        {indicator
-                            ?.filter((i) => i.headid === program[programid]?.id)
-                            .map((t, i) => (
-                                <Table
-                                    components={{
-                                        body: {
-                                            cell: EditableCell,
-                                        },
-                                    }}
-                                    size="small"
-                                    title={() => (
-                                        <h6 className="font-weight-light text-secondary text-uppercase">
-                                            {t.name}
-                                        </h6>
-                                    )}
-                                    loading={loading}
-                                    bordered
-                                    dataSource={reportdata.filter((i) => i.key === t.id)}
-                                    columns={mergedColumns}
-                                    rowClassName="editable-row"
-                                    pagination={{
-                                        onChange: cancel,
-                                    }}
-                                ></Table>
-                            ))}
-                    </Form>
-                </Col>
-            </Row>
-        </>
+                                        <Col>
+                                            <DatePicker
+                                                disabledDate={disabledDate}
+                                                picker="month"
+                                                allowClear={false}
+                                                value={reportdate}
+                                                onChange={(date, dateString) => {
+                                                    setreportdate(date);
+                                                }}
+                                            />
+                                        </Col>
+                                    </Divider>
+                                </Row>
+                                <Row>
+                                    <Steps
+                                        progressDot
+                                        current={programid}
+                                        onChange={(value) => {
+                                            setprogramid(value);
+                                            settitle(program[value]?.name);
+                                        }}
+                                    >
+                                        {program?.map((t, i) => (
+                                            <Steps.Item key={t.id} title={t.name} />
+                                        ))}
+                                    </Steps>
+                                    <Divider />
+                                    <h5 className="text-primary text-uppercase">{title}</h5>
+                                </Row>
+                                <Row>
+                                    <Col xs={24} lg={24}>
+                                        <Form form={form} component={false}>
+                                            {indicator
+                                                ?.filter((i) => i.headid === program[programid]?.id)
+                                                .map((t, i) => (
+                                                    <Table
+                                                        components={{
+                                                            body: {
+                                                                cell: EditableCell,
+                                                            },
+                                                        }}
+                                                        size="small"
+                                                        title={() => (
+                                                            <h6 className="font-weight-light text-secondary text-uppercase">
+                                                                {t.name}
+                                                            </h6>
+                                                        )}
+                                                        loading={loading}
+                                                        bordered
+                                                        dataSource={reportdata.filter((i) => i.key === t.id)}
+                                                        columns={mergedColumns}
+                                                        rowClassName="editable-row"
+                                                        pagination={{
+                                                            onChange: cancel,
+                                                        }}
+                                                    ></Table>
+                                                ))}
+                                        </Form>
+                                    </Col>
+                                </Row>
+                            </>),
+                    },
+                    {
+                        label: `Сарын үйл ажиллагааны бичмэл мэдээлэл`,
+                        key: "2",
+                        children: < ></>,
+                    },
+                ]}
+            />
+        </div>
     );
 }

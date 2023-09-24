@@ -193,8 +193,8 @@ export default function HomeVolunteer() {
         },
         {
             title: "Огноо",
-            dataIndex: "voluntaryworkdate",
-            ...getColumnSearchProps("voluntaryworkdate"),
+            dataIndex: "begindate",
+            ...getColumnSearchProps("begindate"),
         },
         {
             title: "Нэмэлт мэдээлэл",
