@@ -187,17 +187,27 @@ export default function HomeVolunteer() {
             ...getColumnSearchProps("voluntarywork"),
         },
         {
+            title: "Сайн дурын ажлын нэр",
+            dataIndex: "name",
+            ...getColumnSearchProps("name"),
+        },
+        {
             title: "Хугацаа",
             dataIndex: "duration",
             ...getColumnSearchProps("duration"),
         },
         {
-            title: "Огноо",
-            dataIndex: "begindate",
-            ...getColumnSearchProps("begindate"),
+            title: "Эхэлсэн огноо",
+            dataIndex: "begindate2",
+            ...getColumnSearchProps("begindate2"),
         },
         {
-            title: "Нэмэлт мэдээлэл",
+            title: "Дууссан огноо",
+            dataIndex: "enddate2",
+            ...getColumnSearchProps("enddate2"),
+        },
+        {
+            title: "Гүйцэтгэсэн үүрэг",
             dataIndex: "note",
             ...getColumnSearchProps("note"),
         },
