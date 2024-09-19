@@ -166,11 +166,11 @@ export default function District() {
     const gridcolumns = [
         {
             title: "Аймаг, Хот",
-            dataIndex: "divisionid",
+            dataIndex: "headid",
             render: (text, record, index) => {
                 return (
                     <Select
-                        value={record?.divisionid}
+                        value={record?.headid}
                         disabled
                         bordered={false}
                         options={division}
@@ -180,8 +180,8 @@ export default function District() {
             },
 
             filters: division,
-            onFilter: (value, record) => record.divisionid === value,
-            sorter: (a, b) => a.divisionid - b.divisionid,
+            onFilter: (value, record) => record.headid === value,
+            sorter: (a, b) => a.id - b.id,
         },
         {
             title: "Сум, Дүүрэг",
@@ -256,7 +256,7 @@ export default function District() {
     };
 
     const newFormData = async () => {
-        formdata.setFieldsValue({ id: 0, name: null, type: formtype, divisionid: null });
+        formdata.setFieldsValue({ id: 0, name: null, type: formtype, headid: null });
         showModal();
     };
 
@@ -322,7 +322,7 @@ export default function District() {
                         <Input />
                     </Form.Item>
 
-                    <Form.Item name="divisionid" label="Аймаг, Хот" rules={[{ required: true, message: "Утга оруулна уу!" }]} >
+                    <Form.Item name="headid" label="Аймаг, Хот" rules={[{ required: true, message: "Утга оруулна уу!" }]} >
                         <Select style={{ width: "100%" }}>
                             {division?.map((t, i) => (<Select.Option key={i} value={t.id}>{t.name}</Select.Option>))}
                         </Select>
