@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { api } from "../../system/api";
 import useUserInfo from "../../system/useUserInfo";
+import { message } from "antd";
 import {
     Form,
     Popconfirm,
@@ -11,6 +12,7 @@ import {
     Tabs,
     Table,
     Input,
+    Button,
     DatePicker,
     Typography,
 } from "antd";
@@ -53,6 +55,7 @@ const EditableCell = ({
 };
 export default function Report() {
     const [form] = Form.useForm();
+    const [infoform] = Form.useForm();
     const { userinfo } = useUserInfo();
     const [reportdata, setreportdata] = useState([]);
     const [reportid, setreportid] = useState(1);
@@ -230,6 +233,21 @@ export default function Report() {
                 setLoading(false);
             });
 
+        await api
+            .get(
+                `/api/Committee/get_report_info?committeeid=${committeeid}`
+            )
+            .then(async (res) => {
+                if (res?.status === 200 && res?.data?.rettype === 0) {
+
+                    infoform.setFieldsValue({ id: 0, info: res?.data?.retdata[0].info })
+
+                }
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+
     }, [editingKey, reportdate]);
 
     useEffect(() => {
@@ -271,6 +289,21 @@ export default function Report() {
 
     const disabledDate = (current) => {
         return current && current < dayjs().add(-2, 'month').endOf('day');
+    };
+
+    const onFinish = async (values) => {
+
+        await api
+            .post(`/api/Committee/set_report_info`, {
+                committeeid: userinfo.committeeid || 0,
+                info: infoform.getFieldsValue().info
+            })
+            .then((res) => {
+                if (res?.status === 200 && res?.data?.rettype === 0) {
+
+                    message.success("Амжилттай");
+                }
+            });
     };
 
     return (
@@ -356,7 +389,30 @@ export default function Report() {
                     {
                         label: `Сарын үйл ажиллагааны бичмэл мэдээлэл`,
                         key: "2",
-                        children: < ></>,
+                        children: (
+                            <>
+                                <Form
+                                    form={infoform}
+                                    onFinish={onFinish}
+                                    style={{ Width: '100vh', }}
+                                >
+
+                                    <Form.Item>
+                                        <Button type="primary" htmlType="submit">
+                                            Илгээх
+                                        </Button>
+                                    </Form.Item>
+                                    <Form.Item name={"info"} label="Мэдээлэл">
+                                        <Input.TextArea autoSize={{ minRows: 9, maxRows: 100 }} />
+                                    </Form.Item>
+                                    <Form.Item>
+                                        <Button type="primary" htmlType="submit">
+                                            Илгээх
+                                        </Button>
+                                    </Form.Item>
+                                </Form>
+
+                            </>),
                     },
                 ]}
             />

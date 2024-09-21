@@ -110,7 +110,7 @@ export default function Volunteer() {
     const showModal = () => {
         setIsModalOpen(true);
 
-        setdistrictcopy(district?.filter(row => row?.divisionid === formdata?.getFieldValue("divisionid")));
+        setdistrictcopy(district?.filter(row => row?.headid === formdata?.getFieldValue("divisionid")));
     };
 
     const handleCancel = () => {
@@ -282,7 +282,7 @@ export default function Volunteer() {
                         if (changedFields.length === 1) {
                             if (changedFields[0]?.name[0] === 'divisionid') {
                                 formdata.setFieldValue('districtid', null);
-                                setdistrictcopy(district?.filter(row => row?.divisionid === formdata?.getFieldValue("divisionid")));
+                                setdistrictcopy(district?.filter(row => row?.headid === formdata?.getFieldValue("divisionid")));
                             }
                         }
 
