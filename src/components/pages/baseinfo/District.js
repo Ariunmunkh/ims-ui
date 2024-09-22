@@ -11,6 +11,7 @@ export default function District() {
     const [griddata, setGridData] = useState();
     const [loading, setLoading] = useState(true);
     const [division, setdivision] = useState([]);
+    const [committee, setcommittee] = useState([]);
     const [formtitle] = useState('Сум, Дүүрэг');
     const [formtype] = useState('district');
     const [formdata] = Form.useForm();
@@ -22,6 +23,13 @@ export default function District() {
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setdivision(res?.data?.retdata);
+                }
+            });
+        await api
+            .get(`/api/record/base/get_dropdown_item_list?type=committee`)
+            .then((res) => {
+                if (res?.status === 200 && res?.data?.rettype === 0) {
+                    setcommittee(res?.data?.retdata);
                 }
             });
         await api
@@ -189,6 +197,25 @@ export default function District() {
             ...getColumnSearchProps("name"),
         },
         {
+            title: "Дунд шатны хороо",
+            dataIndex: "committeeid",
+            render: (text, record, index) => {
+                return (
+                    <Select
+                        value={record?.headid}
+                        disabled
+                        bordered={false}
+                        options={committee}
+                    >
+                    </Select>
+                );
+            },
+
+            filters: committee,
+            onFilter: (value, record) => record.committeeid === value,
+            sorter: (a, b) => a.id - b.id,
+        },
+        {
             title: "Огноо",
             dataIndex: "updated",
             width: 160,
@@ -256,7 +283,7 @@ export default function District() {
     };
 
     const newFormData = async () => {
-        formdata.setFieldsValue({ id: 0, name: null, type: formtype, headid: null });
+        formdata.setFieldsValue({ id: 0, name: null, type: formtype, headid: null, committeeid: null });
         showModal();
     };
 
@@ -330,6 +357,12 @@ export default function District() {
 
                     <Form.Item name="name" label="Сум, Дүүрэг" rules={[{ required: true, message: "Утга оруулна уу!" }]}>
                         <Input />
+                    </Form.Item>
+
+                    <Form.Item name="committeeid" label="Дунд шатны хороо" rules={[{ required: true, message: "Утга оруулна уу!" }]} >
+                        <Select style={{ width: "100%" }}>
+                            {committee?.map((t, i) => (<Select.Option key={i} value={t.id}>{t.name}</Select.Option>))}
+                        </Select>
                     </Form.Item>
 
                 </Form>
