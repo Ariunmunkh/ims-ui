@@ -13,7 +13,9 @@ import {
     Input,
     DatePicker,
     Select,
-    Divider,
+    Image,
+    Col,
+    Row,
     InputNumber,
 } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
@@ -271,6 +273,7 @@ export default function VoluntaryWork() {
         fdata.begindate = fdata.begindate.format("YYYY.MM.DD HH:mm:ss");
         fdata.enddate = fdata.enddate.format("YYYY.MM.DD HH:mm:ss");
         fdata.status = 0;
+        fdata.image = postImage.image;
         await api
             .post(`/api/Volunteer/set_VolunteerVoluntaryWork`, fdata)
             .then((res) => {
@@ -290,6 +293,7 @@ export default function VoluntaryWork() {
                     fdata.begindate = dayjs(fdata.begindate, "YYYY.MM.DD HH:mm:ss");
                     fdata.enddate = dayjs(fdata.enddate, "YYYY.MM.DD HH:mm:ss");
                     formdata.setFieldsValue(fdata);
+                    setPostImage({ ...postImage, image: fdata.image });
                     showModal();
                 }
             });
@@ -307,12 +311,36 @@ export default function VoluntaryWork() {
             note: null,
             status: 0,
         });
+        setPostImage({ ...postImage, image: "" });
         showModal();
     };
 
     const disabledDate = (current) => {
         // Can not select days before today and today
         return current && current >= dayjs().endOf("day");
+    };
+
+    const [postImage, setPostImage] = useState({
+        volunteerid: volunteerid ?? userinfo.volunteerid, image: "",
+    });
+
+    const convertToBase64 = (file) => {
+        return new Promise((resolve, reject) => {
+            const fileReader = new FileReader();
+            fileReader.readAsDataURL(file);
+            fileReader.onload = () => {
+                resolve(fileReader.result);
+            };
+            fileReader.onerror = (error) => {
+                reject(error);
+            };
+        });
+    };
+    const handleFileUpload = async (e) => {
+        const file = e.target.files[0];
+        const base64 = await convertToBase64(file);
+        setPostImage({ ...postImage, image: base64 });
+
     };
 
     return (
@@ -406,7 +434,7 @@ export default function VoluntaryWork() {
                             placeholder="Өдөр сонгох"
                         />
                     </Form.Item>
-                    
+
                     <Form.Item name="enddate" label="Дууссан огноо" rules={[{ required: true, message: "Утга оруулна уу!" }]}>
                         <DatePicker
                             disabledDate={disabledDate}
@@ -419,6 +447,34 @@ export default function VoluntaryWork() {
                         <Input.TextArea />
                     </Form.Item>
                 </Form>
+
+
+                <Row>
+                    <Col span={8}>Зураг:</Col>
+                    <Col span={14}>
+                        <Space >
+                            <Space.Compact direction="vertical">
+                                <Image
+                                    width={200}
+                                    src={postImage.image}
+                                />
+
+                                <input
+                                    type="file"
+                                    label="Image"
+                                    name="myFile"
+                                    accept=".jpeg, .png, .jpg"
+                                    onChange={(e) => handleFileUpload(e)}
+                                />
+
+                            </Space.Compact>
+                        </Space>
+                    </Col>
+                </Row>
+
+
+
+
             </Drawer>
         </div>
     );

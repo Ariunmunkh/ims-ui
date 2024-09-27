@@ -12,7 +12,7 @@ import {
     DatePicker,
     Select,
     Divider,
-    Switch,
+    Switch, Col, Row, Image,
     Input,
 } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
@@ -129,6 +129,7 @@ export default function Training() {
         let fdata = formdata.getFieldsValue();
         fdata.begindate = fdata.begindate.format("YYYY.MM.DD HH:mm:ss");
         fdata.enddate = fdata.enddate.format("YYYY.MM.DD HH:mm:ss");
+        fdata.image = postImage.image;
         await api.post(`/api/Volunteer/set_VolunteerTraining`, fdata).then((res) => {
             if (res?.status === 200 && res?.data?.rettype === 0) {
                 setIsModalOpen(false);
@@ -146,6 +147,7 @@ export default function Training() {
                     fdata.begindate = dayjs(fdata.begindate, "YYYY.MM.DD HH:mm:ss");
                     fdata.enddate = dayjs(fdata.enddate, "YYYY.MM.DD HH:mm:ss");
                     formdata.setFieldsValue(fdata);
+                    setPostImage({ ...postImage, image: fdata.image });
                     showModal();
                 }
             });
@@ -163,8 +165,35 @@ export default function Training() {
             location: null,
             iscertificate: null
         });
+        setPostImage({ ...postImage, image: "" });
         showModal();
     };
+
+    const [imagehidden, setimagehidden] = useState(true);
+
+    const [postImage, setPostImage] = useState({
+        volunteerid: volunteerid ?? userinfo.volunteerid, image: "",
+    });
+
+    const convertToBase64 = (file) => {
+        return new Promise((resolve, reject) => {
+            const fileReader = new FileReader();
+            fileReader.readAsDataURL(file);
+            fileReader.onload = () => {
+                resolve(fileReader.result);
+            };
+            fileReader.onerror = (error) => {
+                reject(error);
+            };
+        });
+    };
+    const handleFileUpload = async (e) => {
+        const file = e.target.files[0];
+        const base64 = await convertToBase64(file);
+        setPostImage({ ...postImage, image: base64 });
+
+    };
+
     return (
         <div>
             <Button
@@ -219,6 +248,14 @@ export default function Training() {
                     wrapperCol={{ span: 14 }}
                     labelAlign="left"
                     labelWrap
+                    onFieldsChange={(changedFields, allFields) => {
+                        if (changedFields.length === 1) {
+                            if (changedFields[0]?.name[0] === 'iscertificate') {
+                                setimagehidden(!changedFields[0].value);
+                            }
+                        }
+
+                    }}
                 >
                     <Form.Item name="id" hidden={true} >
                         <Input />
@@ -258,6 +295,30 @@ export default function Training() {
                     </Form.Item>
 
                 </Form>
+
+                <Row hidden={imagehidden}>
+                    <Col span={8}>Гэрчилгээний зураг:</Col>
+                    <Col span={14}>
+                        <Space >
+                            <Space.Compact direction="vertical">
+                                <Image
+                                    width={200}
+                                    src={postImage.image}
+                                />
+
+                                <input
+                                    type="file"
+                                    label="Image"
+                                    name="myFile"
+                                    accept=".jpeg, .png, .jpg"
+                                    onChange={(e) => handleFileUpload(e)}
+                                />
+
+                            </Space.Compact>
+                        </Space>
+                    </Col>
+                </Row>
+
             </Drawer>
         </div>
     );
