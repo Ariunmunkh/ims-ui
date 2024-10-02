@@ -11,13 +11,15 @@ import {
     Divider,
     Tabs,
     Table,
-    Input,
+    Input, Tree, Drawer, Space, Modal,
     Button,
     DatePicker,
     Typography,
 } from "antd";
+import { DownOutlined, ExclamationCircleFilled, PlusOutlined } from '@ant-design/icons';
 import { useLocation } from "react-router-dom";
 import dayjs from "dayjs";
+const { confirm } = Modal;
 const { Text } = Typography;
 const EditableCell = ({
     editing,
@@ -55,7 +57,9 @@ const EditableCell = ({
 };
 export default function Report() {
     const [form] = Form.useForm();
+    const [formtitle] = useState('Сарын үйл ажиллагааны бичмэл мэдээлэл');
     const [infoform] = Form.useForm();
+    const [infolist, setinfolist] = useState([]);
     const { userinfo } = useUserInfo();
     const [reportdata, setreportdata] = useState([]);
     const [reportid, setreportid] = useState(1);
@@ -157,6 +161,17 @@ export default function Report() {
 
         await api
             .get(
+                `/api/Committee/get_report_info_list?committeeid=${committeeid}`
+            )
+            .then(async (res) => {
+                if (res?.status === 200 && res?.data?.rettype === 0) {
+
+                    setinfolist(res?.data?.retdata);
+                }
+            });
+
+        await api
+            .get(
                 `/api/Committee/get_report?committeeid=${committeeid}&reportdate=${reportdate.format("YYYY.MM")}`
             )
             .then(async (res) => {
@@ -233,21 +248,6 @@ export default function Report() {
                 setLoading(false);
             });
 
-        await api
-            .get(
-                `/api/Committee/get_report_info?committeeid=${committeeid}`
-            )
-            .then(async (res) => {
-                if (res?.status === 200 && res?.data?.rettype === 0) {
-
-                    infoform.setFieldsValue({ id: 0, info: res?.data?.retdata[0].info })
-
-                }
-            })
-            .finally(() => {
-                setLoading(false);
-            });
-
     }, [editingKey, reportdate]);
 
     useEffect(() => {
@@ -291,21 +291,87 @@ export default function Report() {
         return current && current < dayjs().add(-2, 'month').endOf('day');
     };
 
-    const onFinish = async (values) => {
+    const onSelect = (selectedKeys, info) => {
+        if (info.node.children === undefined) {
+            getFormData(info.node.key);
+        }
+    };
 
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const showModal = () => {
+        setIsModalOpen(true);
+    };
+
+    const handleCancel = () => {
+        setIsModalOpen(false);
+    };
+
+    const showDeleteConfirm = () => {
+        confirm({
+            title: "Устгах уу?",
+            icon: <ExclamationCircleFilled />,
+            //content: 'Some descriptions',
+            okText: "Тийм",
+            okType: "danger",
+            cancelText: "Үгүй",
+            onOk() {
+                onDelete();
+            },
+            onCancel() {
+                //console.log('Cancel');
+            },
+        });
+    };
+
+    const onDelete = async () => {
         await api
-            .post(`/api/Committee/set_report_info`, {
-                committeeid: userinfo.committeeid || 0,
-                info: infoform.getFieldsValue().info
-            })
+            .delete(
+                `/api/Committee/delete_report_info?id=${infoform.getFieldValue("id")}`
+            )
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
-
-                    message.success("Амжилттай");
+                    setIsModalOpen(false);
+                    fetchData();
                 }
             });
     };
 
+    const onFinish = async (values) => {
+
+        await api
+            .post(`/api/Committee/set_report_info`, infoform.getFieldsValue())
+            .then((res) => {
+                if (res?.status === 200 && res?.data?.rettype === 0) {
+
+                    setIsModalOpen(false);
+                    api
+                        .get(
+                            `/api/Committee/get_report_info_list?committeeid=${committeeid}`
+                        )
+                        .then(async (res) => {
+                            if (res?.status === 200 && res?.data?.rettype === 0) {
+
+                                setinfolist(res?.data?.retdata);
+                            }
+                        });
+                }
+            });
+    };
+
+    const getFormData = async (id) => {
+        await api.get(`/api/Committee/get_report_info?id=${id}`).then((res) => {
+            if (res?.status === 200 && res?.data?.rettype === 0) {
+                infoform.setFieldsValue(res?.data?.retdata[0]);
+                showModal();
+            }
+        });
+    };
+
+    const newFormData = async () => {
+        infoform.setFieldsValue({ id: 0, committeeid: committeeid, info: "" });
+        showModal();
+    };
     return (
         <div>
             <Tabs
@@ -391,26 +457,70 @@ export default function Report() {
                         key: "2",
                         children: (
                             <>
-                                <Form
-                                    form={infoform}
-                                    onFinish={onFinish}
-                                    style={{ Width: '100vh', }}
+                                <Button
+                                    style={{ marginBottom: 16 }}
+                                    icon={<PlusOutlined />}
+                                    type="primary"
+                                    onClick={(e) => newFormData()}
+                                >
+                                    {`${formtitle} нэмэх`}
+                                </Button>
+
+                                <Tree
+                                    showLine
+                                    switcherIcon={<DownOutlined />}
+                                    onSelect={onSelect}
+                                    treeData={infolist}
+                                />
+
+                                <Drawer
+                                    forceRender
+                                    title={formtitle}
+                                    width={1000}
+                                    onClose={handleCancel}
+                                    open={isModalOpen}
+                                    bodyStyle={{ paddingBottom: 80, }}
+                                    extra={
+                                        <Space>
+                                            <Button
+                                                key="delete"
+                                                danger
+                                                onClick={showDeleteConfirm}
+                                                hidden={infoform.getFieldValue("id") === 0}
+                                            >
+                                                Устгах
+                                            </Button>
+                                            <Button key="cancel" onClick={handleCancel}>
+                                                Болих
+                                            </Button>
+                                            <Button key="save" type="primary" onClick={onFinish}>
+                                                Хадгалах
+                                            </Button>
+                                        </Space>
+                                    }
                                 >
 
-                                    <Form.Item>
-                                        <Button type="primary" htmlType="submit">
-                                            Илгээх
-                                        </Button>
-                                    </Form.Item>
-                                    <Form.Item name={"info"} label="Мэдээлэл">
-                                        <Input.TextArea autoSize={{ minRows: 9, maxRows: 100 }} />
-                                    </Form.Item>
-                                    <Form.Item>
-                                        <Button type="primary" htmlType="submit">
-                                            Илгээх
-                                        </Button>
-                                    </Form.Item>
-                                </Form>
+                                    <Form
+                                        form={infoform}
+                                        onFinish={onFinish}
+                                        style={{ Width: '100vh', }}
+                                    >
+
+                                        <Form.Item name="id" label="Дугаар" hidden={true}>
+                                            <Input />
+                                        </Form.Item>
+
+                                        <Form.Item name="committeeid" label="Дугаар" hidden={true}>
+                                            <Input />
+                                        </Form.Item>
+
+                                        <Form.Item name="info" label="Мэдээлэл">
+                                            <Input.TextArea autoSize={{ minRows: 9, maxRows: 100 }} />
+                                        </Form.Item>
+                                    </Form>
+
+                                </Drawer>
+
 
                             </>),
                     },
