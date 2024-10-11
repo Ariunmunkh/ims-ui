@@ -160,10 +160,10 @@ export default function Languages() {
             volunteerid: volunteerid ?? userinfo.volunteerid,
             languageid: null,
             levelid: null,
-            studyyear: null,
+            studyyear: 0,
             isscore: null,
             testname: null,
-            testscore: null,
+            testscore: 0,
             note: null
         });
         showModal();

@@ -81,13 +81,6 @@ export default function Login({ setToken }) {
                         >
                             <Form.Item
                                 name="username"
-                                rules={[
-                                    {
-                                        required: true,
-                                        type: "email",
-                                        message: "Бүртгэлтэй и-мэйл хаягаа оруулна уу!",
-                                    },
-                                ]}
                             >
                                 <Input
                                     prefix={<UserOutlined className="site-form-item-icon" />}

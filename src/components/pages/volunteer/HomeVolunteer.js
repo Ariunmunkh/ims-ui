@@ -221,6 +221,46 @@ export default function HomeVolunteer() {
             ),
         },
     ];
+
+    const handleDownload =  () => {
+
+
+        setLoading(true);
+          api.get(`/api/Volunteer/get_certificate?id=${userinfo.volunteerid}`, {
+            responseType: "blob",
+        })
+              .then((response) => {
+
+                  // Create a Blob from the response data
+                  const pdfBlob = new Blob([response.data], { type: "application/pdf" });
+
+                // Create a temporary URL for the Blob
+                const url = window.URL.createObjectURL(pdfBlob);
+
+                // Create a temporary <a> element to trigger the download
+                const tempLink = document.createElement("a");
+                tempLink.href = url;
+                tempLink.setAttribute(
+                    "download",
+                    `bill_${userinfo.volunteerid}.pdf`
+                ); // Set the desired filename for the downloaded file
+
+                // Append the <a> element to the body and click it to trigger the download
+                document.body.appendChild(tempLink);
+                tempLink.click();
+
+                // Clean up the temporary elements and URL
+                document.body.removeChild(tempLink);
+                window.URL.revokeObjectURL(url);
+
+                setLoading(false);
+            })
+            .catch((err) => {
+                console.log(err);
+                setLoading(false);
+            });
+    };
+
     if (volList) return <VolunteerList setVolList={setVolList} />;
     if (report) return <ReportList setReport={setReport} />;
     if (project) return <ProjectList setProject={setProject} />;
@@ -259,10 +299,9 @@ export default function HomeVolunteer() {
                         }}
                         extra={
                             <Tooltip title="Гэрчилгээ татах">
-                                <Link
-                                    to={`http://157.230.241.237:8080/api/Volunteer/get_certificate?id=${userinfo.volunteerid}`}
-                                >
-                                    <Button type="link">
+
+                                <Button type="link" onClick={handleDownload}>
+
                                         <Avatar
                                             shape="circle"
                                             style={{
@@ -271,7 +310,7 @@ export default function HomeVolunteer() {
                                             icon={<DownloadOutlined />}
                                         />
                                     </Button>
-                                </Link>
+                               
                             </Tooltip>
                         }
                         title="Сайн дурын ажлын мэдээлэл"
