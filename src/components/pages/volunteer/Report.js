@@ -11,12 +11,12 @@ import {
     Divider,
     Tabs,
     Table,
-    Input, Tree, Drawer, Space, Modal,
+    Input, Tree, Drawer, Space, Modal, Tooltip, Avatar,
     Button,
     DatePicker,
     Typography,
 } from "antd";
-import { DownOutlined, ExclamationCircleFilled, PlusOutlined } from '@ant-design/icons';
+import { DownOutlined, ExclamationCircleFilled, PlusOutlined, DownloadOutlined } from '@ant-design/icons';
 import { useLocation } from "react-router-dom";
 import dayjs from "dayjs";
 const { confirm } = Modal;
@@ -372,6 +372,45 @@ export default function Report() {
         infoform.setFieldsValue({ id: 0, committeeid: committeeid, info: "" });
         showModal();
     };
+
+    const handleDownload = () => {
+
+        setLoading(true);
+        api.get(`/api/Committee/get_report_excel?committeeid=${committeeid}&reportdate=${reportdate.format("YYYY.MM")}`, {
+            responseType: "blob",
+        })
+            .then((response) => {
+
+                // Create a Blob from the response data
+                const pdfBlob = new Blob([response.data], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+
+                // Create a temporary URL for the Blob
+                const url = window.URL.createObjectURL(pdfBlob);
+
+                // Create a temporary <a> element to trigger the download
+                const tempLink = document.createElement("a");
+                tempLink.href = url;
+                tempLink.setAttribute(
+                    "download",
+                    `data.xlsx`
+                ); // Set the desired filename for the downloaded file
+
+                // Append the <a> element to the body and click it to trigger the download
+                document.body.appendChild(tempLink);
+                tempLink.click();
+
+                // Clean up the temporary elements and URL
+                document.body.removeChild(tempLink);
+                window.URL.revokeObjectURL(url);
+
+                setLoading(false);
+            })
+            .catch((err) => {
+                console.log(err);
+                setLoading(false);
+            });
+    };
+
     return (
         <div>
             <Tabs
@@ -400,6 +439,22 @@ export default function Report() {
                                                     setreportdate(date);
                                                 }}
                                             />
+                                        </Col>
+                                        <Col>
+                                            <Tooltip title="Сарын тоон мэдээлэл татах">
+
+                                                <Button type="link" onClick={handleDownload}>
+
+                                                    <Avatar
+                                                        shape="circle"
+                                                        style={{
+                                                            backgroundColor: "#ed1c24",
+                                                        }}
+                                                        icon={<DownloadOutlined />}
+                                                    />
+                                                </Button>
+
+                                            </Tooltip>
                                         </Col>
                                     </Divider>
                                 </Row>

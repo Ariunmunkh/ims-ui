@@ -1,6 +1,6 @@
 {
   "name": "ims-ui",
-  "version": "24.10.11",
+  "version": "24.10.16",
   "private": true,
   "dependencies": {
     "antd": "^5.6.1",
