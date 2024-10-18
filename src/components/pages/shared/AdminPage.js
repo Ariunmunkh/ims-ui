@@ -8,6 +8,7 @@ import EducationLevel from "../baseinfo/EducationLevel";
 import VoluntaryWork from "../baseinfo/VoluntaryWork";
 import Hutulbur from "../baseinfo/Hutulbur";
 import Project from "../baseinfo/Project";
+import ProjectPro from "../baseinfo/ProjectPro";
 import Training from "../baseinfo/Training";
 import Languages from "../baseinfo/Languages";
 import Relationship from "../baseinfo/Relationship";
@@ -57,9 +58,9 @@ export default function AdminPage() {
                         children: <Hutulbur />,
                     },
                     {
-                        label: `МУЗН-ийн хэрэгжүүлж буй төсөл, хөтөлбөр`,
+                        label: `Хэрэгжүүлсэн төсөл, хөтөлбөрийн индикатор`,
                         key: "7",
-                        children: <Project />,
+                        children: <ProjectPro />,
                     },
                     {
                         label: `Сургалтын төрөл`,

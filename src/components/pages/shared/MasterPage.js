@@ -10,7 +10,8 @@ import {
     BarChartOutlined,
     UserSwitchOutlined,
     InfoCircleOutlined,
-    UnorderedListOutlined
+    UnorderedListOutlined,
+    ProjectOutlined
 } from "@ant-design/icons";
 import { Layout, Menu, theme, Space, Button, Typography, Divider } from "antd";
 
@@ -22,6 +23,7 @@ import NotFound from "./NotFound";
 import AccessDenied from "./AccessDenied";
 import Home from "../volunteer/Home";
 import logo from "../../../assets/images/logo.png";
+import Project from "../baseinfo/Project";
 import Report from "../volunteer/Report";
 import Survey from "../information/Survey";
 import Survies from "../information/Survies";
@@ -53,6 +55,11 @@ export default function MasterPage() {
                         key: "home",
                         icon: <HomeOutlined />,
                         label: "Нүүр",
+                    },
+                    {
+                        key: "project",
+                        icon: <ProjectOutlined />,
+                        label: "Хэрэгжүүлсэн төсөл, хөтөлбөрийн мэдээлэл",
                     },
                     {
                         key: "reportlist",
@@ -120,7 +127,7 @@ export default function MasterPage() {
     };
     return (
         <Layout>
-            <Sider trigger={null} collapsible collapsed={collapsed} style={{ backgroundColor: userinfo.roleid == 5 ? '#0065B2' : '#BA0001' }}>
+            <Sider trigger={null} collapsible collapsed={collapsed} style={{ backgroundColor: userinfo.roleid === '5' ? '#0065B2' : '#BA0001' }}>
                 <div className="text-center">
                     <img
                         onClick={() => navigate("/")}
@@ -166,7 +173,7 @@ export default function MasterPage() {
                     <Space direction="vertical">
                         <Space>
                             <Text code>
-                                {userinfo.roleid == 5 ? `Хэрэглэгч: ${userinfo?.username}` : (userinfo.roleid == 1) ? 'Админ: Админ' : `Салбар: ${userinfo?.committee}`}
+                                {userinfo.roleid === '5' ? `Хэрэглэгч: ${userinfo?.username}` : (userinfo.roleid === '1') ? 'Админ: Админ' : `Салбар: ${userinfo?.committee}`}
                             </Text>
                         </Space>
                     </Space>
@@ -204,11 +211,15 @@ export default function MasterPage() {
                         />
                         <Route
                             path="/admin"
-                            element={userinfo?.roleid ? <AdminPage /> : <AccessDenied />}
+                            element={userinfo?.roleid === '1' ? <AdminPage /> : <AccessDenied />}
                         />
                         <Route
                             path="/home"
                             element={userinfo?.roleid ? <Home /> : <AccessDenied />}
+                        />
+                        <Route
+                            path="/project"
+                            element={userinfo?.roleid === '1' ? <Project /> : <AccessDenied />}
                         />
                         <Route
                             path="/report"
@@ -228,15 +239,15 @@ export default function MasterPage() {
                         />
                         <Route
                             path="/survies"
-                            element={userinfo?.roleid == 1 ? <Survies /> : <AccessDenied />}
+                            element={userinfo?.roleid === '1' ? <Survies /> : <AccessDenied />}
                         />
                         <Route
                             path="/survey"
-                            element={userinfo?.roleid == 2 ? <Survey /> : <AccessDenied />}
+                            element={userinfo?.roleid === '2' ? <Survey /> : <AccessDenied />}
                         />
                         <Route
                             path="/list"
-                            element={userinfo?.roleid == 2 ? <WorkList /> : <AccessDenied />}
+                            element={userinfo?.roleid === '2' ? <WorkList /> : <AccessDenied />}
                         />
 
                         <Route path="*" element={<NotFound />} />
