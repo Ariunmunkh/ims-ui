@@ -1,12 +1,13 @@
 import React, { useRef, useState, useEffect, useCallback } from "react";
 import { useLocation } from "react-router-dom";
 import { api } from "../../system/api";
-import { Table, Modal, Drawer, Form, Space, Button, Input } from "antd";
+import { Table, Modal, Drawer, Form, Space, Button, Input, DatePicker, Radio, InputNumber } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { PlusOutlined } from "@ant-design/icons";
 import { SearchOutlined } from "@ant-design/icons";
 import Highlighter from "react-highlight-words";
 import useUserInfo from "../../system/useUserInfo";
+import dayjs from "dayjs";
 const { confirm } = Modal;
 export default function PrimaryStageInfo() {
 
@@ -171,14 +172,9 @@ export default function PrimaryStageInfo() {
             ...getColumnSearchProps("c4_2"),
         },
         {
-            title: "СУМ/ХОРОО",
+            title: "Анхан шатны хорооны төрөл",
             dataIndex: "c4_3_1",
             ...getColumnSearchProps("c4_3_1"),
-        },
-        {
-            title: "БАЙГУУЛЛАГА/ААН",
-            dataIndex: "c4_3_2",
-            ...getColumnSearchProps("c4_3_2"),
         },
         {
             title: "Тэргүүний овог, нэр",
@@ -201,24 +197,9 @@ export default function PrimaryStageInfo() {
             ...getColumnSearchProps("c4_7"),
         },
         {
-            title: "Энгийн гишүүн",
+            title: "Гишүүнчлэлийн хураамж төлөгч гишүүдийн тоо",
             dataIndex: "c4_8_1",
             ...getColumnSearchProps("c4_8_1"),
-        },
-        {
-            title: "Онцгой гишүүн",
-            dataIndex: "c4_8_2",
-            ...getColumnSearchProps("c4_8_2"),
-        },
-        {
-            title: "Мөнгөн гишүүн",
-            dataIndex: "c4_8_3",
-            ...getColumnSearchProps("c4_8_3"),
-        },
-        {
-            title: "Алтан гишүүн",
-            dataIndex: "c4_8_4",
-            ...getColumnSearchProps("c4_8_4"),
         },
         {
             title: "Хүмүүнлэгийн гишүүн байгууллагын тоо",
@@ -279,8 +260,10 @@ export default function PrimaryStageInfo() {
     };
 
     const onFinish = async (values) => {
+        let fdata = formdata.getFieldsValue();
+        fdata.c4_2 = fdata.c4_2?.format("YYYY.MM.DD");
         await api
-            .post(`/api/Committee/set_primarystageinfo`, formdata.getFieldsValue())
+            .post(`/api/Committee/set_primarystageinfo`, fdata)
             .then((res) => {
                 if (res?.status === 200 && res?.data?.rettype === 0) {
                     setIsModalOpen(false);
@@ -292,7 +275,12 @@ export default function PrimaryStageInfo() {
     const getFormData = async (id) => {
         await api.get(`/api/Committee/get_primarystageinfo?id=${id}`).then((res) => {
             if (res?.status === 200 && res?.data?.rettype === 0) {
-                formdata.setFieldsValue(res?.data?.retdata);
+                let fdata = res?.data?.retdata;
+                if (fdata.c4_2)
+                    fdata.c4_2 = dayjs(fdata.c4_2, "YYYY.MM.DD");
+                else
+                    fdata.c4_2 = null;
+                formdata.setFieldsValue(fdata);
                 showModal();
             }
         });
@@ -373,6 +361,8 @@ export default function PrimaryStageInfo() {
             >
                 <Form
                     form={formdata}
+                    labelWrap
+                    labelAlign="left"
                     labelCol={{ span: 8 }}
                     wrapperCol={{ span: 14 }}
                 >
@@ -387,14 +377,14 @@ export default function PrimaryStageInfo() {
                     <Form.Item name="c4_1" label="Анхан шатны хорооны нэр" >
                         <Input />
                     </Form.Item>
-                    <Form.Item name="c4_2" label="Анхан шатны хорооны байгуулагдсан огноо" >
-                        <Input />
+                    <Form.Item name="c4_2" label="Байгуулагдсан огноо" >
+                        <DatePicker style={{ width: "100%" }} placeholder="Өдөр сонгох" />
                     </Form.Item>
-                    <Form.Item name="c4_3_1" label="СУМ/ХОРОО" >
-                        <Input />
-                    </Form.Item>
-                    <Form.Item name="c4_3_2" label="БАЙГУУЛЛАГА/ААН" >
-                        <Input />
+                    <Form.Item name="c4_3_1" label="Анхан шатны хорооны төрөл" >
+                        <Radio.Group>
+                            <Radio value="1"> СУМ/ХОРОО </Radio>
+                            <Radio value="2"> БАЙГУУЛЛАГА/ААН </Radio>
+                        </Radio.Group>
                     </Form.Item>
                     <Form.Item name="c4_4" label="Тэргүүний овог, нэр" >
                         <Input />
@@ -408,26 +398,22 @@ export default function PrimaryStageInfo() {
                     <Form.Item name="c4_7" label="Холбогдох утасны дугаар" >
                         <Input />
                     </Form.Item>
-                    <Form.Item name="c4_8_1" label="Энгийн гишүүн" >
-                        <Input />
-                    </Form.Item>
-                    <Form.Item name="c4_8_2" label="Онцгой гишүүн" >
-                        <Input />
-                    </Form.Item>
-                    <Form.Item name="c4_8_3" label="Мөнгөн гишүүн" >
-                        <Input />
-                    </Form.Item>
-                    <Form.Item name="c4_8_4" label="Алтан гишүүн" >
-                        <Input />
+                    <Form.Item name="c4_8_1" label="Гишүүнчлэлийн хураамж төлөгч гишүүдийн тоо" >
+                        <Radio.Group>
+                            <Radio value="1"> Энгийн гишүүн </Radio>
+                            <Radio value="2"> Онцгой гишүүн </Radio>
+                            <Radio value="3"> Мөнгөн гишүүн </Radio>
+                            <Radio value="4"> Алтан гишүүн </Radio>
+                        </Radio.Group>
                     </Form.Item>
                     <Form.Item name="c4_9" label="Хүмүүнлэгийн гишүүн байгууллагын тоо" >
-                        <Input />
+                        <InputNumber style={{ width: "100%" }} />
                     </Form.Item>
                     <Form.Item name="c4_10" label="Сайн дурын идэвхтний тоо" >
-                        <Input />
+                        <InputNumber style={{ width: "100%" }} />
                     </Form.Item>
                     <Form.Item name="c4_11" label="Хүүхэд залуучуудын гишүүний тоо" >
-                        <Input />
+                        <InputNumber style={{ width: "100%" }} />
                     </Form.Item>
 
                 </Form>

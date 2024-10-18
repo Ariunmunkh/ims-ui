@@ -697,11 +697,6 @@ export default function Branch() {
                                 </Form.Item>
                             )}
                         </Descriptions.Item>
-                        <Descriptions.Item
-                            label="Анхан шатны хорооны талаарх мэдээлэл"
-                            className="font-weight-bold"
-                            span={3}
-                        ></Descriptions.Item>
                         <Descriptions.Item>
                             {!isEditMode ? (
                                 <></>
