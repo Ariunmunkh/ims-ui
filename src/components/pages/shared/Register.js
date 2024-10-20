@@ -2,6 +2,7 @@ import React from "react";
 import { Button, Form, Input, Row, Col, Space } from "antd";
 import PropTypes from "prop-types";
 import { api } from "../../system/api";
+import { message } from "antd";
 
 import "./Register.css";
 
@@ -14,15 +15,20 @@ export default function Register({ setRegister }) {
             .post("/api/Volunteer/set_Volunteer", volunteerdata)
             .then((response) => response?.data?.retdata);
     }
+    async function removeVolunteer(volunteerid) {
+        return api
+            .delete("/api/Volunteer/delete_Volunteer?id=" + volunteerid)
+            .then((response) => response?.data?.retdata);
+    }
     async function addUser(userdata) {
         return api
             .post("/api/systems/User/set_user", userdata)
-            .then((response) => response?.data?.retdata);
+            .then((response) => response?.data);
     }
 
     const onFinish = async (values) => {
         var volunteerdata = await addVolunteer(values);
-        await addUser({
+        var userdata = await addUser({
             username: values.email,
             password: values.password,
             email: values.email,
@@ -31,7 +37,13 @@ export default function Register({ setRegister }) {
             volunteerid: volunteerdata.volunteerid,
         });
 
-        setRegister(false);
+        if (userdata.rettype !== 0) {
+            removeVolunteer(volunteerdata.volunteerid);
+        }
+        else {
+            message.success("Амжилттай");
+            setRegister(false);
+        }
     };
 
     return (

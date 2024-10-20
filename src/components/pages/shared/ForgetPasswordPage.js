@@ -7,13 +7,24 @@ import {
     Col,
     Space,
 } from "antd";
+import { api } from "../../system/api";
 import PropTypes from "prop-types";
 import "./ForgetPasswordPage.css";
 import logo from "../../../assets/images/logo.png";
 import bg from "../../../assets/images/bg.jpg";
+import { message } from "antd";
 export default function ForgetPasswordPage({ setForgetPass }) {
     const onFinish = (values) => {
-        setForgetPass(false);
+        api.post("/api/Systems/password_recovery", values.email)
+            .then((res) => {
+                if (res?.status === 200 && res?.data?.rettype === 0)
+                    message.success("Амжилттай илгээлээ");
+                else
+                    message.error("Алдаа гарлаа:" + res?.data?.retmsg);
+            })
+            .finally(() => {
+                setForgetPass(false);
+            });
     };
 
     return (
