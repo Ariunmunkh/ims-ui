@@ -86,7 +86,7 @@ export default function MasterPage() {
                         label: "Сайн дурын ажил",
                     },
                     {
-                        key: "report",
+                        key: "reportlist",
                         icon: <BarChartOutlined />,
                         label: "ДШХ-ны сарын тайлан",
                     },
