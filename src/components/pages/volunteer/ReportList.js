@@ -184,7 +184,7 @@ export default function ReportList() {
             },
         };
     };
-    return userinfo.roleid !== 5 ? (
+    return userinfo.roleid !== '5' ? (
         <>
             <Row>
                 <Col span={1}>
@@ -197,7 +197,7 @@ export default function ReportList() {
                         }}
                     />
                 </Col>
-                <Col span={2}>
+                <Col span={2} hidden={userinfo.roleid === '1'}>
                     <Button
                         type="primary"
                         icon={<FileAddOutlined />}
