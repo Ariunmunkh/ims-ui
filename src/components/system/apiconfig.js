@@ -1,4 +1,4 @@
 export const getBaseURL = () => {
-    let apiBaseUrl = 'http://167.172.94.246:8080';
+    let apiBaseUrl = 'http://185.170.198.36:8080';
     return apiBaseUrl;
 }
